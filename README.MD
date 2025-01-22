@@ -7,6 +7,7 @@ A quick journaling and habit tracking application
 Install [NodeJS](https://nodejs.org/dist/v22.12.0/node-v22.12.0-x64.msi)
 Clone repository, likely with [GitHub Desktop](https://central.github.com/deployments/desktop/desktop/latest/win32)
 Navigate to cloned folder with terminal, likely through VS Code
+`npm install`
 `npm run build`
 `npm start`
 
