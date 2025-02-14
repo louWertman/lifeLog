@@ -14,3 +14,10 @@ Navigate to cloned folder with terminal, likely through VS Code
 We're using Next.js because [this page](https://react.dev/learn/start-a-new-react-project) told me to
 Here's some info on using Next.JS and we can basically use it as a guide to start building: [https://nextjs.org/learn](https://nextjs.org/learn)
 Make sure to create a GitHub branch for yourself so we don't step on each others toes.
+
+
+
+`npm install -g pnpm`
+
+`pnpm i`
+`pnpm dev`
