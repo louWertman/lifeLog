@@ -1,0 +1,37 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "pnpm install",
+        "type": "shell",
+        "command": "pnpm",
+        "args": [
+          "i"
+        ],
+        "problemMatcher": [],
+        "detail": "Install project dependencies using pnpm"
+      },
+      {
+        "label": "pnpm dev",
+        "type": "shell",
+        "command": "pnpm",
+        "args": [
+          "dev"
+        ],
+        "problemMatcher": [],
+        "detail": "Start the development server using pnpm"
+      },
+      {
+        "label": "pnpm install and dev",
+        "dependsOn": [
+          "pnpm install",
+          "pnpm dev"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "detail": "Install dependencies and start the development server"
+      }
+    ]
+  }
