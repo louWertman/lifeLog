@@ -31,7 +31,8 @@
           "kind": "build",
           "isDefault": true
         },
-        "detail": "Install dependencies and start the development server"
+        "detail": "Install dependencies and start the development server",
+        "problemMatcher": []
       }
     ]
   }

@@ -1,7 +1,14 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Entry from "../components/entry"; // Import the Entry component
 
 export default function Home() {
+let entries = [
+    { id: 1, title: "Entry 1", content: "Content for entry 1", date: "2023-10-01" },
+    { id: 2, title: "Entry 2", content: "Content for entry 2", date: "2023-10-02" },
+    { id: 3, title: "Entry 3", content: "Content for entry 3", date: "2023-10-03" },
+  ];
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -17,9 +24,13 @@ export default function Home() {
           <li>
             Get started by editing <code>app/page.tsx</code>.
           </li>
-          <li>Save and see your changes instantly.</li>
+          <li>Save and see your.</li>
         </ol>
-
+        <ul>
+          {entries.map((entry) => (
+            <Entry key={entry.id} title={entry.title} body={entry.content} date={entry.date}/>
+          ))}
+        </ul>
         <div className={styles.ctas}>
           <a
             className={styles.primary}
