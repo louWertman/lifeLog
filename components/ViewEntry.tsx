@@ -20,21 +20,9 @@ const EditEntry: React.FC<EditEntryProps> = ({ id, title, content, date, onSave 
   return (
     <div>
       <h1>Edit Entry</h1>
-      <input
-        type="text"
-        value={entryTitle}
-        onChange={(e) => setEntryTitle(e.target.value)}
-      />
-      <input
-        type="text"
-        value={entryDate}
-        onChange={(e) => setEntryDate(e.target.value)}
-      />
-      <textarea
-        value={entryContent}
-        onChange={(e) => setEntryContent(e.target.value)}
-      />
-      <button onClick={handleSave}>Save</button>
+      <h2>{entryTitle}</h2>
+      <small>{entryDate}</small>
+      <p>{entryContent}</p>
     </div>
   );
 };
