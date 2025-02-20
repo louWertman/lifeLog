@@ -6,13 +6,7 @@
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
 
-  display: grid;
-  grid-template-rows: 20px 1fr 20px;
-  align-items: center;
-  justify-items: center;
-  min-height: 100svh;
-  padding: 80px;
-  gap: 64px;
+  display: flex;
   font-family: var(--font-geist-sans);
 }
 
@@ -29,9 +23,10 @@
 
 .main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Change to row to position sidebar to the left */
   gap: 32px;
   grid-row-start: 2;
+  width:100%;
 }
 
 .main ol {
@@ -133,6 +128,7 @@ a.secondary {
   }
 
   .main {
+    flex-direction: column; /* Change to column for mobile view */
     align-items: center;
   }
 
@@ -165,4 +161,23 @@ a.secondary {
   .logo {
     filter: invert();
   }
+}
+
+.dynamicArea {
+  background: rgb(1, 32, 32);
+  flex: 1; /* Allow dynamic area to take remaining space */
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 200px; /* Set a fixed width for the sidebar */
+}
+
+.title {
+  font-size: 56px;
+  line-height: 32px;
+  font-weight: 700;
+  color: var(--foreground);
 }
