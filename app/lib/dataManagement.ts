@@ -4,16 +4,10 @@ Purpose: Functions related to syncing to the local file or the database and any 
 */
 
 import papaparse from "papaparse";
+const mysql = require('mysql');
 import * as fs from 'fs';
 
-class syncToDB {
-    public constructor(public syncToken: string){
-        this.syncToken = syncToken;
-    }
-    //functions for sycning to DB
-}
-
-class syncToFile {
+class syncToFile{
     //constructor
     public constructor(public filePath: string){
         this.filePath = filePath;
@@ -62,3 +56,22 @@ class syncToFile {
         ;
     }
 }
+
+class syncToDB extends syncToFile {
+    //look into .env files for security reasons of storing the syncToekn and connecting to the DB information
+    constructor(public syncToken: string, filePath: string){
+        super(filePath);
+        this.syncToken = syncToken;
+    }
+    private connection = () => {};
+
+    pushToDB(){
+
+    }
+
+    pullFromDB(){
+
+    }
+
+}
+
