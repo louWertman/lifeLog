@@ -58,6 +58,7 @@ class syncToFile{
 }
 
 class syncToDB extends syncToFile {
+    //look into .env files for security reasons of storing the syncToekn and connecting to the DB information
     constructor(public syncToken: string, filePath: string){
         super(filePath);
         this.syncToken = syncToken;

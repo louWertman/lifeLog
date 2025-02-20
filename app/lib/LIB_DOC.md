@@ -13,13 +13,16 @@ Delimeter will be a string of the following characters:
 Since we will be dealing with plain-text entries it is important for the delimiter to be as "unique" as possible. Additionally there should be checks somewhere to make sure that this string of charecters is not included in any place the user can input text/string data.
 
 ## dataManagement.ts
+for any classes and function relating to data management
+### SyncToFile
+Syncs the data to a file and has the following classes
 
 ## entity.ts
 This file contains the Entry and the Habit classes. There are discussed in more detail below
 
 ### Entry
-
 The entry class has the following functions
+
     - constructor(date: string)
     - getMoods()
     - getHabits()
