@@ -9,13 +9,13 @@ class Entry {
         this.date = date;
     }
 
-    private moods: Array<string>;
-    private habits: Array<Habit>;
-    private textEntry: string;
+    private mood!: string;
+    private habits!: Array<Habit>;
+    private textEntry!: string;
 
     //Getters
     getMoods(){
-        return this.moods;
+        return this.mood;
     }
 
     getHabits(){
@@ -24,6 +24,10 @@ class Entry {
 
     getTextEntry(){
         return this.textEntry;
+    }
+
+    getDateEntry(){
+        return this.date;
     }
 
     //Helpers
@@ -38,9 +42,9 @@ class Entry {
     }
 
     //Setters
-    setMoods(moodsInput: Array<string>){
-        if(this.noDelim(moodsInput.toString())){
-            this.moods = moodsInput;
+    setMoods(moodInput: string){
+        if(this.noDelim(moodInput.toString())){
+            this.mood = moodInput;
         }
     }
 
@@ -86,7 +90,7 @@ class Habit {
     //returns a string array of information 
     //[0] - name, [1] - active or dormant, [2] positive or negative
     getStatus(){
-        let statusObj: Array<string>;
+        let statusObj: string[] = [];
         statusObj[0] = this.name;
         if (this.active == true){
             statusObj[1] == 'Active';
