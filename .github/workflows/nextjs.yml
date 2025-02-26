@@ -1,9 +1,14 @@
-name: Deploy React App
+name: Deploy Next.js to GitHub Pages
+
 
 on:
   push:
     branches:
-      - main  # Change if your deploy branch is different
+      - main  # Adjust if needed
+
+permissions:
+  contents: write
+
 
 jobs:
   build-and-deploy:
@@ -19,19 +24,23 @@ jobs:
           node-version: 18  # Adjust based on your project
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: Enable Corepack and Install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+          pnpm --version  # Verify pnpm is installed
+
 
       - name: Install dependencies
         run: pnpm install
 
       - name: Build project
-        run: pnpm run build  # Ensure your package.json has a "build" script
+        run: pnpm run build
 
       - name: Deploy to GitHub Pages
         if: success()
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: dist  # Change if your build output folder is different
-          clean: true
+          folder: out
+
