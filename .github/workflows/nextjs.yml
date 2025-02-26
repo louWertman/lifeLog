@@ -1,5 +1,6 @@
 name: Deploy Next.js to GitHub Pages
 
+
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
 
 permissions:
   contents: write
+
 
 jobs:
   build-and-deploy:
@@ -28,6 +30,7 @@ jobs:
           corepack prepare pnpm@latest --activate
           pnpm --version  # Verify pnpm is installed
 
+
       - name: Install dependencies
         run: pnpm install
 
@@ -40,4 +43,4 @@ jobs:
         with:
           branch: gh-pages
           folder: out
-          clean: true
+
