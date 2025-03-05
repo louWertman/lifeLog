@@ -9,6 +9,7 @@ CREATE TABLE account_info
 (
 	user_id char(7) primary key,
 	email char(50) NOT NULL,
+	passkey char(50) NOT NULL,
 	first_name char(20),
 	last_name char(20),
 	sync bool NOT NULL
