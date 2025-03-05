@@ -51,8 +51,8 @@ CREATE TABLE entry_info
 	
 );
 
-insert into account_info VALUES('lmate01', 'luismateo@example.com', 'Luis', 'Mateo', True);
-insert into account_info VALUES('matel02', 'mateoluis@example.com', 'Mateo', 'Luis', False);
+insert into account_info VALUES('lmate01', 'luismateo@example.com','password', 'Luis', 'Mateo', True);
+insert into account_info VALUES('matel02', 'mateoluis@example.com','passkey', 'Mateo', 'Luis', False);
 INSERT INTO moods VALUES('1234', 'excited', 'lmate01');
 INSERT INTO moods VALUES('1235', 'sad', 'matel02');
 INSERT INTO habit VALUES('123', 'i keep forgetting to feed the dog at 3 instead of 3:30', True, True, 'lmate01');
