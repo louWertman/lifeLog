@@ -4,116 +4,119 @@ Purpose: Store the entry and mood objects
 */
 
 
-class Entry {
-    public constructor (public date: string) {
+export class Entry {
+
+    public date: string;
+    public mood: string;
+    public habits: Habit[]; // Assuming Habit is defined elsewhere
+    public textEntry: string;
+
+    public constructor(date: string, mood: string, habits: Habit[], textEntry: string) {
         this.date = date;
+        this.mood = mood;
+        this.habits = habits;
+        this.textEntry = textEntry;
     }
-
-    private mood!: string;
-    private habits!: Array<Habit>;
-    private textEntry!: string;
-
     //Getters
-    getMoods(){
+    getMoods() {
         return this.mood;
     }
 
-    getHabits(){
+    getHabits() {
         return this.habits;
     }
 
-    getTextEntry(){
+    getTextEntry() {
         return this.textEntry;
     }
 
-    getDateEntry(){
+    getDateEntry() {
         return this.date;
     }
 
     //Helpers
-    private noDelim(text:string){
-        if(text.includes("@~~@DELIM@~~@")){
+    private noDelim(text: string) {
+        if (text.includes("@~~@DELIM@~~@")) {
             document.write("ERROR: Use of Delimeter in Text Feild")
             return false;
         }
-        else{
+        else {
             return true;
         }
     }
 
     //Setters
-    setMoods(moodInput: string){
-        if(this.noDelim(moodInput.toString())){
+    setMoods(moodInput: string) {
+        if (this.noDelim(moodInput.toString())) {
             this.mood = moodInput;
         }
     }
 
-    setHabits(habitsInput: Array<Habit>){
+    setHabits(habitsInput: Array<Habit>) {
         this.habits = habitsInput;
     }
 
-    setTextEntry(inputText: string){
-        if(this.noDelim(inputText)){
+    setTextEntry(inputText: string) {
+        if (this.noDelim(inputText)) {
             this.textEntry = inputText;
         }
     }
 }
 
-class Habit {
-    public constructor (public name: string){
-        if(this.noDelim(name)){
+export class Habit {
+    public constructor(public name: string, public positive: boolean, public active: boolean) {
+        if (this.noDelim(name)) {
             this.name = name;
-        }else{
-            document.write('error: DELIMTER');
+            this.positive = positive;
+            this.active = active;
+        }
+        else{
+            document.write("Error: use of DELIM")
         }
     }
 
-    private active = true;
-    private positive = true;
-
-    setActive(){
+    setActive() {
         this.active = true;
     }
 
-    setDormant(){
+    setDormant() {
         this.active = false;
     }
 
-    setPositive(){
+    setPositive() {
         this.positive = true
     }
 
-    setNegative(){
-        this.positive = false; 
+    setNegative() {
+        this.positive = false;
     }
 
     //returns a string array of information 
     //[0] - name, [1] - active or dormant, [2] positive or negative
-    getStatus(){
+    getStatus() {
         let statusObj: string[] = [];
         statusObj[0] = this.name;
-        if (this.active == true){
+        if (this.active == true) {
             statusObj[1] == 'Active';
-        }else{
+        } else {
             statusObj[1] == 'Dormant';
         }
-        if (this.positive== true){
+        if (this.positive == true) {
             statusObj[2] == 'Positive';
-        }else{
+        } else {
             statusObj[2] == 'Negative';
         }
         return statusObj;
     }
 
-    private noDelim(text:string){
-        if(text.includes("@~~@DELIM@~~@")){
+
+    private noDelim(text: string) {
+        if (text.includes(",") || text.includes("@~~@DELIM@~~@") || text.includes(":")) {
             document.write("ERROR: Use of Delimeter in Text Feild")
             return false;
         }
-        else{
+        else {
             return true;
         }
     }
-
-
 }
