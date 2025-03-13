@@ -6,6 +6,7 @@ import EntryList from "../components/EntryList"; // Import the EmptyEntry compon
 import EditEntry from "../components/EditEntry"; // Import the EditEntry component
 import Settings from "../components/Settings"; // Import the Settings component
 import { useState } from "react";
+import { Capacitor } from '@capacitor/core';
 
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
@@ -58,4 +59,36 @@ export default function Home() {
       </main>
     </div>
   );
+}
+
+function init(){
+  // detect the platform
+  let platform = Capacitor.getPlatform();
+  if(platform == "web"){
+    if (navigator.userAgent.includes('Electron')){
+      initDesktop();
+    }
+    else{
+      initWebBrowser();
+    }
+  }else if(platform == "ios" || platform == "android"){
+    initMobile();
+  } else {
+    document.write("Unsupported Platform");
+  }
+}
+
+function initWebBrowser(){
+  //edit this to only display if not logged in
+  return ('<div class="alert">Web Version only works with database, please logon in settings to sync"</div>')
+}
+
+function initMobile(){
+  if (localStorage.getItem('fileLocation') == null){
+
+  }
+}
+
+function initDesktop(){
+  ;
 }
