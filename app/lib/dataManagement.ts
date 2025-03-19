@@ -103,7 +103,7 @@ export class fileSystem{
 
     private habitsToString(habits: Array<Habit>) {
         let habitString = "";
-        for (var habit of habits){
+        for (let habit of habits){
             habitString+=String(habit.name+':'+habit.positive+':'+habit.active + ',');
         }
         return habitString;   
