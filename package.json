@@ -46,11 +46,6 @@
     "extends": [
       "next/core-web-vitals",
       "next/typescript"
-    ],
-    "rules": {
-      "preferConst": "off",
-      "no-unused-vars": "off",
-      "no-unused-expressions": "off"
-    }
+    ]
   }
 }
