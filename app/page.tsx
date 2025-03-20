@@ -40,10 +40,18 @@ export default function Home() {
           <h1 className={styles.title}>LifeLog</h1>
           <button onClick={() => setView("empty")}>Entries</button>
           <button onClick={() => setView("settings")}>Settings</button>
-          <button onClick={() => setView("edit")}>Create Entry</button>
+          <button onClick={() => setView("create")}>Create Entry</button>
         </div>
         <div className={styles.dynamicArea}>
           {view === "empty" && <EntryList />}
+          {view === "create" && <EditEntry 
+            id={0}
+            title={"Title"}
+            content={"Content"}
+            date={new Date().toISOString().slice(0, 16)}
+            onSave={handleSave}
+            />
+          }
           {view === "edit" && selectedEntry && (
             <EditEntry
               id={selectedEntry.id}

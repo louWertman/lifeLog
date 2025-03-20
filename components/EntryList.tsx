@@ -1,6 +1,7 @@
 import React from 'react';
 import Entry from "../components/entry"; // Import the Entry component
 
+// placeholder data until we have data storage
 let entries = Array.from({ length: 50 }, (_, i) => ({
   id: i + 1,
   title: `Entry ${i + 1}`,
