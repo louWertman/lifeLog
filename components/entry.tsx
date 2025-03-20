@@ -5,7 +5,7 @@ interface EntryProps {
     body: string;
     date: string;
 }
-
+// entry component for displaying in lists
 const Entry: React.FC<EntryProps> = ({ title, body, date }) => {
     return (
         <div >

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-interface EditEntryProps {
+interface ViewEntryProps {
   id: number;
   title: string;
   content: string;
@@ -8,7 +8,7 @@ interface EditEntryProps {
   onSave: (id: number, title: string, content: string, date: string) => void;
 }
 
-const EditEntry: React.FC<EditEntryProps> = ({ id, title, content, date, onSave }) => {
+const ViewEntry: React.FC<ViewEntryProps> = ({ id, title, content, date, onSave }) => {
   const [entryTitle, setEntryTitle] = useState(title);
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
@@ -16,10 +16,10 @@ const EditEntry: React.FC<EditEntryProps> = ({ id, title, content, date, onSave 
   const handleSave = () => {
     onSave(id, entryTitle, entryContent, entryDate);
   };
-
+// page for viewing an entry
   return (
     <div>
-      <h1>Edit Entry</h1>
+      <h1>View Entry</h1>
       <h2>{entryTitle}</h2>
       <small>{entryDate}</small>
       <p>{entryContent}</p>
@@ -27,4 +27,4 @@ const EditEntry: React.FC<EditEntryProps> = ({ id, title, content, date, onSave 
   );
 };
 
-export default EditEntry;
+export default ViewEntry;
