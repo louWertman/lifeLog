@@ -78,6 +78,7 @@ function init(){
   }
 }
 
+//Work in progress
 function initWebBrowser(){
   //edit this to only display if not logged in
   return ('<div class="alert">Web Version only works with database, please logon in settings to sync"</div>')
@@ -85,7 +86,7 @@ function initWebBrowser(){
 
 function initMobile(){
   if (localStorage.getItem('fileLocation') == null){
-
+    return ('<div class="alert">Please go to settings and configure your file settings</div>');
   }
 }
 
