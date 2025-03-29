@@ -1,7 +1,7 @@
 import pyodbc
 import bcrypt
 ##the following is connecting to the database
-conn_str = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=lifelog-db.database.windows.net;DATABASE=LifeLog_DB;UID=LF_admin_DYLL;PWD=@KU25LFDB_1;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+conn_str = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=database.database.windows.net;DATABASE=LifeLog_DB;UID=username;PWD=password;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
 
 conn = pyodbc.connect(conn_str)
 
