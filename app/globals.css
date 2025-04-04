@@ -40,3 +40,24 @@ a {
     color-scheme: dark;
   }
 }
+
+.scrollable-menu {
+  max-height: 150px; /* Set the maximum height of the menu */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Add a border around the menu */
+  padding: 10px; /* Add padding inside the menu */
+  background-color: #fff; /* Set the background color */
+  border-radius: 5px; /* Add rounded corners */
+  position: absolute; /* Position the dropdown */
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.habit-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px; /* Add spacing between items */
+}
+
+.habit-item input {
+  margin-right: 10px; /* Add spacing between the checkbox and the label */
+}

@@ -1,30 +1,30 @@
 import React, { useState } from 'react';
 
-interface ViewEntryProps {
-  id: number;
-  title: string;
-  content: string;
+interface EditEntryProps {
   date: string;
-  onSave: (id: number, title: string, content: string, date: string) => void;
+  content: string;
+  habits: string;
+  mood: string;
+  onSave: (content: string, date: string, habits: string, mood: string) => void;
 }
 
-const ViewEntry: React.FC<ViewEntryProps> = ({ id, title, content, date, onSave }) => {
-  const [entryTitle, setEntryTitle] = useState(title);
+const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
+  const [entryMood, setEntryMood] = useState(mood);
+  const [entryHabits, setEntryHabits] = useState(habits);
 
   const handleSave = () => {
-    onSave(id, entryTitle, entryContent, entryDate);
+    onSave(entryContent, entryDate, entryHabits, entryMood);
   };
-// page for viewing an entry
+
   return (
     <div>
-      <h1>View Entry</h1>
-      <h2>{entryTitle}</h2>
-      <small>{entryDate}</small>
+      <h1>Edit Entry</h1>
+      <h1>{entryDate}</h1>
       <p>{entryContent}</p>
     </div>
   );
 };
 
-export default ViewEntry;
+export default EditEntry;

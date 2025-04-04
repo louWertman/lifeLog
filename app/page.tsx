@@ -1,64 +1,94 @@
-'use client'
-import Image from "next/image";
+'use client';
+
 import styles from "./page.module.css";
-import Entry from "../components/entry"; // Import the Entry component
+import EntryV from "../components/entry"; // Import the Entry component
 import EntryList from "../components/EntryList"; // Import the EmptyEntry component
 import EditEntry from "../components/EditEntry"; // Import the EditEntry component
 import Settings from "../components/Settings"; // Import the Settings component
-import { useState } from "react";
-import { Capacitor } from '@capacitor/core';
+import { Entry, Habit } from "../app/lib/entity"; // Import the Entry class
+import { FileSystem } from "../app/lib/dataManagement"; // Import the FileSystem module
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [view, setView] = useState("empty");
 
-  let entries = Array.from({ length: 50 }, (_, i) => ({
-    id: i + 1,
-    title: `Entry ${i + 1}`,
-    content: `Content for entry ${i + 1}`,
-    date: `2023-10-${String(i + 1).padStart(2, '0')}`
-  }));
+
 
   interface EntryType {
-    id: number;
-    title: string;
-    content: string;
     date: string;
+    content: string;
+    habits: string[];
+    mood: string;
   }
 
-  const handleSave = (id: number, title: string, content: string, date: string): void => {
-    const updatedEntries = entries.map((entry: EntryType) =>
-      entry.id === id ? { id, title, content, date } : entry
+  let entries: Array<EntryType> = [];
+  useEffect(() => {
+    const fetchEntries = async () => {
+      let fileSystem = new FileSystem();
+      let entriesList = await fileSystem.listEntries();
+      entries = entriesList.map((entry: any) => ({
+        date: entry.date || "",
+        content: entry.content || "",
+        habits: Array.isArray(entry.habits) ? entry.habits : [],
+        mood: entry.mood || "",
+      })) as EntryType[];
+    };
+    fetchEntries();
+  }, []);
+
+
+  const handleSave = async (content: string, date: string,
+    habitNames: string[], mood: string): Promise<void> => {
+    let fileSystem = new FileSystem();
+    let habitList = await fileSystem.listHabits();
+    let habitsForEntry: Habit[] = [];
+
+    habitList.forEach(habitInList => {
+      habitNames.forEach(habitName => {
+        if (habitInList.name === habitName) {
+          habitsForEntry.push(habitInList);
+        }
+      });
+    });
+
+    let entry = new Entry(
+      date,
+      mood,
+      habitsForEntry,
+      content
     );
-    entries = updatedEntries;
-    setView("empty");
+
+    await fileSystem.saveEntry(entry);
   };
+
+  const handleCreateEntry = () => {
+    const currentDate = new Date().toString().split("T")[0];
+    setSelectedEntry({
+      date: currentDate, content: "", habits: [], mood: "",
+    });
+    setView("edit");
+  };
+
+
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.sidebar}>
           <h1 className={styles.title}>LifeLog</h1>
-          <button onClick={() => setView("empty")}>Entries</button>
+          <button onClick={handleCreateEntry}>Create Entry</button>
+          <button onClick={() => setView("entry")}>Entries</button>
           <button onClick={() => setView("settings")}>Settings</button>
-          <button onClick={() => setView("create")}>Create Entry</button>
         </div>
         <div className={styles.dynamicArea}>
           {view === "empty" && <EntryList />}
-          {view === "create" && <EditEntry 
-            id={0}
-            title={"Title"}
-            content={"Content"}
-            date={new Date().toISOString().slice(0, 16)}
-            onSave={handleSave}
-            />
-          }
           {view === "edit" && selectedEntry && (
             <EditEntry
-              id={selectedEntry.id}
-              title={selectedEntry.title}
-              content={selectedEntry.content}
               date={selectedEntry.date}
+              content={selectedEntry.content}
+              habits={selectedEntry.habits}
+              mood={selectedEntry.mood}
               onSave={handleSave}
             />
           )}
@@ -69,34 +99,3 @@ export default function Home() {
   );
 }
 
-function init(){
-  // detect the platform
-  let platform = Capacitor.getPlatform();
-  if(platform == "web"){
-    if (navigator.userAgent.includes('Electron')){
-      initDesktop();
-    }
-    else{
-      initWebBrowser();
-    }
-  }else if(platform == "ios" || platform == "android"){
-    initMobile();
-  } else {
-    document.write("Unsupported Platform");
-  }
-}
-
-function initWebBrowser(){
-  //edit this to only display if not logged in
-  return ('<div class="alert">Web Version only works with database, please logon in settings to sync"</div>')
-}
-
-function initMobile(){
-  if (localStorage.getItem('fileLocation') == null){
-
-  }
-}
-
-function initDesktop(){
-  ;
-}
