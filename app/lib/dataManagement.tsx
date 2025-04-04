@@ -151,30 +151,53 @@ export class FileSystem {
     }
 
     //writes an entyr to the file, NULL return
+    //TODO: check for duplicate entries
     public async saveEntry(entry: Entry) {
-        let entryString = entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
-
-        let oldContent = "";
         try {
             const file = await Filesystem.readFile({
                 path: await this.filePath,
                 directory: Directory.Data,
                 encoding: Encoding.UTF8,
             });
-            oldContent += file.data;
-        } catch (readError) {
-            document.writeln("ERROR READING FILE: " + readError);
-        }
-        let newContent = oldContent + entryString;
-        try {
-            const file = await Filesystem.writeFile({
-                path: await this.filePath,
-                directory: Directory.Data,
-                data: newContent,
-                encoding: Encoding.UTF8,
+            let existingData = Papa.parse(file.data as string, {
+                delimiter: "@~~@DELIM@~~@",
+                skipEmptyLines: true,
+                header: true,
+                error: (error: any) => {
+                    console.error('Parse Error: ', error);
+                },
+                //check if date already exist
+                step: (pastEntry: any) => {
+                    if (entry.date == pastEntry.date) {
+                        pastEntry.textEntry = entry.textEntry;
+                        pastEntry.mood = entry.mood;
+                        pastEntry.habits = entry.habits;
+
+                        entry = pastEntry;
+                    }
+                }
             });
-        } catch (writeError) {
-            console.error('Error writing file: ', writeError);
+
+            let entryString = entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
+
+            //writes entry to FS
+            try {
+                await Filesystem.writeFile({
+                    path: await this.filePath,
+                    directory: Directory.Data,
+                    data: entryString,
+                    encoding: Encoding.UTF8,
+                });
+
+                //reload the entryLog
+                this.entryLog = this.loadFile();
+
+            } catch (writeError) {
+                console.log(writeError);
+            }
+        }
+        catch (readError) {
+            document.write("ERROR WRITING TO FS: ", String(readError));
         }
     }
 
