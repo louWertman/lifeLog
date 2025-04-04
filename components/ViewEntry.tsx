@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
 
 interface EditEntryProps {
-  id: number;
-  title: string;
-  content: string;
   date: string;
-  onSave: (id: number, title: string, content: string, date: string) => void;
+  content: string;
+  habits: string;
+  mood: string;
+  onSave: (content: string, date: string, habits: string, mood: string) => void;
 }
 
-const EditEntry: React.FC<EditEntryProps> = ({ id, title, content, date, onSave }) => {
-  const [entryTitle, setEntryTitle] = useState(title);
+const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
+  const [entryMood, setEntryMood] = useState(mood);
+  const [entryHabits, setEntryHabits] = useState(habits);
 
   const handleSave = () => {
-    onSave(id, entryTitle, entryContent, entryDate);
+    onSave(entryContent, entryDate, entryHabits, entryMood);
   };
 
   return (
     <div>
       <h1>Edit Entry</h1>
-      <h2>{entryTitle}</h2>
-      <small>{entryDate}</small>
+      <h1>{entryDate}</h1>
       <p>{entryContent}</p>
     </div>
   );

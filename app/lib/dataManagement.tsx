@@ -3,43 +3,32 @@ Authors: Lou Wertman,
 Purpose: Functions related to syncing to the local file or the database and any entry retrieval functions
 */
 
-import React from 'react';
+'use client'
 
-import { useCSVReader } from 'react-papaparse';
-const mysql = require('mysql');
-import * as fs from 'fs';
-// for cross platform compatibility: https://capacitorjs.com/docs/apis/filesystem
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
-import { Entry, Habit } from './entity';
-import { Entrypoints } from 'next/dist/build/swc/types';
-import path from 'path';
+import Papa from 'papaparse';
 
-export class fileSystem {
-    //constructor
-    public constructor(public filePath: string) {
-        this.filePath = filePath;
-    }
+import { Entry, Habit } from './entity';
+
+export class FileSystem {
+    private filePath: Promise<string> = this.getSettings().then(settings => settings['entryFile']);
 
     //variables
-    private entryLog: Promise<Entry[]> = this.loadFile(this.filePath);
-
-    //functions
+    private entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
 
     //load and parse a file for the entryLog object
-    async loadFile(filePath: string) {
-        const { CSVReader } = useCSVReader();
-
+    public async loadFile() {
         //if the file exists create it
         try {
             await Filesystem.readFile({
-                path: filePath,
+                path: await this.filePath,
                 directory: Directory.Data,
                 encoding: Encoding.UTF8,
             });
         } catch (readError) {
             await Filesystem.writeFile({
-                path: filePath,
+                path: await this.filePath,
                 directory: Directory.Data,
                 data: 'DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n',
                 encoding: Encoding.UTF8,
@@ -47,14 +36,14 @@ export class fileSystem {
         }
 
         let file = await Filesystem.readFile({
-            path: filePath,
+            path: await this.filePath,
             directory: Directory.Data,
             encoding: Encoding.UTF8,
         });
 
         let entries = Array<Entry>();
 
-        CSVReader.parse(file.data, {
+        Papa.parse(file.data as string, {
             delimiter: "@~~@DELIM@~~@",
             skipEmptyLines: true,
             header: true,
@@ -62,7 +51,13 @@ export class fileSystem {
                 console.error('Parse Error: ', error);
             },
             step: (entry: any) => {
-                let newEntry = new Entry(entry.data['date'], entry.data['mood'], this.stringToHabits(entry.data['habits']), entry.data['entry']);
+                const habitString = entry.data['habits'] || ""; // Default to an empty string if undefined
+                let newEntry = new Entry(
+                    entry.data['date'],
+                    entry.data['mood'],
+                    this.stringToHabits(habitString),
+                    entry.data['entry']
+                );
                 entries.push(newEntry);
             }
         });
@@ -71,17 +66,18 @@ export class fileSystem {
     }
 
 
-    //returns a string array with the date of every entry
-    async listEntries() {
-        let dates = Array<string>();
+    //returns a string array with the date of every entry, latest entry first
+    public async listEntries() {
         const entryLog = await this.entryLog;
-        for (let i = entryLog.length - 1; i >= 0; i--) {
-            dates.push(entryLog[i].getDateEntry())
-        }
-        return dates;
+        return entryLog.map((entry) => ({
+            date: entry.getDateEntry(),
+            content: entry.getTextEntry(),
+            habits: entry.getHabits(),
+            mood: entry.getMoods(),
+        }));
     }
     //finds an entry with a date, returns an Entry object
-    async fetchEntry(date: string) {
+    public async fetchEntry(date: string) {
         const entryLog = await this.entryLog;
         for (let i = entryLog.length - 1; i >= 0; i--) {
             if (entryLog[i].getDateEntry() === date) {
@@ -91,7 +87,11 @@ export class fileSystem {
         return null;
     }
 
-    private stringToHabits(habitString: string) {
+    public stringToHabits(habitString: string) {
+        console.trace("DEBUG: stringToHabits: " + habitString);
+        if (habitString === "") {
+            return this.generateStockHabits();
+        }
         let habits = Array<Habit>();
         for (let habit of habitString.split(',')) {
             let habitInfo = habit.split(':');
@@ -102,7 +102,7 @@ export class fileSystem {
         return habits;
     }
 
-    private habitsToString(habits: Array<Habit>) {
+    public habitsToString(habits: Array<Habit>) {
         let habitString = "";
         for (let habit of habits) {
             habitString += String(habit.name + ':' + habit.positive + ':' + habit.active + ',');
@@ -110,10 +110,72 @@ export class fileSystem {
         return habitString;
     }
 
+    //only lists active habits
+    public async listHabits() {
+        let habits = Array<Habit>();
+        const entryLog = await this.entryLog;
+        for (let i = entryLog.length - 1; i >= 0; i--) {
+            for (let j = 0; j < entryLog[i].getHabits().length; j++) {
+                let habit = entryLog[i].getHabits()[j];
+                habit.active ? habits.push(entryLog[i].getHabits()[j]) : null;;
+            }
+        }
+        if (habits.length > 0) {
+            return habits;
+        }
+        return this.generateStockHabits();
+    }
+
+    public async listAllHabits() {
+        let habits = Array<Habit>();
+        const entryLog = await this.entryLog;
+        for (let i = entryLog.length - 1; i >= 0; i--) {
+            for (let j = 0; j < entryLog[i].getHabits().length; j++) {
+                habits.push(entryLog[i].getHabits()[j]);
+            }
+        }
+        if (habits.length > 0) {
+            return habits;
+        }
+        return this.generateStockHabits();
+    }
+
+    private generateStockHabits() {
+        let habits = Array<Habit>();
+        habits.push(new Habit("Exercise", true, true));
+        habits.push(new Habit("Meditate", true, true));
+        habits.push(new Habit("Read", true, true));
+        habits.push(new Habit("Study", true, true));
+        habits.push(new Habit("Drink Alcohol", false, true));
+        return habits;
+    }
+
     //writes an entyr to the file, NULL return
-    writeEntryToFile(entry: Entry) {
+    public async saveEntry(entry: Entry) {
         let entryString = entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
-        fs.appendFileSync(this.filePath, entryString);
+
+        let oldContent = "";
+        try {
+            const file = await Filesystem.readFile({
+                path: await this.filePath,
+                directory: Directory.Data,
+                encoding: Encoding.UTF8,
+            });
+            oldContent += file.data;
+        } catch (readError) {
+            document.writeln("ERROR READING FILE: " + readError);
+        }
+        let newContent = oldContent + entryString;
+        try {
+            const file = await Filesystem.writeFile({
+                path: await this.filePath,
+                directory: Directory.Data,
+                data: newContent,
+                encoding: Encoding.UTF8,
+            });
+        } catch (writeError) {
+            console.error('Error writing file: ', writeError);
+        }
     }
 
 
@@ -143,7 +205,7 @@ export class fileSystem {
         }
     }
 
-    public async updateSettings(setting:string, update:string){
+    public async updateSettings(setting: string, update: string) {
         let currentConfig = await this.getSettings();
         currentConfig[setting] = update;
 
@@ -159,7 +221,6 @@ export class fileSystem {
         })
     }
 }
-
 
 /*
 class syncToDB extends FileSystem{

@@ -1,7 +1,7 @@
 # Documentation
 Documentation and usage guide for the entry and dataManagement classes/files.
     - dataManagement.ts: Functions related to syncing to the local file or the database and any entry retrieval functions
-    - entity.ts - contians the  
+    - entity.ts - contains habit and entry objects
 
 ## Save File Layout
 The format will be defined by date headers
@@ -14,7 +14,7 @@ Since we will be dealing with plain-text entries it is important for the delimit
 
 ## dataManagement.ts
 for any classes and function relating to data management
-### SyncToFile
+### FileSystem 
 Syncs the data to a file and has the following classes
 
 ## entity.ts

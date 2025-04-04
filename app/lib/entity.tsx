@@ -3,6 +3,7 @@ Authors: Lou Wertman,
 Purpose: Store the entry and mood objects 
 */
 
+'use client'
 
 export class Entry {
 
@@ -63,6 +64,17 @@ export class Entry {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
 export class Habit {
     public constructor(public name: string, public positive: boolean, public active: boolean) {
         if (this.noDelim(name)) {
@@ -91,21 +103,17 @@ export class Habit {
         this.positive = false;
     }
 
+    public getName() {
+        return this.name;
+    }
     //returns a string array of information 
     //[0] - name, [1] - active or dormant, [2] positive or negative
     getStatus() {
-        let statusObj: string[] = [];
-        statusObj[0] = this.name;
-        if (this.active == true) {
-            statusObj[1] == 'Active';
-        } else {
-            statusObj[1] == 'Dormant';
-        }
-        if (this.positive == true) {
-            statusObj[2] == 'Positive';
-        } else {
-            statusObj[2] == 'Negative';
-        }
+        let statusObj = {
+            "name": this.name,
+            "active": this.active,
+            "positive": this.positive
+        };
         return statusObj;
     }
 

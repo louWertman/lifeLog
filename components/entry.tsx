@@ -1,19 +1,23 @@
+'use client'
+
 import React from 'react';
 
 interface EntryProps {
-    title: string;
-    body: string;
     date: string;
+    content: string;
+    habits: string;
+    mood: string;
 }
 
-const Entry: React.FC<EntryProps> = ({ title, body, date }) => {
+const EntryV: React.FC<EntryProps> = ({ date, content, habits, mood }) => {
     return (
         <div >
-            <h1>{title}</h1>
-            <small>{date}</small>
-            <p>{body}</p>
+            <h1>{date}</h1>
+            <h2>{mood}</h2>
+            <h3>{habits}</h3>
+            <p>{content}</p>
         </div>
     );
 };
 
-export default Entry;
+export default EntryV;
