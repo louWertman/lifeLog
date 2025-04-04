@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Habit } from '../app/lib/entity'; 
+import { Habit } from '../app/lib/entity';
 import Habits from './habits';
+
+//TODO [ ] Investigate Blank Content in Entry
 
 interface EditEntryProps {
   date: string;
@@ -12,15 +14,17 @@ interface EditEntryProps {
   onSave: (content: string, date: string, habits: string[], mood: string) => void;
 }
 
+let currentDate = new Date().toISOString().split('T')[0];
+
 const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
   const [entryHabits, setEntryHabits] = useState<string[]>(habits);
 
-  const currentDate = new Date().toString().split('T')[0];
+
   const handleSave = () => {
-    setEntryDate(currentDate);
+    setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
 
@@ -31,7 +35,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
       <h2>
         {currentDate}
       </h2>
-      
+
       <textarea
         value={entryContent}
         onChange={(e) => setEntryContent(e.target.value)}

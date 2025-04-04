@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   const handleCreateEntry = () => {
-    const currentDate = new Date().toString().split("T")[0];
+    const currentDate = new Date().toISOString().split("T")[0];
     setSelectedEntry({
       date: currentDate, content: "", habits: [], mood: "",
     });
