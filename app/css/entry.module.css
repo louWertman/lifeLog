@@ -1,0 +1,90 @@
+.entry-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.entry-body {
+  width: 100%;
+  height: 200px;
+  resize: none;
+}
+
+.entry-container body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.entry-container div {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 800px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.entry-container h1 {
+  font-size: 24px;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.entry-container h2 {
+  font-size: 20px;
+  color: #16a085;
+  margin-bottom: 8px;
+}
+
+.entry-container h3 {
+  font-size: 18px;
+  color: #2980b9;
+  margin-bottom: 6px;
+}
+
+.entry-container p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.entry-container textarea,
+.entry-container input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+/* Updated button styles to make them round with a gradient */
+.entry-container .button button {
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #3498db, #2ecc71);
+  color: #fff;
+  border: none;
+  border-radius: 50px; /* Make buttons round */
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.entry-container .button:hover {
+  background: linear-gradient(45deg, #2980b9, #27ae60); /* Darken on hover */
+}
+
+.entry-container .button:active {
+  transform: translateY(2px); /* Depress on click */
+}
+
+.entry-container label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}

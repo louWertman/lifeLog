@@ -1,6 +1,6 @@
 'use client';
 
-import styles from "./page.module.css";
+import styles from "./css/page.module.css";
 import EntryV from "../components/entry"; // Import the Entry component
 import EntryList from "../components/EntryList"; // Import the EmptyEntry component
 import EditEntry from "../components/EditEntry"; // Import the EditEntry component
@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
-  const [view, setView] = useState("empty");
+  const [view, setView] = useState("entry");
 
 
 
@@ -77,12 +77,12 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.sidebar}>
           <h1 className={styles.title}>LifeLog</h1>
-          <button onClick={handleCreateEntry}>Create Entry</button>
-          <button onClick={() => setView("entry")}>Entries</button>
-          <button onClick={() => setView("settings")}>Settings</button>
+          <button className="button" onClick={handleCreateEntry}>Create Entry</button>
+          <button className="button" onClick={() => setView("entry")}>Entries</button>
+          <button className="button" onClick={() => setView("settings")}>Settings</button>
         </div>
         <div className={styles.dynamicArea}>
-          {view === "empty" && <EntryList />}
+          {view === "entry" && <EntryList />}
           {view === "edit" && selectedEntry && (
             <EditEntry
               date={selectedEntry.date}

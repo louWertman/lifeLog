@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../app/css/entry.module.css';
 
 interface EditEntryProps {
   date: string;
