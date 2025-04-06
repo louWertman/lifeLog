@@ -23,6 +23,10 @@ jobs:
         with:
           node-version: '22.x'
 
+      - name: Install pnpm
+        run: |
+          npm install -g pnpm
+
       - name: pnpm install, build, and test
         run: |
           pnpm install
