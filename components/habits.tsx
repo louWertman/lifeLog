@@ -44,7 +44,7 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
 
   return (
     <div>
-      <button type="button" onClick={toggleDropdown}>
+      <button className="habit button" type="button" onClick={toggleDropdown}>
         Select Habits
       </button>
       {isDropdownOpen && (

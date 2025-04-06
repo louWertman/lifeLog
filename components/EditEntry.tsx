@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Habit } from '../app/lib/entity';
+import '../app/css/entry.module.css';
 import Habits from './habits';
 
 //TODO [ ] Investigate Blank Content in Entry
@@ -22,38 +23,51 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [entryMood, setEntryMood] = useState(mood);
   const [entryHabits, setEntryHabits] = useState<string[]>(habits);
 
-
   const handleSave = () => {
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
 
-
   return (
     <div>
-      <h1>Edit Entry</h1>
-      <h2>
-        {currentDate}
-      </h2>
 
-      <textarea
-        value={entryContent}
-        onChange={(e) => setEntryContent(e.target.value)}
-      />
-      <label htmlFor="habits">Habits:</label>
-      <Habits
-        selectedHabits={entryHabits}
-        setSelectedHabits={setEntryHabits}
-      />
-      <label htmlFor="mood">Mood:</label>
-      <input
-        type="text"
-        id="mood"
-        value={entryMood}
-        onChange={(e) => setEntryMood(e.target.value)}
-      />
+      <div className="entry-container">
+      <h1>Edit Entry for {entryDate}</h1>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          
+          <div style={{ flex: '3' }}>
+            <label htmlFor="body">Body Entry:</label>
+            <textarea
+              value={entryContent}
+              onChange={(e) => setEntryContent(e.target.value)}
+              rows={10}
+              className="entry-body"
+            />
+          </div>
 
-      <button onClick={handleSave}>Save</button>
+            <div style={{ flex: '1' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <label htmlFor="habits">Habits:</label>
+              <Habits
+              selectedHabits={entryHabits}
+              setSelectedHabits={setEntryHabits}
+              />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
+              <label htmlFor="mood">Mood:</label>
+              <input
+              type="text"
+              id="mood"
+              value={entryMood}
+              onChange={(e) => setEntryMood(e.target.value)}
+              />
+            </div>
+            </div>
+        </div>
+
+        <button className="entry-container button" style={{ marginTop: '20px' }} onClick={handleSave}>Save</button>
+      </div>
     </div>
   );
 };

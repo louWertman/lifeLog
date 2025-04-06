@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Entry from "../components/entry"; 
 import { FileSystem } from "../app/lib/dataManagement"; 
 import {Habit} from "../app/lib/entity";
+import '../app/css/entry.module.css';
 
 const ListEntry: React.FC = () => {
   const [entries, setEntries] = useState<Array<{ date: string; content: string; habits: string; mood: string }>>([]);
@@ -30,7 +31,8 @@ const ListEntry: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="list-body">
+    <div className="entry-list">
       {entries.length > 0 ? (
         entries.map((entry, index) => (
           <Entry
@@ -44,6 +46,7 @@ const ListEntry: React.FC = () => {
       ) : (
         <p>No entries found.</p>
       )}
+    </div>
     </div>
   );
 };

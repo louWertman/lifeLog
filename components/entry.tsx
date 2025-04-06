@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import '../app/css/entry.module.css';
 
 interface EntryProps {
     date: string;

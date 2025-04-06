@@ -45,7 +45,11 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "electron",
       "sharp"
+    ],
+    "ignoredBuiltDependencies": [
+      "electron"
     ]
   },
   "eslintConfig": {
