@@ -31,7 +31,7 @@ jobs:
         run: |
           pnpm install
           pnpm run build
-          next build
+          pnpm next build
 
           
       - name: Zip artifact for deployment
