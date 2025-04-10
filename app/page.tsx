@@ -5,6 +5,9 @@ import EntryV from "../components/entry"; // Import the Entry component
 import EntryList from "../components/EntryList"; // Import the EmptyEntry component
 import EditEntry from "../components/EditEntry"; // Import the EditEntry component
 import Settings from "../components/Settings"; // Import the Settings component
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import './css/calendar-overrides.css';
 import { Entry, Habit } from "../app/lib/entity"; // Import the Entry class
 import { FileSystem } from "../app/lib/dataManagement"; // Import the FileSystem module
 import { useState, useEffect } from "react";
@@ -70,15 +73,25 @@ export default function Home() {
     setView("edit");
   };
 
-
+// calendar onchange
+// onChange={}onChange can work to run a function with the date
+// const [value, onChange] = useStateValue (new Date());
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.sidebar}>
-          <h1 className={styles.title}>LifeLog</h1>
+          <h1 className={styles.title} onClick={() => setView("empty")}>LifeLog</h1>
+          <div className={styles.calendarContainer}>
+            <main className={styles.calendarContent}>
+              <Calendar calendarType="gregory" /> 
+              {/* onChange={function} will let you take the date and pass it into a function 
+              this will be great but we need a function to either open a date or create it if it doesnt exist
+              i also want to figure out how to make the weekdays be just the first letter SMTWTFS*/}
+            </main>
+          </div>
           <button className="button" onClick={handleCreateEntry}>Create Entry</button>
-          <button className="button" onClick={() => setView("entry")}>Entries</button>
+          <button className="button" onClick={() => setView("entry")}>Entry List</button>
           <button className="button" onClick={() => setView("settings")}>Settings</button>
         </div>
         <div className={styles.dynamicArea}>

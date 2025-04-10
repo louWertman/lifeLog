@@ -30,7 +30,8 @@
     "react-dom": "^19.0.0",
     "react-native-device-info": "^14.0.4",
     "react-papaparse": "^4.4.0",
-    "tailwindcss": "^4.0.7"
+    "tailwindcss": "^4.0.7",
+    "react-calendar": "5.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
