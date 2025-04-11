@@ -58,10 +58,12 @@ export class FileSystem {
                     this.stringToHabits(habitString),
                     entry.data['entry']
                 );
+                console.log(newEntry);
                 entries.push(newEntry);
             }
         });
-
+        
+        console.log(entries);
         return entries;
     }
 
@@ -169,12 +171,12 @@ export class FileSystem {
                 //check if date already exist
                 step: (pastEntry: any) => {
                     if (entry.date == pastEntry.date) {
-                        pastEntry.textEntry = entry.textEntry;
+                        pastEntry.textEntry += entry.textEntry;
                         pastEntry.mood = entry.mood;
                         pastEntry.habits = entry.habits;
-
                         entry = pastEntry;
                     }
+                    console.log(entry);
                 }
             });
 
@@ -182,13 +184,12 @@ export class FileSystem {
 
             //writes entry to FS
             try {
-                await Filesystem.writeFile({
+                await Filesystem.appendFile({
                     path: await this.filePath,
                     directory: Directory.Data,
                     data: entryString,
                     encoding: Encoding.UTF8,
                 });
-
                 //reload the entryLog
                 this.entryLog = this.loadFile();
 

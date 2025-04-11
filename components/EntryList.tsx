@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import Entry from "../components/entry"; 
+import EntryV from "../components/entry";
 import { FileSystem } from "../app/lib/dataManagement"; 
 import {Habit} from "../app/lib/entity";
 import '../app/css/entry.module.css';
 
 const ListEntry: React.FC = () => {
+  console.log("VIEW ENTRYLIST");
   const [entries, setEntries] = useState<Array<{ date: string; content: string; habits: string; mood: string }>>([]);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ const ListEntry: React.FC = () => {
           };
         })
       );
+      console.log(detailedEntries);
       setEntries(detailedEntries);
     };
 
@@ -35,7 +37,7 @@ const ListEntry: React.FC = () => {
     <div className="entry-list">
       {entries.length > 0 ? (
         entries.map((entry, index) => (
-          <Entry
+          <EntryV
             key={index}
             date={entry.date}
             content={entry.content}

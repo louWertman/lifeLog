@@ -15,8 +15,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [view, setView] = useState("entry");
-
-
+  
 
   interface EntryType {
     date: string;
@@ -24,21 +23,6 @@ export default function Home() {
     habits: string[];
     mood: string;
   }
-
-  let entries: Array<EntryType> = [];
-  useEffect(() => {
-    const fetchEntries = async () => {
-      let fileSystem = new FileSystem();
-      let entriesList = await fileSystem.listEntries();
-      entries = entriesList.map((entry: any) => ({
-        date: entry.date || "",
-        content: entry.content || "",
-        habits: Array.isArray(entry.habits) ? entry.habits : [],
-        mood: entry.mood || "",
-      })) as EntryType[];
-    };
-    fetchEntries();
-  }, []);
 
 
   const handleSave = async (content: string, date: string,
@@ -81,7 +65,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className={styles.sidebar}>
-          <h1 className={styles.title} onClick={() => setView("empty")}>LifeLog</h1>
+          <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>
               <Calendar calendarType="gregory" /> 
@@ -92,6 +76,7 @@ export default function Home() {
           </div>
           <button className="button" onClick={handleCreateEntry}>Create Entry</button>
           <button className="button" onClick={() => setView("entry")}>Entry List</button>
+          <button className="button" onClick={() => setView("statistics")}>Statistics</button>
           <button className="button" onClick={() => setView("settings")}>Settings</button>
         </div>
         <div className={styles.dynamicArea}>
