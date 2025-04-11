@@ -188,6 +188,7 @@ a.secondary {
   line-height: 32px;
   font-weight: 700;
   color: var(--foreground);
+  cursor: pointer;
 }
 
 
@@ -195,3 +196,29 @@ a.secondary {
 
 
 
+.calendarContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.calendarContainer > * > * {
+  margin: 10px;
+}
+
+.calendarContent {
+  display: flex;
+  max-width: 100%;
+  flex-basis: 420px;
+  flex-direction: column;
+  flex-grow: 100;
+  align-items: stretch;
+  padding-top: 1em;
+}
+
+.calendarContent .react-calendar {
+  margin: 0 auto;
+}
