@@ -10,7 +10,7 @@ interface HabitsProps {
 }
 
 const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) => {
-  const [habitList, setHabitOptions] = useState<string[]>([]); // All Active habits, no inactive ones
+  const [habitList, setHabitOptions] = useState<string[]>([]); // Grab active Habits
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
   let fileSystem = new FileSystem();
 
