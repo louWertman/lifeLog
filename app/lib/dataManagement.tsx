@@ -17,6 +17,11 @@ export class FileSystem {
     //variables
     private entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
 
+    constructor() {
+        this.entryLog = this.filePath.then(filePath => this.loadFile());
+        this.filePath = this.getSettings().then(settings => settings['entryFile']);
+    }
+
     //load and parse a file for the entryLog object
     public async loadFile() {
         //if the file exists create it
@@ -30,7 +35,7 @@ export class FileSystem {
             await Filesystem.writeFile({
                 path: await this.filePath,
                 directory: Directory.Data,
-                data: 'DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n',
+                data: 'DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY',
                 encoding: Encoding.UTF8,
             });
         }
@@ -51,19 +56,24 @@ export class FileSystem {
                 console.error('Parse Error: ', error);
             },
             step: (entry: any) => {
-                const habitString = entry.data['habits'] || ""; // Default to an empty string if undefined
-                let newEntry = new Entry(
-                    entry.data['date'],
-                    entry.data['mood'],
-                    this.stringToHabits(habitString),
-                    entry.data['entry']
-                );
-                console.log(newEntry);
+                if (entry && entry.data) {
+                    const habitString = entry.data['habits'] || ""; // Default to an empty string if undefined
+                    let newEntry = new Entry(
+                        entry.data['DATE'],
+                        entry.data['Mood'],
+                        this.stringToHabits(habitString),
+                        entry.data['ENTRY']
+                    );
+                    console.log("DEBUG: New Entry: ", newEntry);
+                    console.log(newEntry);
                 entries.push(newEntry);
+                } else {
+                    console.error("DEBUG: Invalid entry data: ", entry);
+                }
             }
         });
-        
-        console.log(entries);
+        console.log("DEBUG: Entry loaded: ", entries);
+
         return entries;
     }
 
@@ -71,6 +81,7 @@ export class FileSystem {
     //returns a string array with the date of every entry, latest entry first
     public async listEntries() {
         const entryLog = await this.entryLog;
+        console.log("DEBUG: listEntries FSCLASS: ", entryLog);
         return entryLog.map((entry) => ({
             date: entry.getDateEntry(),
             content: entry.getTextEntry(),
@@ -142,6 +153,7 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
+    //later pull from settings object
     private generateStockHabits() {
         let habits = Array<Habit>();
         habits.push(new Habit("Exercise", true, true));
@@ -180,7 +192,7 @@ export class FileSystem {
                 }
             });
 
-            let entryString = entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
+            let entryString = "\n" + entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
 
             //writes entry to FS
             try {

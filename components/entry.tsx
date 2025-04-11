@@ -4,6 +4,7 @@ import React from 'react';
 import '../app/css/entry.module.css';
 
 interface EntryProps {
+    index?: number;
     date: string;
     content: string;
     habits: string;

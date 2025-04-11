@@ -1,15 +1,15 @@
 'use client';
 
 import styles from "./css/page.module.css";
-import EntryV from "../components/entry"; // Import the Entry component
-import EntryList from "../components/EntryList"; // Import the EmptyEntry component
-import EditEntry from "../components/EditEntry"; // Import the EditEntry component
-import Settings from "../components/Settings"; // Import the Settings component
+import Statistics from "../components/StatisticsV";
+import EntryList from "../components/EntryList"; 
+import EditEntry from "../components/EditEntry"; 
+import Settings from "../components/Settings"; 
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './css/calendar-overrides.css';
-import { Entry, Habit } from "../app/lib/entity"; // Import the Entry class
-import { FileSystem } from "../app/lib/dataManagement"; // Import the FileSystem module
+import { Entry, Habit } from "../app/lib/entity"; 
+import { FileSystem } from "../app/lib/dataManagement"; 
 import { useState, useEffect } from "react";
 
 export default function Home() {
@@ -76,7 +76,7 @@ export default function Home() {
           </div>
           <button className="button" onClick={handleCreateEntry}>Create Entry</button>
           <button className="button" onClick={() => setView("entry")}>Entry List</button>
-          <button className="button" onClick={() => setView("statistics")}>Statistics</button>
+          <button className="button" onClick={() => setView("statisticsv")}>Statistics</button>
           <button className="button" onClick={() => setView("settings")}>Settings</button>
         </div>
         <div className={styles.dynamicArea}>
@@ -91,6 +91,7 @@ export default function Home() {
             />
           )}
           {view === "settings" && <Settings />}
+          {view === "statisticsv" && <Statistics />}
         </div>
       </main>
     </div>
