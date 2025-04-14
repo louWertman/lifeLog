@@ -54,7 +54,7 @@ CREATE TABLE entry_info
 (
 	entry_id char(7) primary key,
 	entry_date date NOT NULL,
-	journal_entry char(10000),
+	journal_entry varchar(max),
 	mood_id char(4) NOT NULL
 	sync_token varbinary(256) foreign key
 	
