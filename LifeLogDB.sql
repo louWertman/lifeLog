@@ -27,7 +27,8 @@ CREATE TABLE moods
 	mood_id char(4) primary key,
 	description char(20) NOT NULL,
 	--user_id char(7) NOT NULL
-	sync_token varbinary(256) foreign key
+	sync_token varbinary(256),
+	foreign key (sync_token) REFERENCES [dbo].[account_info](sync_token)
 );
 
 DROP TABLE IF EXISTS habit;
@@ -38,7 +39,8 @@ CREATE TABLE habit
 	negative_habit bit NOT NULL,
 	habit_status bit NOT NULL,
 	--user_id char(7) NOT NULL
-	sync_token varbinary(256) foreign key
+	sync_token varbinary(256),
+	foreign key (sync_token) REFERENCES [dbo].[account_info](sync_token)
 );
 
 
@@ -54,9 +56,10 @@ CREATE TABLE entry_info
 (
 	entry_id char(7) primary key,
 	entry_date date NOT NULL,
-	journal_entry varchar(max),
+	journal_entry varchar(10000),
 	mood_id char(4) NOT NULL
-	sync_token varbinary(256) foreign key
+	sync_token varbinary(256),
+	foreign key (sync_token) REFERENCES [dbo].[account_info](sync_token)
 	
 );
 
