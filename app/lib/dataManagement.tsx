@@ -60,13 +60,13 @@ export class FileSystem {
                     const habitString = entry.data['habits'] || ""; // Default to an empty string if undefined
                     let newEntry = new Entry(
                         entry.data['DATE'],
-                        entry.data['Mood'],
+                        entry.data['MOOD'],
                         this.stringToHabits(habitString),
                         entry.data['ENTRY']
                     );
                     console.log("DEBUG: New Entry: ", newEntry);
                     console.log(newEntry);
-                entries.push(newEntry);
+                    entries.push(newEntry);
                 } else {
                     console.error("DEBUG: Invalid entry data: ", entry);
                 }
@@ -153,6 +153,21 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
+    public async listAllMoods() {
+        let moods = Array<string>();
+        let entryLog = await this.entryLog;
+        for (let i = entryLog.length - 1; i >= 0; i--) {
+            if (entryLog[i].getMoods() !== "") {
+                moods.push(entryLog[i].getMoods());
+            }
+        }
+        if (moods.length > 0) {
+            console.log("FS CLASS MOODS RETURNED: ", moods);
+            return moods;
+        }
+        return Promise.resolve(['Happy', 'Sad', 'Excited', 'Calm']);
+    }
+
     //later pull from settings object
     private generateStockHabits() {
         let habits = Array<Habit>();
@@ -228,8 +243,9 @@ export class FileSystem {
         } catch (readError) {
             let settings, defaultSettings = {
                 "entryFile": "/DATA/ENTRYLOG.csv",
-                "dataBaseKey": "", // pull from .env file, for Dyllan
-                "theme": "DARK"
+                "dataBaseKey": "",
+                "theme": "DARK",
+                "habits": "",
             };
             await Filesystem.writeFile({
                 path: '/DATA/settings.json',
@@ -243,7 +259,12 @@ export class FileSystem {
 
     public async updateSettings(setting: string, update: string) {
         let currentConfig = await this.getSettings();
-        currentConfig[setting] = update;
+        if (setting != "habits") {
+            currentConfig[setting] = update;
+        } else {
+            console.log("Please do not use this for Habis, use habitControl()")
+            return;
+        }
 
         let newConfig = JSON.stringify(currentConfig, null, 2);
 
@@ -255,6 +276,40 @@ export class FileSystem {
         }).catch((error) => {
             console.error('Error updating settings: ', error);
         })
+    }
+
+    public async habitControl(habitName: string, positive: boolean, active: boolean) {
+        //init habit
+        //check and update habit
+        //if habit exist update it
+        //if habit does not exist create it
+
+        if (habitName === "") {
+            console.log("Habit name cannot be empty");
+            return;
+        }
+        let currentConfig = await this.getSettings();
+        if (habitName in currentConfig.habits) {
+            currentConfig.habits[habitName].positive = positive;
+            currentConfig.habits[habitName].active = active;
+        } else if (!(habitName in currentConfig.habits)) {
+            currentConfig.habits[habitName] += {
+                positive: positive,
+                active: active
+            };
+        }
+    }
+
+
+    //different from deactivating habit
+    public async removehabit(habitName: string) {
+        let currentConfig = await this.getSettings();
+        if (habitName in currentConfig.habits) {
+            delete currentConfig.habits[habitName];
+            await this.updateSettings('habits', JSON.stringify(currentConfig.habits));
+        } else {
+            console.log("Habit does not exist");
+        }
     }
 }
 
