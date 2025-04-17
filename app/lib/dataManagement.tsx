@@ -236,7 +236,9 @@ export class FileSystem {
                 encoding: Encoding.UTF8,
             });
             let settings = JSON.parse(file.data as string);
+            console.log("SETTINGS: ", settings)
             return settings;
+
         } catch (readError) {
             let habits = this.generateStockHabits();
             let defaultSettings = {
@@ -290,25 +292,30 @@ export class FileSystem {
         let config = await this.getSettings();
         let habitList = this.stringToHabits(config.habits);
 
+        let repeat = false;
         //update existing habit
-        for (let habit in habitList) {
-            if (habitList[habit].name === habitName) {
-                habitList[habit].active = active;
-                habitList[habit].positive = positive;
+        for (let habit of habitList) {
+            if (habit.name === habitName) {
+                habit.active = active;
+                habit.positive = positive;
                 config.habits = this.habitsToString(habitList);
-                return;
+                console.log("DEBUG: Habit updated: ", habit);
+                repeat = true;
             }
         }
         // new habit
-        let newHabit = new Habit(habitName, positive, active);
-        habitList.push(newHabit);
+        if (repeat === false) {
+            let newHabit = new Habit(habitName, positive, active);
+            habitList.push(newHabit);
+        }
         config.habits = this.habitsToString(habitList);
 
         //write habit to settings
         await Filesystem.writeFile({
             path: '/DATA/settings.json',
             directory: Directory.Data,
-            data: JSON.stringify(config, null, 2),
+            data: JSON.stringify(config, null, ),
+            encoding: Encoding.UTF8,
         });
     }
 
