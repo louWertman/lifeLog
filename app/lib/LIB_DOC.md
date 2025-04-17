@@ -15,7 +15,7 @@ Since we will be dealing with plain-text entries it is important for the delimit
 ## dataManagement.ts
 for any classes and function relating to data management
 ### FileSystem 
-Syncs the data to a file and has the following classes
+Syncs the data to a file and has the following classes. Attempting to be an all in
 
 ## entity.ts
 This file contains the Entry and the Habit classes. There are discussed in more detail below
