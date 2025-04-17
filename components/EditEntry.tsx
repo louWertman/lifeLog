@@ -6,7 +6,10 @@ import '../app/css/entry.module.css';
 import Habits from './habits';
 import { FileSystem } from '../app/lib/dataManagement';
 
-//TODO [ ] Investigate Blank Content in Entry
+
+/*
+
+*/
 
 interface EditEntryProps {
   date: string;
@@ -31,6 +34,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
+
 
   //if entry exist for the date it loads into the GUI
   useEffect(() => {

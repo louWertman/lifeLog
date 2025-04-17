@@ -5,6 +5,10 @@ Purpose: Store the entry and mood objects
 
 'use client'
 
+/******************************************************* */
+/* PLEASE REFER TO LIB_DOC.MD for relavant documentation */
+/******************************************************* */
+
 export class Entry {
 
     public date: string;
@@ -63,16 +67,6 @@ export class Entry {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 
 export class Habit {
