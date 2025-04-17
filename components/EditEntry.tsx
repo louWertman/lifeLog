@@ -32,6 +32,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
 
+  //if entry exist for the date it loads into the GUI
   useEffect(() => {
     const getEntry = async () => {
       let fs = new FileSystem();
