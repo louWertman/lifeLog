@@ -25,13 +25,13 @@ const EditorHabit: React.FC = () => {
             alert("Habit must have name");
             return;
         }
-        await fs.habitControl(habitName, positive, active);
+        fs.habitControl(habitName, positive, active);
         RESET();
     };
 
     const deleteHabit = async (habit: Habit) => {
         if (window.confirm(`Are you sure you want to delete the habit?`)) {
-            await fs.removehabit(habit.name);
+            fs.removehabit(habit.name);
             updateHabitList();
         }
     };
@@ -46,6 +46,7 @@ const EditorHabit: React.FC = () => {
         setHabitName(habit.name);
         setActive(habit.active);
         setPositive(habit.positive);
+        return habit;
     };
 
     const RESET = () => {
@@ -75,7 +76,7 @@ const EditorHabit: React.FC = () => {
                 ) : (
                     <ul>
                         {habits.map((habit, index) => (
-                            <li key={index} style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
+                            <li key={index} style={{ display: "flex"}}>
                                 <span style={{ flex: 1 }}>{habit.name}</span>
                                 <button onClick={() => editHabit(habit)}>Edit</button>
                                 <button onClick={() => deleteHabit(habit)}>Delete</button>
@@ -92,6 +93,7 @@ const EditorHabit: React.FC = () => {
                     <input
                         type="text"
                         value={habitName}
+                        disabled={(selectedHabit !== null)}
                         onChange={(e) => setHabitName(e.target.value)}
                     />
                 </label>
@@ -114,7 +116,7 @@ const EditorHabit: React.FC = () => {
                     />
                 </label>
                 <br />
-                <button onClick={saveHabit} style={{ marginTop: "10px" }}>
+                <button onClick={saveHabit}>
                     {selectedHabit ? "Save Changes" : "Add Habit"}
                 </button>
             </div>

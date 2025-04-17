@@ -88,6 +88,7 @@ export default function Home() {
               habits={selectedEntry.habits}
               mood={selectedEntry.mood}
               onSave={handleSave}
+              
             />
           )}
           {view === "settings" && <Settings />}
