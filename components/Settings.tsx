@@ -24,6 +24,13 @@ const Settings: React.FC = () => {
     await fs.updateSettings(setting, update);
   };
 
+
+  /******add logic for generating a key*********/
+  const genDBKey = () => {
+    //add logic here
+    window.alert("Key generated");
+  }
+
   useEffect(() => {
     const fs = new FileSystem();
     const fetchSettings = async () => {
@@ -61,6 +68,8 @@ const Settings: React.FC = () => {
         id="db-key" 
         placeholder="Enter your database key"
         />
+        <br />
+        <button onClick={() => {genDBKey()}}>Generate Key</button>
         <br />
         <br />
         -----------
