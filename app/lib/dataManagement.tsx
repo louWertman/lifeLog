@@ -192,6 +192,7 @@ export class FileSystem {
                 directory: Directory.Data,
                 encoding: Encoding.UTF8,
             });
+            const log: Array<Entry> = Array<Entry>();
             let existingData = Papa.parse(file.data as string, {
                 delimiter: "@~~@DELIM@~~@",
                 skipEmptyLines: true,
@@ -199,15 +200,15 @@ export class FileSystem {
                 error: (error: any) => {
                     console.error('Parse Error: ', error);
                 },
-                //check if date already exist
+                //check if date already exist and overwrite it if it does
                 step: (pastEntry: any) => {
                     if (entry.date == pastEntry.date) {
-                        pastEntry.textEntry += entry.textEntry;
-                        pastEntry.mood = entry.mood;
-                        pastEntry.habits = entry.habits;
-                        entry = pastEntry;
+                        //overwrite entry
+                        pastEntry = entry;
+                        console.log("DEBUG: OVERWITE ENTRY:", entry);
+                        
+                        log.push(pastEntry);
                     }
-                    console.log(entry);
                 }
             });
 
