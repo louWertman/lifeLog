@@ -12,6 +12,11 @@ const Settings: React.FC = () => {
     habits: [],
   });
 
+  const keyValidation = (key: string) => {
+    // add actual validation here at some point
+    return true;
+  };
+
   // Load settings from file system
   
   const saveSettings = async (setting: string, update: string) => {
@@ -49,7 +54,10 @@ const Settings: React.FC = () => {
         <label htmlFor="Database key">Database Key</label>
         <input type="text"
         value={settings.dbKey}
-        onChange={(e)=> saveSettings("dbKey", e.target.value)}
+        onChange={(e)=> {
+          //add here a validation check
+          setSettings((prev) => ({ ...prev, dbKey: e.target.value }));
+          saveSettings("dbKey", e.target.value)}}
         id="db-key" 
         placeholder="Enter your database key"
         />
