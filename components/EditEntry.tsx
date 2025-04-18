@@ -4,8 +4,12 @@ import React, { useEffect, useState } from 'react';
 import { Habit } from '../app/lib/entity';
 import '../app/css/entry.module.css';
 import Habits from './habits';
+import { FileSystem } from '../app/lib/dataManagement';
 
-//TODO [ ] Investigate Blank Content in Entry
+
+/*
+
+*/
 
 interface EditEntryProps {
   date: string;
@@ -15,9 +19,12 @@ interface EditEntryProps {
   onSave: (content: string, date: string, habits: string[], mood: string) => void;
 }
 
-let currentDate = new Date().toISOString().split('T')[0];
 
-const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
+const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave}) => {
+  // incase of calendar edit, otherwise date is current date
+  let currentDate = date ?? new Date().toISOString().split('T')[0];
+
+
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
@@ -28,7 +35,28 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
 
+
+  //if entry exist for the date it loads into the GUI
+  useEffect(() => {
+    const getEntry = async () => {
+      let fs = new FileSystem();
+      const entryFetch = await fs.fetchEntry(date);
+      if (!entryFetch) {
+        return;
+      }
+      setEntryContent(entryFetch.textEntry);
+      setEntryMood(entryFetch.mood);
+      setEntryHabits(entryFetch.habits.map((habit: Habit) => habit.name));
+    };
+
+    if (date) {
+      getEntry();
+    }
+  }, [date]);
+
   return (
+
+    //todo make update habits a seperate popup menu and add habits its own thing
     <div>
 
       <div className="entry-container">

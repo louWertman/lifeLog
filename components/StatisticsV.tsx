@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
-import { Habit, Entry } from '../app/lib/entity';
-
+import { Chart } from './chart';
 
 const Statistics: React.FC = () => {
     console.log("STATISTICS")
@@ -14,16 +13,24 @@ const Statistics: React.FC = () => {
   const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
 
-  //TODO FETCH ALL MOODS IN FILESYSTEM CLASS
   useEffect(() => {
+    const fs = new FileSystem();
     const fetchHabits = async () => {
-        const fs = new FileSystem();
-        let habitsList = await fs.listHabits(); 
+        let habitsList = await fs.listAllHabits(); 
         const habitNames = habitsList.map((habit) => habit.name);
-        setAllHabits(habitNames); 
+        const uniqueHabits = Array.from(new Set(habitNames)); // Deduplicate
+        setAllHabits(uniqueHabits); 
+
+    };
+    const fetchMoods = async () => {
+        const moodsList: string[] = await fs.listAllMoods();
+        const moodNames = moodsList.map((mood) => mood); 
+        console.log("MOODS: ", moodNames);
+        setAllMoods(moodNames);
     };
 
     fetchHabits();
+    fetchMoods();
   }, []);
   return (
     <div>
@@ -44,6 +51,15 @@ const Statistics: React.FC = () => {
                     </option>
                 ))}
             </select>
+        </div>
+        <div>
+        <Chart
+            allHabits={allHabits}
+            allMoods={allMoods}
+            selectedHabit={selectedHabit}
+            selectedMood={selectedMood}
+        />
+        <p>INSERT RECHART COMPONENT HERE</p>
         </div>
     </div>
   );

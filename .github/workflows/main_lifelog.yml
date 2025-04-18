@@ -30,8 +30,9 @@ jobs:
       - name: pnpm install, build, and test
         run: |
           pnpm install
-          pnpm run build
           pnpm next build
+          pnpm build
+          pnpm run build
 
           
       - name: Zip artifact for deployment
