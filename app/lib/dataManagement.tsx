@@ -272,7 +272,6 @@ export class FileSystem {
     public async updateSettings(setting: string, update: string) {
         let currentConfig = await this.getSettings();
         //Sanitize input
-        if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
         if (setting !== "habits") {
             currentConfig[setting] = update;
         } else {

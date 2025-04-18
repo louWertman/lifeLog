@@ -49,12 +49,16 @@ const Settings: React.FC = () => {
 
   return (
     <div>
+<<<<<<< Updated upstream
       <h1>Settings</h1>
       <div>
         <label htmlFor="theme">Theme:</label>
         <select id="theme"
         value={settings.theme}
         onChange={(e)=> saveSettings("theme", e.target.value)}>
+=======
+      
+      {/* basic settings */}
       <div className="settings-container">
         <h1>Settings</h1>
         <label htmlFor="theme">Theme: </label>
@@ -67,6 +71,7 @@ const Settings: React.FC = () => {
             saveSettings("theme", e.target.value);
           }}
         >
+>>>>>>> Stashed changes
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
