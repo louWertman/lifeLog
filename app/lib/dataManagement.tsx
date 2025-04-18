@@ -273,6 +273,7 @@ export class FileSystem {
         let currentConfig = await this.getSettings();
         //Sanitize input
         if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
+        if (setting !== "habits") {
             currentConfig[setting] = update;
         } else {
             console.log("Please do not use this for Habits, use habitControl()");
