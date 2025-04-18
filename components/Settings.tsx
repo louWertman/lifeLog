@@ -61,7 +61,7 @@ const Settings: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="Settings">
       
       {/* basic settings */}
       <div className="settings-container">
@@ -85,13 +85,14 @@ const Settings: React.FC = () => {
         id="db-key" 
         placeholder="Enter your database key"
         />
+
         <br />
         <button onClick={() => {genDBKey()}}>Generate Key</button>
         <br />
         </div>
 
         {/* habit editor */}
-        <div className="settings-container">
+        <div className="habitsContainer">
           < EditorHabit />
       </div>
     </div>

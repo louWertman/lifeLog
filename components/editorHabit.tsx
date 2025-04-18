@@ -28,14 +28,15 @@ const EditorHabit: React.FC = () => {
             alert("Habit must have name");
             return;
         }
-        fs.habitControl(habitName, positive, active);
+        await fs.habitControl(habitName, positive, active);
         RESET();
     };
 
     const deleteHabit = async (habit: Habit) => {
         if (window.confirm(`Are you sure you want to delete the habit?`)) {
-            fs.removehabit(habit.name);
+            await fs.removehabit(habit.name);
             updateHabitList();
+            RESET();
         }
     };
 
