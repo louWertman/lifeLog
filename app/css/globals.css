@@ -1,6 +1,14 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f0edeb;
+  --background-lv2: #d3cdca;
+  --background-lv3: #9c9792;
+  --foreground: #121314;
+  --foreground-lv2: #1a1e22;
+  --foreground-lv3: #3c4047;
+  --foreground-lv3: #66696b;
+  --accent: #c7721d;
+  --accent-light: #c29161;
+  --accent-comp: #62a1e0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,7 +23,6 @@
     --accent: #c4701c;
     --accent-light: #bb7f42;
     --accent-comp: #256eb6;
-    
   }
 }
 
