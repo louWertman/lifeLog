@@ -5,8 +5,17 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #24292f;
+    --background-lv2: #1a1e22;
+    --background-lv3: #131316cc;
+    --foreground: #f0edeb;
+    --foreground-lv2: #bdb6b2;
+    --foreground-lv3: #85817e;
+    --foreground-lv3: #6b6866;
+    --accent: #c4701c;
+    --accent-light: #bb7f42;
+    --accent-comp: #256eb6;
+    
   }
 }
 
@@ -44,9 +53,9 @@ a {
 .scrollable-menu {
   max-height: 150px; /* Set the maximum height of the menu */
   overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid #ccc; /* Add a border around the menu */
+  border: 1px solid var(--foreground); /* Add a border around the menu */
   padding: 10px; /* Add padding inside the menu */
-  background-color: #000108c9; /* Set the background color */
+  background-color: var(--background-lv3); /* Set the background color */
   border-radius: 5px; /* Add rounded corners */
   position: absolute; /* Position the dropdown */
   z-index: 1000; /* Ensure it appears above other elements */
@@ -93,7 +102,7 @@ a {
   margin: 20px auto;
   padding: 20px;
   /* max-width: 800px; */
-  background-color: #1a1e22;
+  background-color: var(--background-lv2);
   /* border-radius: 8px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 24px; /* Add rounded corners to the container */
@@ -101,7 +110,7 @@ a {
 
 .entry-container h1 {
   font-size: 24px;
-  color: #ffffff;
+  color: var(--foreground);
   margin-bottom: 10px;
 }
 
@@ -109,7 +118,7 @@ a {
 .entry-container p {
   font-size: 16px;
   line-height: 1.6;
-  color: #d8d8d8;
+  color: var(--foreground);
 }
 
 .entry-container textarea,
@@ -117,7 +126,7 @@ a {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
-  border: 1px solid #ccc;
+  border: 1px solid var(--foreground-lv2);
   border-radius: 4px;
   font-size: 16px;
   font-family: sans-serif;
@@ -126,9 +135,9 @@ a {
 /* Updated button styles to make them round with a gradient */
 .button {
   padding: 10px 20px;
-  background-color: purple; 
+  background-color: var(--accent); 
   /* linear-gradient(45deg, #3498db, #2ecc71); */
-  color: #fff;
+  color: var(--foreground);
   border: none;
   border-radius: 50px; /* Make buttons round */
   cursor: pointer;
@@ -137,7 +146,7 @@ a {
 }
 
 .button:hover {
-  background-color: red; 
+  background-color: var(--accent-light); /* Lighten on hover */
   /*linear-gradient(90deg, #3498db, #2ecc71); /* Darken on hover */
 }
 
@@ -148,12 +157,12 @@ a {
 .entry-container label {
   font-size: 14px;
   font-weight: bold;
-  color: #cfcfcf;
+  color: var(--foreground-lv2);
   display: block;
   margin-bottom: 5px;
 }
 
 .habit.button {
-  background-color: #3498db; /* Blue */
+  background-color: var(--accent-comp); /* Blue */
   padding: 5px 10px;
 }
