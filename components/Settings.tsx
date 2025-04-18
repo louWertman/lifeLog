@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import EditorHabit from './editorHabit';
+import { fallbackModeToStaticPathsResult } from 'next/dist/lib/fallback';
 
 const Settings: React.FC = () => {
 
@@ -54,6 +55,18 @@ const Settings: React.FC = () => {
         <select id="theme"
         value={settings.theme}
         onChange={(e)=> saveSettings("theme", e.target.value)}>
+      <div className="settings-container">
+        <h1>Settings</h1>
+        <label htmlFor="theme">Theme: </label>
+        <select
+          id="theme"
+          value={settings.theme}
+          onChange={(e) => {
+            const themeUpdate = e.target.value;
+            setSettings((prev) => ({ ...prev, theme: themeUpdate }));
+            saveSettings("theme", e.target.value);
+          }}
+        >
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
