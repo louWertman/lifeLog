@@ -62,17 +62,20 @@ const Settings: React.FC = () => {
 
   return (
     <div>
-      <h1>Settings</h1>
-      <div>
-        <label htmlFor="theme">Theme:</label>
+      
+      {/* basic settings */}
+      <div className="settings-container">
+        <h1>Settings</h1>
+        <label htmlFor="theme">Theme: </label>
         <select id="theme"
         value={settings.theme}
         onChange={(e)=> saveSettings("theme", e.target.value)}>
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
+        <br></br>
 
-        <label htmlFor="Database key">Database Key</label>
+        <label htmlFor="Database key">Database Key: </label>
         <input type="text"
         value={settings.dbKey}
         onChange={(e)=> {
@@ -85,10 +88,11 @@ const Settings: React.FC = () => {
         <br />
         <button onClick={() => {genDBKey()}}>Generate Key</button>
         <br />
-        <br />
-        -----------
-        <br />
-        < EditorHabit />
+        </div>
+
+        {/* habit editor */}
+        <div className="settings-container">
+          < EditorHabit />
       </div>
     </div>
   );

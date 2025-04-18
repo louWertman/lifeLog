@@ -8,7 +8,7 @@
 
   display: flex;
   font-family: var(--font-geist-sans);
-  --background: #24292f;
+  --background: var(--background);
   
   
 
@@ -183,6 +183,53 @@ a.secondary {
   flex-direction: column;
   gap: 16px;
   width: 200px; /* Set a fixed width for the sidebar */
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.hamburger {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  /* background: var(--background-lv3); */
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1000;
+  /* border-radius: 50%; */
+  /* padding: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); */
+}
+
+
+/* mobile settings */
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top:3em;
+    height: 100%;
+    width: 300px;
+    background-color: var(--background-lv2);
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+
+  .dynamicArea {
+    margin-top: 1.5rem;
+  }
+
+  .hamburger {
+    display: block;
+  }
 }
 
 .title {
@@ -191,6 +238,7 @@ a.secondary {
   font-weight: 700;
   color: var(--foreground);
   cursor: pointer;
+  text-align: center;
 }
 
 
