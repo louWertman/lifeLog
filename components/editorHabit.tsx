@@ -78,10 +78,14 @@ const EditorHabit: React.FC = () => {
                 {/* <h3>{selectedHabit ? "Edit Habit" : "Add Habit"}</h3> */}
                 <table>
                     <thead>
-                        <th>Name</th>
-                        <th>Active?</th>
-                        <th>Positive?</th>
+                        <tr>
+                            <th>Name</th>
+                            <th>Active?</th>
+                            <th>Positive?</th>
+                        </tr>
                     </thead>
+                    <tbody>
+
                     {habits.map((habit, index) => (
                         <tr key={index}>
                             <th>{habit.name}</th>
@@ -99,21 +103,21 @@ const EditorHabit: React.FC = () => {
                                 value={habitName}
                                 disabled={(selectedHabit !== null)}
                                 onChange={(e) => setHabitName(e.target.value)}
-                            />
+                                />
                         </th>
                         <th>
                             <input
                                 type="checkbox"
                                 checked={active}
                                 onChange={(e) => setActive(e.target.checked)}
-                            />
+                                />
                         </th>
                         <th>
                             <input
                                 type="checkbox"
                                 checked={positive}
                                 onChange={(e) => setPositive(e.target.checked)}
-                            />
+                                />
                         </th>
                         <th>
                             <button onClick={saveHabit}>
@@ -121,6 +125,7 @@ const EditorHabit: React.FC = () => {
                             </button>
                         </th>
                     </tr>
+                    </tbody>
                 </table>
                 <br />
             </div>

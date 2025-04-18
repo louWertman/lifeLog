@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [view, setView] = useState("entry");
-  
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
 
   interface EntryType {
     date: string;
@@ -23,7 +23,6 @@ export default function Home() {
     habits: string[];
     mood: string;
   }
-
 
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
@@ -64,7 +63,8 @@ export default function Home() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className={styles.sidebar}>
+        {/* Sidebar / Hamburger Menu */}
+        <div className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`}>
           <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>
@@ -79,6 +79,15 @@ export default function Home() {
           <button className="button" onClick={() => setView("statisticsv")}>Statistics</button>
           <button className="button" onClick={() => setView("settings")}>Settings</button>
         </div>
+
+        {/* Hamburger Icon */}
+        <button 
+          className={styles.hamburger} 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          ☰
+        </button>
+
         <div className={styles.dynamicArea}>
           {view === "entry" && <EntryList />}
           {view === "edit" && selectedEntry && (
