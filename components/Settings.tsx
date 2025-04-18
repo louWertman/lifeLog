@@ -28,7 +28,21 @@ const Settings: React.FC = () => {
   /******add logic for generating a key*********/
   const genDBKey = () => {
     //add logic here
-    window.alert("Key generated");
+    const now = new Date();
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+    const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
+    const randomPart = Math.random().toString(36).substring(2, 8); // extra uniqueness
+
+    const newKey = `${datePart}-${timePart}-${randomPart}`;
+
+    setSettings((prev) => ({ ...prev, dbKey: newKey }));
+    saveSettings("dbKey", newKey);
+    window.alert(`Key generated: ${newKey}`); //try to print out key 
+    //window.alert("Key generated");
   }
 
   useEffect(() => {
