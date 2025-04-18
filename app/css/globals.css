@@ -1,9 +1,9 @@
 :root {
-  --background: #24292f;
-  --foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
-@media () {
+@media (prefers-color-scheme: dark) {
   :root {
     --background: #24292f;
     --background-lv2: #1a1e22;
@@ -98,6 +98,7 @@ a {
 }
 
 .entry-container,
+.settings-container,
 .entry-list {
   margin: 20px auto;
   padding: 20px;
@@ -165,4 +166,53 @@ a {
 .habit.button {
   background-color: var(--accent-comp); /* Blue */
   padding: 5px 10px;
+}
+
+
+ul {
+  /* list-style-type: none; */
+  padding-left: 24px;
+}
+
+
+
+
+
+/* Habit Editor Styles */
+
+.habit-editor input[type="checkbox"] {
+  appearance: none; /* Remove default checkbox styling */
+  width: 20px;
+  height: 20px;
+  background-color: var(--foreground-lv3);
+  /* border: 2px solid var(--foreground-lv2); */
+  border-radius: 50%; /* Make it circular */
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+}
+
+.habit-editor input[type="checkbox"]:checked {
+  background-color: var(--accent-comp); /* Change background when checked */
+  border-color: var(--accent); /* Change border color when checked */
+}
+
+.habit-editor input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: var(--foreground);
+  border-radius: 50%; /* Inner circle for checked state */
+  transform: translate(-50%, -50%);
+}
+.habit-editor table {
+  /* width: 100%; */
+  border-collapse: collapse;
+  text-align: center;
+}
+.habit-editor th {
+  padding:10px;
 }
