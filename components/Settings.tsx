@@ -75,6 +75,7 @@ const Settings: React.FC = () => {
             const themeUpdate = e.target.value;
             setSettings((prev) => ({ ...prev, theme: themeUpdate }));
             saveSettings("theme", e.target.value);
+            document.documentElement.setAttribute("data-theme", themeUpdate); // Update the theme attribute
           }}
         >
           <option value="light">Light</option>
