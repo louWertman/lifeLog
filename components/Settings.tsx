@@ -68,12 +68,6 @@ const Settings: React.FC = () => {
       <div className="settings-container">
         <h1>Settings</h1>
         <label htmlFor="theme">Theme: </label>
-        <select id="theme"
-        value={settings.theme}
-        onChange={(e)=> saveSettings("theme", e.target.value)}>
-      <div className="settings-container">
-        <h1>Settings</h1>
-        <label htmlFor="theme">Theme: </label>
         <select
           id="theme"
           value={settings.theme}
@@ -105,10 +99,10 @@ const Settings: React.FC = () => {
         </div>
 
         {/* habit editor */}
-        <div className="habitsContainer">
+        <div className="settings-container">
           < EditorHabit />
+        </div>
       </div>
-    </div>
   );
 };
 
