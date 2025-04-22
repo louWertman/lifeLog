@@ -60,7 +60,7 @@ export class FileSystem {
             },
             step: (entry: any) => {
                 if (entry && entry.data) {
-                    const habitString = entry.data['habits'] || "";
+                    const habitString = typeof entry.data['HABITS'] === 'string' ? entry.data['HABITS'] : "";
 
                     let newEntry = new Entry(
                         entry.data['DATE'],
