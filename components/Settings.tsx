@@ -29,7 +29,21 @@ const Settings: React.FC = () => {
   /******add logic for generating a key*********/
   const genDBKey = () => {
     //add logic here
-    window.alert("Key generated");
+    const now = new Date();
+
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+    const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
+    const randomPart = Math.random().toString(36).substring(2, 8); // extra uniqueness
+
+    const newKey = `${datePart}-${timePart}-${randomPart}`;
+
+    setSettings((prev) => ({ ...prev, dbKey: newKey }));
+    saveSettings("dbKey", newKey);
+    window.alert(`Key generated: ${newKey}`); //try to print out key 
+    //window.alert("Key generated");
   }
 
   useEffect(() => {
@@ -48,15 +62,7 @@ const Settings: React.FC = () => {
   }, []);
 
   return (
-    <div>
-<<<<<<< Updated upstream
-      <h1>Settings</h1>
-      <div>
-        <label htmlFor="theme">Theme:</label>
-        <select id="theme"
-        value={settings.theme}
-        onChange={(e)=> saveSettings("theme", e.target.value)}>
-=======
+    <div className="Settings">
       
       {/* basic settings */}
       <div className="settings-container">
@@ -71,12 +77,12 @@ const Settings: React.FC = () => {
             saveSettings("theme", e.target.value);
           }}
         >
->>>>>>> Stashed changes
           <option value="light">Light</option>
           <option value="dark">Dark</option>
         </select>
+        <br></br>
 
-        <label htmlFor="Database key">Database Key</label>
+        <label htmlFor="Database key">Database Key: </label>
         <input type="text"
         value={settings.dbKey}
         onChange={(e)=> {
@@ -86,13 +92,15 @@ const Settings: React.FC = () => {
         id="db-key" 
         placeholder="Enter your database key"
         />
+
         <br />
         <button onClick={() => {genDBKey()}}>Generate Key</button>
         <br />
-        <br />
-        -----------
-        <br />
-        < EditorHabit />
+        </div>
+
+        {/* habit editor */}
+        <div className="habitsContainer">
+          < EditorHabit />
       </div>
     </div>
   );

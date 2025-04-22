@@ -7,10 +7,6 @@ import Habits from './habits';
 import { FileSystem } from '../app/lib/dataManagement';
 
 
-/*
-
-*/
-
 interface EditEntryProps {
   date: string;
   content: string;
@@ -20,7 +16,7 @@ interface EditEntryProps {
 }
 
 
-const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave}) => {
+const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
   // incase of calendar edit, otherwise date is current date
   let currentDate = date ?? new Date().toISOString().split('T')[0];
 
@@ -60,9 +56,9 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     <div>
 
       <div className="entry-container">
-      <h1>Edit Entry for {entryDate}</h1>
+        <h1>Edit Entry for {entryDate}</h1>
         <div style={{ display: 'flex', gap: '20px' }}>
-          
+
           <div style={{ flex: '3' }}>
             <label htmlFor="body">Body Entry:</label>
             <textarea
@@ -73,25 +69,25 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
             />
           </div>
 
-            <div style={{ flex: '1' }}>
+          <div style={{ flex: '1' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <label htmlFor="habits">Habits:</label>
               <Habits
-              selectedHabits={entryHabits}
-              setSelectedHabits={setEntryHabits}
+                selectedHabits={entryHabits}
+                setSelectedHabits={setEntryHabits}
               />
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px' }}>
               <label htmlFor="mood">Mood:</label>
               <input
-              type="text"
-              id="mood"
-              value={entryMood}
-              onChange={(e) => setEntryMood(e.target.value)}
+                type="text"
+                id="mood"
+                value={entryMood}
+                onChange={(e) => setEntryMood(e.target.value)}
               />
             </div>
-            </div>
+          </div>
         </div>
 
         <button className="entry-container button" style={{ marginTop: '20px' }} onClick={handleSave}>Save</button>
