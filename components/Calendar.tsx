@@ -19,6 +19,7 @@ const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
     const handleDateClick = (day: number) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
         onDateClick(selectedDate);
+        setView('edit');
     };
 
     const renderDaysOfWeek = () => {

@@ -18,7 +18,7 @@ export class FileSystem {
     private filePath: Promise<string> = this.getSettings().then(settings => settings['entryFile']);
 
     //variables
-    private entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
+    public entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
 
     constructor() {
         this.entryLog = this.filePath.then(filePath => this.loadFile());
@@ -144,7 +144,7 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
-    //lists all habits, including inactive ones
+    //lists all habits, including inactive ones and non removal of duplicates
     public async listAllHabits() {
         let habits = Array<Habit>();
         const settings = await this.getSettings();
@@ -154,6 +154,21 @@ export class FileSystem {
         }
         return this.generateStockHabits();
     }
+
+    //lists all habits, including inactive ones and non removal of duplicates, for the statistics class
+    public async habitArrStatistics() {
+        let habits = Array<Habit>();
+        const entryLog = await this.entryLog;
+        for (let entry of entryLog){
+            let grabbedHabits = entry.getHabits();
+            habits.push(...grabbedHabits);
+        }
+        if (habits.length > 0) {
+            return habits;
+        }
+        return this.generateStockHabits();
+    }
+
 
     //list moods entered in various entries, if not found returns a set of default moods as place holders
     public async listAllMoods() {
@@ -206,7 +221,7 @@ export class FileSystem {
                         //overwrite entry
                         pastEntry = entry;
                         console.log("DEBUG: OVERWITE ENTRY:", entry);
-                        
+
                         log.push(pastEntry);
                     }
                 }
@@ -273,23 +288,24 @@ export class FileSystem {
         let currentConfig = await this.getSettings();
         //Sanitize input
         if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
-        if (setting !== "habits") {
-            currentConfig[setting] = update;
-        } else {
-            console.log("Please do not use this for Habits, use habitControl()");
-            return;
+            if (setting !== "habits") {
+                currentConfig[setting] = update;
+            } else {
+                console.log("Please do not use this for Habits, use habitControl()");
+                return;
+            }
+
+            let newConfig = JSON.stringify(currentConfig, null, 2);
+
+            await Filesystem.writeFile({
+                path: '/DATA/settings.json',
+                directory: Directory.Data,
+                data: newConfig,
+                encoding: Encoding.UTF8,
+            }).catch((error) => {
+                console.error('Error updating settings: ', error);
+            })
         }
-
-        let newConfig = JSON.stringify(currentConfig, null, 2);
-
-        await Filesystem.writeFile({
-            path: '/DATA/settings.json',
-            directory: Directory.Data,
-            data: newConfig,
-            encoding: Encoding.UTF8,
-        }).catch((error) => {
-            console.error('Error updating settings: ', error);
-        })
     }
 
     //init habit (grab from json settings)
@@ -330,15 +346,6 @@ export class FileSystem {
             data: JSON.stringify(config, null,),
             encoding: Encoding.UTF8,
         });
-    }
-
-
-    //TODO MAKE THIS TO Specifically focus on the settings file 
-    private async updateHabitList(ar: string, habitname: string) {
-        if (((ar != 'a') && (ar != 'd')) || habitname === "") {
-            console.log("invalid option in updateHabitList");
-            return;
-        }
     }
 
     //different from deactivating habit
