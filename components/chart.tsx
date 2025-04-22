@@ -25,11 +25,12 @@ export const Chart: React.FC<chartProps> = ({ data }) => {
             width={800}
             height={400}
             data={data}
+            layout="vertical"
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
 
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="mood" />
-            <YAxis />
+            <XAxis type="number"/>
+            <YAxis type="category" dataKey="mood" />
             <Tooltip />
             <Legend />
 
