@@ -159,7 +159,7 @@ export class FileSystem {
     public async habitArrStatistics() {
         let habits = Array<Habit>();
         const entryLog = await this.entryLog;
-        for (let entry of entryLog){
+        for (let entry of entryLog) {
             let grabbedHabits = entry.getHabits();
             habits.push(...grabbedHabits);
         }
@@ -201,51 +201,49 @@ export class FileSystem {
     // will update entr if duplicate
     // init file -> check if file exist -> read file -> parse file -> check if entry exist -> update entry or create new one
     public async saveEntry(entry: Entry) {
-        try {
-            const file = await Filesystem.readFile({
-                path: await this.filePath,
-                directory: Directory.Data,
-                encoding: Encoding.UTF8,
-            });
-            const log: Array<Entry> = Array<Entry>();
-            let existingData = Papa.parse(file.data as string, {
-                delimiter: "@~~@DELIM@~~@",
-                skipEmptyLines: true,
-                header: true,
-                error: (error: any) => {
-                    console.error('Parse Error: ', error);
-                },
-                //check if date already exist and overwrite it if it does
-                step: (pastEntry: any) => {
-                    if (entry.date == pastEntry.date) {
-                        //overwrite entry
-                        pastEntry = entry;
-                        console.log("DEBUG: OVERWITE ENTRY:", entry);
+        //load file
+        const log = await this.entryLog;
+        await new Promise(resolve => setTimeout(resolve, 0));
 
-                        log.push(pastEntry);
-                    }
+        let entryString = "";
+        //check if entry already exists if does overwirite it
+        for (let i = 0; i < log.length; i++) {
+            if (log[i].date === entry.getDateEntry()) {
+                console.log("DEBUG: Entry already exists, overwriting: ", log[i], entry);
+                log[i] = entry;
+                entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
+                //convert back into csv entryString
+                for (let j = 0; j < log.length; j++) {
+                    entryString += "\n" + log[j].getDateEntry() + "@~~@DELIM@~~@" + log[j].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(log[j].getHabits()) + "@~~@DELIM@~~@" + log[j].getTextEntry();
                 }
-            });
-
-            let entryString = "\n" + entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
-
-            //writes entry to FS
-            try {
-                await Filesystem.appendFile({
-                    path: await this.filePath,
-                    directory: Directory.Data,
-                    data: entryString,
-                    encoding: Encoding.UTF8,
-                });
-                //reload the entryLog
-                this.entryLog = this.loadFile();
-
-            } catch (writeError) {
-                console.log(writeError);
+                try {
+                    await Filesystem.writeFile({
+                        path: await this.filePath,
+                        directory: Directory.Data,
+                        data: entryString,
+                        encoding: Encoding.UTF8,
+                    });
+                } catch (readError) {
+                    console.log("DEBUG: Error writing to file: ", readError);
+                }
+                return;
             }
         }
-        catch (readError) {
-            document.write("ERROR WRITING TO FS: ", String(readError));
+        //otherwise append file
+        entryString += "\n" + entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry();
+        //writes entry to FS
+        try {
+            await Filesystem.appendFile({
+                path: await this.filePath,
+                directory: Directory.Data,
+                data: entryString,
+                encoding: Encoding.UTF8,
+            });
+            //reload the entryLog
+            this.entryLog = this.loadFile();
+
+        } catch (writeError) {
+            console.log(writeError);
         }
     }
 
