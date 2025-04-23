@@ -24,6 +24,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
+  const [lastSaved, setLastSaved] = useState<string>('');
   const [entryHabits, setEntryHabits] = useState<string[]>(habits);
 
   const handleSave = () => {
@@ -49,6 +50,14 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
       getEntry();
     }
   }, [date]);
+
+  useEffect(() => {
+    const autoSave = setTimeout(() => { handleSave(); },
+      1000
+    );
+    
+    setLastSaved(new Date().toISOString());
+  },[entryContent, entryHabits, entryMood]);
 
   return (
 
@@ -84,13 +93,16 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
                 type="text"
                 id="mood"
                 value={entryMood}
-                onChange={(e) => setEntryMood(e.target.value)}
+                onChange={
+                  (e) => setEntryMood(e.target.value)
+                }
               />
             </div>
           </div>
         </div>
-
-        <button className="entry-container button" style={{ marginTop: '20px' }} onClick={handleSave}>Save</button>
+        <div className='lastSaved'>
+          <p>Last Saved: {lastSaved}</p>
+        </div>
       </div>
     </div>
   );
