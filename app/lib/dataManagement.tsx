@@ -86,12 +86,14 @@ export class FileSystem {
     public async listEntries() {
         const entryLog = await this.entryLog;
         console.log("DEBUG: listEntries FSCLASS: ", entryLog);
-        return entryLog.map((entry) => ({
-            date: entry.getDateEntry(),
-            content: entry.getTextEntry(),
-            habits: entry.getHabits(),
-            mood: entry.getMoods(),
-        }));
+        return entryLog
+            .sort((a, b) => new Date(b.getDateEntry()).getTime() - new Date(a.getDateEntry()).getTime())
+            .map((entry) => ({
+                date: entry.getDateEntry(),
+                content: entry.getTextEntry(),
+                habits: entry.getHabits(),
+                mood: entry.getMoods(),
+            }));
     }
     //finds an entry with a date, returns an Entry object
     public async fetchEntry(date: string) {
