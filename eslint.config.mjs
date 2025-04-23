@@ -5,18 +5,17 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", {
-    rules: {
-      "preferConst": "off",
-      "no-unused-vars": "off",
-      "no-unused-expressions": "off"
-    },
-  }),
-];
+// Removed unused 'compat' variable
+const eslintConfig = {
+  extends: [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  rules: {
+    "preferConst": "off",
+    "no-unused-vars": "off",
+    "no-unused-expressions": "off"
+  }
+};
 
 export default eslintConfig;

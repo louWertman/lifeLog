@@ -1,0 +1,26 @@
+{
+  "projects": {
+    "default": "lifelog-9ccb4"
+  },
+    "hosting": {
+  
+      "source": ".",
+  
+      "ignore": [
+  
+        "**/.*"
+  
+      ],
+  
+      "frameworksBackend": {
+  
+        "framework": "nextjs",
+  
+        "region": "us-central1"
+  
+      }
+  
+    }
+  
+  
+}

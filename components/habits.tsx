@@ -22,6 +22,12 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
         setHabitOptions(habitNames); 
     };
 
+    const clickOutsite = (event: MouseEvent) => {
+
+    }
+
+
+
     fetchHabits();
   }, []);
 

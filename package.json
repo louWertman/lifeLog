@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "next start",
     "build:linux": "electron-builder --linux",
     "lint": "next lint",
     "predeploy": "pnpm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "pnpm build; pnpm start"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",
@@ -23,8 +23,9 @@
     "css": "^3.0.0",
     "dotenv": "^16.4.7",
     "electron": "^35.1.2",
+    "firebase-tools": "^14.2.0",
     "material-ui": "^0.20.2",
-    "next": "15.1.7",
+    "next": "15.3.1",
     "papaparse": "^5.5.2",
     "post": "^0.0.1",
     "react": "^19.0.0",

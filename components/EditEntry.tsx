@@ -55,8 +55,8 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     const autoSave = setTimeout(() => { handleSave(); },
       1000
     );
-    
-    setLastSaved(new Date().toISOString());
+    let savedTime = new Date().toISOString().split('Z')[0]
+    setLastSaved(savedTime);
   },[entryContent, entryHabits, entryMood]);
 
   return (
