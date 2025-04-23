@@ -18,7 +18,7 @@ export class FileSystem {
     private filePath: Promise<string> = this.getSettings().then(settings => settings['entryFile']);
 
     //variables
-    private entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
+    public entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
 
     constructor() {
         this.entryLog = this.filePath.then(filePath => this.loadFile());
@@ -60,7 +60,7 @@ export class FileSystem {
             },
             step: (entry: any) => {
                 if (entry && entry.data) {
-                    const habitString = entry.data['habits'] || "";
+                    const habitString = typeof entry.data['HABITS'] === 'string' ? entry.data['HABITS'] : "";
 
                     let newEntry = new Entry(
                         entry.data['DATE'],
@@ -86,12 +86,14 @@ export class FileSystem {
     public async listEntries() {
         const entryLog = await this.entryLog;
         console.log("DEBUG: listEntries FSCLASS: ", entryLog);
-        return entryLog.map((entry) => ({
-            date: entry.getDateEntry(),
-            content: entry.getTextEntry(),
-            habits: entry.getHabits(),
-            mood: entry.getMoods(),
-        }));
+        return entryLog
+            .sort((a, b) => new Date(b.getDateEntry()).getTime() - new Date(a.getDateEntry()).getTime())
+            .map((entry) => ({
+                date: entry.getDateEntry(),
+                content: entry.getTextEntry(),
+                habits: entry.getHabits(),
+                mood: entry.getMoods(),
+            }));
     }
     //finds an entry with a date, returns an Entry object
     public async fetchEntry(date: string) {
@@ -144,7 +146,7 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
-    //lists all habits, including inactive ones
+    //lists all habits, including inactive ones and non removal of duplicates
     public async listAllHabits() {
         let habits = Array<Habit>();
         const settings = await this.getSettings();
@@ -154,6 +156,21 @@ export class FileSystem {
         }
         return this.generateStockHabits();
     }
+
+    //lists all habits, including inactive ones and non removal of duplicates, for the statistics class
+    public async habitArrStatistics() {
+        let habits = Array<Habit>();
+        const entryLog = await this.entryLog;
+        for (let entry of entryLog) {
+            let grabbedHabits = entry.getHabits();
+            habits.push(...grabbedHabits);
+        }
+        if (habits.length > 0) {
+            return habits;
+        }
+        return this.generateStockHabits();
+    }
+
 
     //list moods entered in various entries, if not found returns a set of default moods as place holders
     public async listAllMoods() {
@@ -186,51 +203,49 @@ export class FileSystem {
     // will update entr if duplicate
     // init file -> check if file exist -> read file -> parse file -> check if entry exist -> update entry or create new one
     public async saveEntry(entry: Entry) {
-        try {
-            const file = await Filesystem.readFile({
-                path: await this.filePath,
-                directory: Directory.Data,
-                encoding: Encoding.UTF8,
-            });
-            const log: Array<Entry> = Array<Entry>();
-            let existingData = Papa.parse(file.data as string, {
-                delimiter: "@~~@DELIM@~~@",
-                skipEmptyLines: true,
-                header: true,
-                error: (error: any) => {
-                    console.error('Parse Error: ', error);
-                },
-                //check if date already exist and overwrite it if it does
-                step: (pastEntry: any) => {
-                    if (entry.date == pastEntry.date) {
-                        //overwrite entry
-                        pastEntry = entry;
-                        console.log("DEBUG: OVERWITE ENTRY:", entry);
-                        
-                        log.push(pastEntry);
-                    }
+        //load file
+        const log = await this.entryLog;
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        let entryString = "";
+        //check if entry already exists if does overwirite it
+        for (let i = 0; i < log.length; i++) {
+            if (log[i].date === entry.getDateEntry()) {
+                console.log("DEBUG: Entry already exists, overwriting: ", log[i], entry);
+                log[i] = entry;
+                entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
+                //convert back into csv entryString
+                for (let j = 0; j < log.length; j++) {
+                    entryString += "\n" + log[j].getDateEntry() + "@~~@DELIM@~~@" + log[j].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(log[j].getHabits()) + "@~~@DELIM@~~@" + log[j].getTextEntry();
                 }
-            });
-
-            let entryString = "\n" + entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry() + "\n";
-
-            //writes entry to FS
-            try {
-                await Filesystem.appendFile({
-                    path: await this.filePath,
-                    directory: Directory.Data,
-                    data: entryString,
-                    encoding: Encoding.UTF8,
-                });
-                //reload the entryLog
-                this.entryLog = this.loadFile();
-
-            } catch (writeError) {
-                console.log(writeError);
+                try {
+                    await Filesystem.writeFile({
+                        path: await this.filePath,
+                        directory: Directory.Data,
+                        data: entryString,
+                        encoding: Encoding.UTF8,
+                    });
+                } catch (readError) {
+                    console.log("DEBUG: Error writing to file: ", readError);
+                }
+                return;
             }
         }
-        catch (readError) {
-            document.write("ERROR WRITING TO FS: ", String(readError));
+        //otherwise append file
+        entryString += "\n" + entry.getDateEntry() + "@~~@DELIM@~~@" + entry.getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entry.getHabits()) + "@~~@DELIM@~~@" + entry.getTextEntry();
+        //writes entry to FS
+        try {
+            await Filesystem.appendFile({
+                path: await this.filePath,
+                directory: Directory.Data,
+                data: entryString,
+                encoding: Encoding.UTF8,
+            });
+            //reload the entryLog
+            this.entryLog = this.loadFile();
+
+        } catch (writeError) {
+            console.log(writeError);
         }
     }
 
@@ -272,24 +287,25 @@ export class FileSystem {
     public async updateSettings(setting: string, update: string) {
         let currentConfig = await this.getSettings();
         //Sanitize input
-        if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {}
-        if (setting !== "habits") {
-            currentConfig[setting] = update;
-        } else {
-            console.log("Please do not use this for Habits, use habitControl()");
-            return;
+        if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
+            if (setting !== "habits") {
+                currentConfig[setting] = update;
+            } else {
+                console.log("Please do not use this for Habits, use habitControl()");
+                return;
+            }
+
+            let newConfig = JSON.stringify(currentConfig, null, 2);
+
+            await Filesystem.writeFile({
+                path: '/DATA/settings.json',
+                directory: Directory.Data,
+                data: newConfig,
+                encoding: Encoding.UTF8,
+            }).catch((error) => {
+                console.error('Error updating settings: ', error);
+            })
         }
-
-        let newConfig = JSON.stringify(currentConfig, null, 2);
-
-        await Filesystem.writeFile({
-            path: '/DATA/settings.json',
-            directory: Directory.Data,
-            data: newConfig,
-            encoding: Encoding.UTF8,
-        }).catch((error) => {
-            console.error('Error updating settings: ', error);
-        })
     }
 
     //init habit (grab from json settings)
@@ -330,15 +346,6 @@ export class FileSystem {
             data: JSON.stringify(config, null,),
             encoding: Encoding.UTF8,
         });
-    }
-
-
-    //TODO MAKE THIS TO Specifically focus on the settings file 
-    private async updateHabitList(ar: string, habitname: string) {
-        if (((ar != 'a') && (ar != 'd')) || habitname === "") {
-            console.log("invalid option in updateHabitList");
-            return;
-        }
     }
 
     //different from deactivating habit
