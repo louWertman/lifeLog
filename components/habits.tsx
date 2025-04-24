@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import { Habit } from '../app/lib/entity';
 
@@ -12,6 +12,7 @@ interface HabitsProps {
 const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) => {
   const [habitList, setHabitOptions] = useState<string[]>([]); // Grab active Habits
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+  const habitDDRef = useRef<HTMLDivElement>(null);
   let fileSystem = new FileSystem();
 
   // Fetch habits from the FileSystem class when the component mounts
@@ -23,13 +24,19 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
     };
 
     const clickOutsite = (event: MouseEvent) => {
-
+      if (habitDDRef.current && !habitDDRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
     }
 
 
 
     fetchHabits();
-  }, []);
+    document.addEventListener("mousedown", clickOutsite);
+    return () => {
+      document.removeEventListener("mousedown", clickOutsite);
+    }
+  }, [fileSystem]);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -54,7 +61,7 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
         Select Habits
       </button>
       {isDropdownOpen && (
-        <div className="scrollable-menu">
+        <div ref={habitDDRef} className="scrollable-menu">
           {habitList.map((habit, index) => (
             <label key={index} className="habit-item">
               <input

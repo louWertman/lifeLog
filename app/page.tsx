@@ -10,14 +10,13 @@ import 'react-calendar/dist/Calendar.css';
 import './css/calendar-overrides.css';
 import { Entry, Habit } from "../app/lib/entity";
 import { FileSystem } from "../app/lib/dataManagement";
-import { useState, useEffect } from "react";
-import { Capacitor } from '@capacitor/core';
-import { App } from '@capacitor/app';
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [view, setView] = useState("entry");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar toggle
+  const sideBarRef = useRef<HTMLDivElement>(null);
 
   interface EntryType {
     date: string;
@@ -25,7 +24,20 @@ export default function Home() {
     habits: string[];
     mood: string;
   }
-  
+
+  useEffect(() => {
+    
+      const handleOutsideClick = (event: MouseEvent) => {
+        if (sideBarRef.current && !sideBarRef.current.contains(event.target as Node)) {
+          setIsSidebarOpen(false);
+        }
+      };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
     let fileSystem = new FileSystem();
@@ -68,7 +80,7 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
         {/* Sidebar / Hamburger Menu */}
-        <div className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`}>
+        <div ref={sideBarRef} className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`}>
           <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>

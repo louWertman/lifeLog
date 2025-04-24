@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import '../app/css/entry.module.css';
+import EditEntry from './EditEntry';
 
 const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -18,8 +19,9 @@ const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
 
     const handleDateClick = (day: number) => {
         const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        let stringDate = selectedDate.toISOString().split("T")[0];
         onDateClick(selectedDate);
-        setView('edit');
+        
     };
 
     const renderDaysOfWeek = () => {
