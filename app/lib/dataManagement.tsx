@@ -20,7 +20,26 @@ export class FileSystem {
     //variables
     public entryLog: Promise<Entry[]> = this.filePath.then(filePath => this.loadFile());
 
+    //permissions checks
+    private getPermissions = async () => {
+        const currPermissions = await Filesystem.checkPermissions();
+        if (currPermissions.publicStorage === 'denied') {
+            const requestPermissions = await Filesystem.requestPermissions();
+            if (requestPermissions.publicStorage === 'denied') {
+                console.log("DEBUG: Permissions denied");
+            } else {
+                console.log("DEBUG: Permissions granted");
+            }
+        } else {
+            console.log("DEBUG: Permissions already granted");
+        }
+    }
+
+
     constructor() {
+
+        this.getPermissions();
+
         this.entryLog = this.filePath.then(filePath => this.loadFile());
         this.filePath = this.getSettings().then(settings => settings['entryFile']);
     }
@@ -31,13 +50,13 @@ export class FileSystem {
         try {
             await Filesystem.readFile({
                 path: await this.filePath,
-                directory: Directory.Data,
+                directory: Directory.Documents,
                 encoding: Encoding.UTF8,
             });
         } catch (readError) {
             await Filesystem.writeFile({
                 path: await this.filePath,
-                directory: Directory.Data,
+                directory: Directory.Documents,
                 data: 'DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY',
                 encoding: Encoding.UTF8,
             });
@@ -45,7 +64,7 @@ export class FileSystem {
 
         let file = await Filesystem.readFile({
             path: await this.filePath,
-            directory: Directory.Data,
+            directory: Directory.Documents,
             encoding: Encoding.UTF8,
         });
 
@@ -221,7 +240,7 @@ export class FileSystem {
                 try {
                     await Filesystem.writeFile({
                         path: await this.filePath,
-                        directory: Directory.Data,
+                        directory: Directory.Documents,
                         data: entryString,
                         encoding: Encoding.UTF8,
                     });
@@ -237,7 +256,7 @@ export class FileSystem {
         try {
             await Filesystem.appendFile({
                 path: await this.filePath,
-                directory: Directory.Data,
+                directory: Directory.Documents,
                 data: entryString,
                 encoding: Encoding.UTF8,
             });
@@ -254,8 +273,8 @@ export class FileSystem {
     public async getSettings() {
         try {
             const file = await Filesystem.readFile({
-                path: '/DATA/settings.json',
-                directory: Directory.Data,
+                path: 'settings.json',
+                directory: Directory.Documents,
                 encoding: Encoding.UTF8,
             });
             let settings = JSON.parse(file.data as string);
@@ -265,14 +284,14 @@ export class FileSystem {
         } catch (readError) {
             let habits = this.generateStockHabits();
             let defaultSettings = {
-                "entryFile": "/DATA/ENTRYLOG.csv",
+                "entryFile": "ENTRYLOG.csv",
                 "dataBaseKey": "",
                 "theme": "DARK",
                 "habits": this.habitsToString(habits),
             };
             await Filesystem.writeFile({
-                path: '/DATA/settings.json',
-                directory: Directory.Data,
+                path: 'settings.json',
+                directory: Directory.Documents,
                 data: JSON.stringify(defaultSettings, null, 2),
                 encoding: Encoding.UTF8,
             });
@@ -298,8 +317,8 @@ export class FileSystem {
             let newConfig = JSON.stringify(currentConfig, null, 2);
 
             await Filesystem.writeFile({
-                path: '/DATA/settings.json',
-                directory: Directory.Data,
+                path: 'settings.json',
+                directory: Directory.Documents,
                 data: newConfig,
                 encoding: Encoding.UTF8,
             }).catch((error) => {
@@ -341,8 +360,8 @@ export class FileSystem {
 
         //write habit to settings
         await Filesystem.writeFile({
-            path: '/DATA/settings.json',
-            directory: Directory.Data,
+            path: 'settings.json',
+            directory: Directory.Documents,
             data: JSON.stringify(config, null,),
             encoding: Encoding.UTF8,
         });
@@ -362,8 +381,8 @@ export class FileSystem {
 
                 //write to settings.json
                 await Filesystem.writeFile({
-                    path: '/DATA/settings.json',
-                    directory: Directory.Data,
+                    path: 'settings.json',
+                    directory: Directory.Documents,
                     data: JSON.stringify(currentConfig, null,),
                     encoding: Encoding.UTF8,
                 });
@@ -396,7 +415,7 @@ export class FileSystem {
         }
         await Filesystem.appendFile({
             path: await this.filePath,
-            directory: Directory.Data,
+            directory: Directory.Documents,
             data: entryString,
             encoding: Encoding.UTF8,
         }).catch((error) => {

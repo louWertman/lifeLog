@@ -3,7 +3,6 @@
 import React, {useEffect, useState} from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import EditorHabit from './editorHabit';
-import { fallbackModeToStaticPathsResult } from 'next/dist/lib/fallback';
 
 const Settings: React.FC = () => {
 

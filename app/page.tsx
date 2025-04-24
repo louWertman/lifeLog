@@ -2,15 +2,17 @@
 
 import styles from "./css/page.module.css";
 import Statistics from "../components/StatisticsV";
-import EntryList from "../components/EntryList"; 
-import EditEntry from "../components/EditEntry"; 
-import Settings from "../components/Settings"; 
+import EntryList from "../components/EntryList";
+import EditEntry from "../components/EditEntry";
+import Settings from "../components/Settings";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './css/calendar-overrides.css';
-import { Entry, Habit } from "../app/lib/entity"; 
-import { FileSystem } from "../app/lib/dataManagement"; 
+import { Entry, Habit } from "../app/lib/entity";
+import { FileSystem } from "../app/lib/dataManagement";
 import { useState, useEffect } from "react";
+import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
 
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
@@ -23,7 +25,7 @@ export default function Home() {
     habits: string[];
     mood: string;
   }
-
+  
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
     let fileSystem = new FileSystem();
@@ -58,9 +60,9 @@ export default function Home() {
     setView("edit");
   };
 
-// calendar onchange
-// onChange={}onChange can work to run a function with the date
-// const [value, onChange] = useStateValue (new Date());
+  // calendar onchange
+  // onChange={}onChange can work to run a function with the date
+  // const [value, onChange] = useStateValue (new Date());
 
   return (
     <div className={styles.page}>
@@ -70,7 +72,7 @@ export default function Home() {
           <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>
-              <Calendar calendarType="gregory" /> 
+              <Calendar calendarType="gregory" />
               {/* onChange={function} will let you take the date and pass it into a function 
               this will be great but we need a function to either open a date or create it if it doesnt exist
               i also want to figure out how to make the weekdays be just the first letter SMTWTFS*/}
@@ -83,8 +85,8 @@ export default function Home() {
         </div>
 
         {/* Hamburger Icon */}
-        <button 
-          className={styles.hamburger} 
+        <button
+          className={styles.hamburger}
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           ☰
@@ -99,7 +101,7 @@ export default function Home() {
               habits={selectedEntry.habits}
               mood={selectedEntry.mood}
               onSave={handleSave}
-              
+
             />
           )}
           {view === "settings" && <Settings />}
