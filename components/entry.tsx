@@ -4,20 +4,19 @@ import React from 'react';
 import '../app/css/entry.module.css';
 
 interface EntryProps {
-    index?: number;
     date: string;
-    content: string;
-    habits: string;
-    mood: string;
 }
 
-const EntryV: React.FC<EntryProps> = ({ date, content, habits, mood }) => {
+const EntryV: React.FC<EntryProps> = ({ date }) => {
+    
+    
+    
     return (
         <div >
             <h1>{date}</h1>
-            <h2>{mood}</h2>
+            {/* <h2>{mood}</h2>
             <h3>{habits}</h3>
-            <p>{content}</p>
+            <p>{content}</p> */}
         </div>
     );
 };

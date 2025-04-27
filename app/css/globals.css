@@ -1,3 +1,4 @@
+/* document.documentElement.setAttribute("data-theme", themeUpdate); // Update the theme attribute */
 :root {
   --background: #f0edeb;
   --background-lv2: #d3cdca;
@@ -10,6 +11,8 @@
   --accent-light: #c29161;
   --accent-comp: #62a1e0;
 }
+
+/* [data-theme="dark"] */
 
 @media (prefers-color-scheme: dark) {
   :root {
