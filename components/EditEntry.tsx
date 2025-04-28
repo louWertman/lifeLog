@@ -35,19 +35,15 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
   //if entry exist for the date it loads into the GUI
   useEffect(() => {
+    setEntryHabits([]);
     const getEntry = async () => {
       let fs = new FileSystem();
       const entryFetch = await fs.fetchEntry(date);
-      if (!entryFetch) {
-        setEntryHabits([]);
-        setEntryContent('');
-        setEntryMood('');
-
-        return;
+      if (entryFetch) {
+        setEntryContent(entryFetch.textEntry);
+        setEntryMood(entryFetch.mood);
+        setEntryHabits(entryFetch.habits.map((habit: Habit) => habit.name));
       }
-      setEntryContent(entryFetch.textEntry);
-      setEntryMood(entryFetch.mood);
-      setEntryHabits(entryFetch.habits.map((habit: Habit) => habit.name));
     };
 
     if (date) {

@@ -127,9 +127,6 @@ export class FileSystem {
 
     public stringToHabits(habitString: string) {
         console.trace("DEBUG: stringToHabits: " + habitString);
-        if (habitString === "") {
-            return this.generateStockHabits();
-        }
         let habits = Array<Habit>();
         for (let habit of habitString.split(',')) {
             let habitInfo = habit.split(':');
