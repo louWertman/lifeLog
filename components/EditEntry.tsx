@@ -25,7 +25,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
   const [lastSaved, setLastSaved] = useState<string>('');
-  const [entryHabits, setEntryHabits] = useState<string[]>(habits);
+  const [entryHabits, setEntryHabits] = useState<string[]>([]);
 
   const handleSave = () => {
     setEntryDate(currentDate)
@@ -55,13 +55,12 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     const autoSave = setTimeout(() => { handleSave(); },
       1000
     );
-    let savedTime = new Date().toISOString().split('Z')[0]
+    let savedTime = new Date().toISOString().split('.')[0]
     setLastSaved(savedTime);
   },[entryContent, entryHabits, entryMood]);
 
   return (
 
-    //todo make update habits a seperate popup menu and add habits its own thing
     <div>
 
       <div className="entry-container">

@@ -13,34 +13,42 @@ interface EntryType {
 export default function EntryList() {
   const [entries, setEntries] = useState<EntryType[]>([]);
 
+  const fileSystem = new FileSystem();
   useEffect(() => {
     const fetchEntries = async () => {
-      const fileSystem = new FileSystem();
       const entriesList = await fileSystem.listEntries();
       const formattedEntries = entriesList.map((entry: any) => ({
         date: entry.date || "",
         content: entry.content || "",
-        habits: Array.isArray(entry.habits) ? entry.habits : [],
+        habits: (fileSystem.habitsToString(entry.habits)) ? entry.habits : [],
         mood: entry.mood || "",
       }));
-      console.log("Formatted Entries:", formattedEntries); 
-      setEntries(formattedEntries); 
+      console.log("Formatted Entries:", formattedEntries);
+      setEntries(formattedEntries);
     };
 
     fetchEntries();
   }, []);
 
+
   return (
     <div className="EntryList">
-      <h2>Entries</h2>
-      <ul>
-        {entries.map((entry, index) => (
-          <li key={index}>
-            <strong>{entry.date}</strong>: <br />
-            {entry.content}
-                      </li>
-        ))}
-      </ul>
+      <h1>Log</h1>
+      <br />
+      {entries.map((entry, index) => (
+        <div key={index}>
+          <br/>
+          <strong>{entry.date}</strong>: <br />
+          {entry.content}
+          <br />
+          <strong>Habits:</strong> {entry.habits.join(", ")}
+          <br />
+          <strong>Mood:</strong> {entry.mood}
+          <br />
+        </div>
+      ))}
+      <br />
+      <br />
     </div>
   );
 }

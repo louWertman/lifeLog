@@ -64,23 +64,9 @@ const Settings: React.FC = () => {
     <div className="Settings">
       
       {/* basic settings */}
+      <h1>Settings</h1>
       <div className="settings-container">
-        <h1>Settings</h1>
-        <label htmlFor="theme">Theme: </label>
-        <select
-          id="theme"
-          value={settings.theme}
-          onChange={(e) => {
-            const themeUpdate = e.target.value;
-            setSettings((prev) => ({ ...prev, theme: themeUpdate }));
-            saveSettings("theme", e.target.value);
-            document.documentElement.setAttribute("data-theme", themeUpdate); // Update the theme attribute
-          }}
-        >
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-        <br></br>
+        <h2>Sync Settings</h2>
 
         <label htmlFor="Database key">Database Key: </label>
         <input type="text"
