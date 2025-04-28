@@ -165,6 +165,7 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
+    
     //lists all habits, including inactive ones and non removal of duplicates
     public async listAllHabits() {
         let habits = Array<Habit>();
@@ -190,6 +191,10 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
+    //normalize capaital first letter of the mood
+    private normalizeMoods(str: string) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
     //list moods entered in various entries, if not found returns a set of default moods as place holders
     public async listAllMoods() {
@@ -197,7 +202,8 @@ export class FileSystem {
         let entryLog = await this.entryLog;
         for (let i = entryLog.length - 1; i >= 0; i--) {
             if (entryLog[i].getMoods() !== "") {
-                moods.push(entryLog[i].getMoods());
+                let mood = this.normalizeMoods(entryLog[i].getMoods());
+                moods.push(mood);
             }
         }
         if (moods.length > 0) {

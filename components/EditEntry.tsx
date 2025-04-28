@@ -39,6 +39,10 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
       let fs = new FileSystem();
       const entryFetch = await fs.fetchEntry(date);
       if (!entryFetch) {
+        setEntryHabits([]);
+        setEntryContent('');
+        setEntryMood('');
+
         return;
       }
       setEntryContent(entryFetch.textEntry);
@@ -91,6 +95,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
               <input
                 type="text"
                 id="mood"
+                required
                 value={entryMood}
                 onChange={
                   (e) => setEntryMood(e.target.value)

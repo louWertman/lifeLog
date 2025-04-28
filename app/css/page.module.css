@@ -184,6 +184,7 @@ a.secondary {
   gap: 16px;
   width: 200px; /* Set a fixed width for the sidebar */
   transition: transform 0.3s ease-in-out;
+
 }
 
 .sidebar.open {
@@ -218,7 +219,6 @@ a.secondary {
     padding-top:3em;
     height: 100%;
     width: 300px;
-    background-color: var(--background-lv2);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 999;
   }

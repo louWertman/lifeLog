@@ -50,7 +50,6 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
       setSelectedHabits(selectedHabits.filter((h) => h !== habit));
     } else {
 
-      // Add habit if not selected
       setSelectedHabits(selectedHabits.concat(habit));
     }
   };
