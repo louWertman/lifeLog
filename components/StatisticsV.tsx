@@ -82,23 +82,25 @@ const Statistics: React.FC = () => {
     return (
         <div>
             <div>
-                <label htmlFor="habit-select">Select Habit:</label>
+                <label htmlFor="habit-select">Select Habit:   </label>
                 <select id="habit-select"
+                    className="habit button"
                     onChange={(e) => {
                         const habit = e.target.value;
                         setSelectedHabit(habit);
                     }}>
-                    <option value="" disabled selected>
+                    <option value="" disabled selected className="habit-item">
                         -- Select a Habit --
                     </option>
                     {allHabitsGUI.map((habit, index) => (
-                        <option key={index} value={habit}>
+                        <option key={index} value={habit} className="habit-item">
                             {habit}
                         </option>
                     ))}
                 </select>
             </div>
             <div>
+                <br/>
                 <Chart
                     data={chartData}
                 />
