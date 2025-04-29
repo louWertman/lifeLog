@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Habit } from '../app/lib/entity';
 import '../app/css/entry.module.css';
-import Habits from './habits';
+import Habits from '../components/habits';
 import { FileSystem } from '../app/lib/dataManagement';
 
 
@@ -17,24 +17,29 @@ interface EditEntryProps {
 
 
 const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
+
   // incase of calendar edit, otherwise date is current date
-  let currentDate = date ?? new Date().toISOString().split('T')[0];
+  let currentDate = date ?? new Date().toLocaleString('en-ET').split(',')[0];
 
+  date = currentDate;
 
+  
+  
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
   const [lastSaved, setLastSaved] = useState<string>('');
   const [entryHabits, setEntryHabits] = useState<string[]>([]);
-
+  
   const handleSave = () => {
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
-
-
+  
+  
   //if entry exist for the date it loads into the GUI
   useEffect(() => {
+    setEntryDate(date);
     setEntryHabits([]);
     const getEntry = async () => {
       let fs = new FileSystem();
@@ -55,7 +60,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     const autoSave = setTimeout(() => { handleSave(); },
       1000
     );
-    let savedTime = new Date().toISOString().split('.')[0]
+    let savedTime = new Date().toLocaleString('en-ET').split('.')[0]
     setLastSaved(savedTime);
   },[entryContent, entryHabits, entryMood]);
 

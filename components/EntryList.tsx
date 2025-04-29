@@ -2,25 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { FileSystem } from "../app/lib/dataManagement";
+import EditEntry from "./EditEntry";
+import { Entry, Habit } from "../app/lib/entity";
+import "../app/css/entry.module.css";
 
 interface EntryType {
   date: string;
   content: string;
-  habits: string[];
+  habits: { name: string; positive: boolean; active: boolean }[]; // Updated type
   mood: string;
 }
 
 export default function EntryList() {
+  const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [entries, setEntries] = useState<EntryType[]>([]);
 
   const fileSystem = new FileSystem();
   useEffect(() => {
+    setSelectedEntry(null);
     const fetchEntries = async () => {
       const entriesList = await fileSystem.listEntries();
       const formattedEntries = entriesList.map((entry: any) => ({
         date: entry.date || "",
         content: entry.content || "",
-        habits: (fileSystem.habitsToString(entry.habits)) ? entry.habits : [],
+        habits: (fileSystem.habitsToString(entry.habits)).split(':')[0] ? entry.habits : [],
         mood: entry.mood || "",
       }));
       console.log("Formatted Entries:", formattedEntries);
@@ -30,25 +35,82 @@ export default function EntryList() {
     fetchEntries();
   }, []);
 
+  const handleSave = async (content: string, date: string,
+    habitNames: string[], mood: string): Promise<void> => {
+    let habitList = await fileSystem.listHabits();
+    let habitsForEntry: Habit[] = [];
+
+    habitList.forEach(habitInList => {
+      habitNames.forEach(habitName => {
+        if (habitInList.name === habitName) {
+          habitsForEntry.push(habitInList);
+        }
+      });
+    });
+
+    console.log("HABITS FOR ENTRY: ", habitsForEntry);
+
+    let entry = new Entry(
+      date,
+      mood,
+      habitsForEntry,
+      content
+    );
+
+    await fileSystem.saveEntry(entry);
+
+    //reupdate entryList
+    setEntries((prevEntries) =>
+      prevEntries.map((e) =>
+        e.date === date ? { ...e, content, habits: habitsForEntry, mood } : e
+      )
+    );
+  };
 
   return (
     <div className="EntryList">
       <h1>Log</h1>
       <br />
       {entries.map((entry, index) => (
-        <div key={index}>
-          <br/>
+        <div
+          key={index}
+          onClick={() =>
+            setSelectedEntry((prevEntry) =>
+              prevEntry?.date === entry.date ? null : entry
+            )
+          }
+          className="settings-container"
+        >
+          <br />
           <strong>{entry.date}</strong>: <br />
           {entry.content}
           <br />
-          <strong>Habits:</strong> {entry.habits.join(", ")}
+          <strong>Habits:</strong> {entry.habits.map((habit: any) => habit.name).join(", ")}
           <br />
           <strong>Mood:</strong> {entry.mood}
+
+          {selectedEntry && selectedEntry.date === entry.date && (
+            <div onClick={(e) => e.stopPropagation()}
+            >
+              <EditEntry
+                date={selectedEntry.date}
+                content=""
+                habits={[]}
+                mood=""
+                onSave={(content, date, habits, mood) =>
+                  handleSave(content, date, habits, mood)
+                }
+              />
+            </div>
+          )}
+
+          <br />
           <br />
         </div>
       ))}
       <br />
       <br />
+
     </div>
   );
 }

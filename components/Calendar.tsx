@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import '../app/css/entry.module.css';
-import EditEntry from './EditEntry';
+import EditEntry from '../app/EditEntry';
 
 const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
