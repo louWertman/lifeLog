@@ -44,8 +44,14 @@ body {
 }
 
 p {
-  font-size: 2em
+  font-size: 1rem;
 }
+
+label {
+  font-size: 1.02rem;
+  font-style: bold;
+}
+
 
 h1 {
   font-size: 5em;
@@ -139,7 +145,7 @@ a {
 
 
 .entry-container p {
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--foreground);
 }

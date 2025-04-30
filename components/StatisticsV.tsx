@@ -81,6 +81,7 @@ const Statistics: React.FC = () => {
     }, [selectedHabit]);
     return (
         <div>
+            <h1>Statistics</h1>
             <div>
                 <label htmlFor="habit-select">Select Habit:   </label>
                 <select id="habit-select"
