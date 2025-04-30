@@ -92,8 +92,8 @@ const EditorHabit: React.FC = () => {
                             <th>{habit.name}</th>
                             <th>{habit.active}</th>
                             <th>{habit.positive}</th>
-                            <th><button onClick={() => editHabit(habit)}>Edit</button></th>
-                            <th><button onClick={() => deleteHabit(habit)}>Delete</button></th>
+                            <th><button className="button" onClick={() => editHabit(habit)}>Edit</button></th>
+                            <th><button className="button" onClick={() => deleteHabit(habit)}>Delete</button></th>
                         </tr>
                     ))}
                     {/* editor */}
@@ -121,7 +121,7 @@ const EditorHabit: React.FC = () => {
                                 />
                         </th>
                         <th>
-                            <button onClick={saveHabit}>
+                            <button className="button" onClick={saveHabit}>
                                 {selectedHabit ? "Save Changes" : "Add Habit"}
                             </button>
                         </th>

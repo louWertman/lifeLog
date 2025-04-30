@@ -226,3 +226,17 @@ ul {
 .habit-editor th {
   padding:10px;
 }
+
+.settings-container input[type="text"] {
+  /* width: 100%; */
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid var(--foreground-lv2);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.settings-container button {
+  background-color: var(--accent-comp); /* linear-gradient(45deg, #3498db, #2ecc71); */
+}

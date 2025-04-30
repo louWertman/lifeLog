@@ -80,7 +80,7 @@ const Settings: React.FC = () => {
         />
 
         <br />
-        <button onClick={() => {genDBKey()}}>Generate Key</button>
+        <button className="button" onClick={() => {genDBKey()}}>Generate Key</button>
         <br />
         </div>
 
