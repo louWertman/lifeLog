@@ -43,6 +43,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+p {
+  font-size: 2em
+}
+
+h1 {
+  font-size: 5em;
+}
+
+h2 {
+  font-size: 2em;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
