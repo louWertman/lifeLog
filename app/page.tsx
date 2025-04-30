@@ -84,7 +84,9 @@ export default function Home() {
           <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>
-              <Calendar calendarType="gregory" />
+              <Calendar onChange={ () =>
+                null
+              } calendarType="gregory" />
               {/* onChange={function} will let you take the date and pass it into a function 
               this will be great but we need a function to either open a date or create it if it doesnt exist
               i also want to figure out how to make the weekdays be just the first letter SMTWTFS*/}
