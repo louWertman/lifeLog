@@ -107,15 +107,15 @@ const Statistics: React.FC = () => {
             switch (selectedTime) {
                 case "Week":
                     startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 7); 
+                    startDate.setDate(currentDate.getDate() - 7);
                     break;
                 case "Month":
                     startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 30); 
+                    startDate.setDate(currentDate.getDate() - 30);
                     break;
                 case "Year":
                     startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 365); 
+                    startDate.setDate(currentDate.getDate() - 365);
                     break;
                 default:
                     console.error("Invalid time frame selected");
@@ -124,15 +124,15 @@ const Statistics: React.FC = () => {
 
             // Generate the date range from startDate to currentDate
             for (let d = new Date(startDate); d <= currentDate; d.setDate(d.getDate() + 1)) {
-                dateRange.push(new Date(d)); 
+                dateRange.push(new Date(d));
             }
 
             let negativeHabitCounter = 0;
             let data: any = [];
-            for (const entry of entryLog) {
-                for (let j = 0; j < dateRange.length; j++) {
-                    negativeHabitCounter = 0;
-                    if (new Date(entry.date).toLocaleString('en-ET').split(',')[0] === dateRange[j].toLocaleString('en-ET').split(',')[0]) {
+            for (let date of dateRange) {
+                negativeHabitCounter = 0;
+                for (const entry of entryLog) {
+                    if (new Date(entry.date).toLocaleString('en-ET').split(',')[0] === date.toLocaleString('en-ET').split(',')[0]) {
                         for (const habit of entry.habits) {
                             if (habit.positive === false) {
                                 negativeHabitCounter++;
@@ -140,11 +140,11 @@ const Statistics: React.FC = () => {
                         }
 
                     }
-                    data.push({
-                        date: dateRange[j].toLocaleString('en-ET').split(',')[0],
-                        count: negativeHabitCounter,
-                    });
                 }
+                data.push({
+                    date: date.toLocaleString('en-ET').split(',')[0],
+                    count: negativeHabitCounter,
+                });
             };
             setNegativeChartData(data);
         }
