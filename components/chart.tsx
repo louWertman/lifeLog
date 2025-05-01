@@ -23,16 +23,18 @@ export const Chart: React.FC<chartProps> = ({ data }) => {
     return (
         <ResponsiveContainer width="100%" height={400}>
             <BarChart
-                width={800}
-                height={400}
+                width={75}
+                height={100}
                 data={data}
+                barSize={180}
                 layout="vertical"
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
                 <YAxis type="category" dataKey="mood" />
-                <Tooltip />
+                <Tooltip
+                    contentStyle={{ backgroundColor: "#24292f", color: "white", border: "none" }}
+                />
                 <Legend />
 
                 <Bar dataKey="count" fill="#8884d8" />

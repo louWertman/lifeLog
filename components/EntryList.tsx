@@ -35,6 +35,11 @@ export default function EntryList() {
     fetchEntries();
   }, []);
 
+  const handleDelete = async (date: string): Promise<void> => {
+    await fileSystem.deleteEntry(date);
+    setEntries((prevEntries) => prevEntries.filter((entry) => entry.date !== date));
+  };
+
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
     let habitList = await fileSystem.listHabits();
@@ -103,8 +108,18 @@ export default function EntryList() {
               />
             </div>
           )}
+          <br/>
+          <br/>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(entry.date);
+            }}
+            className="habit button"
+          >
+            Delete
+          </button>
 
-          <br />
           <br />
         </div>
       ))}
