@@ -12,6 +12,12 @@ import { Entry, Habit } from "../app/lib/entity";
 import { FileSystem } from "../app/lib/dataManagement";
 import { useState, useEffect, useRef } from "react";
 
+
+
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
+
 export default function Home() {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [view, setView] = useState("entry");
@@ -72,6 +78,31 @@ export default function Home() {
     setView("edit");
   };
 
+  // calendar selection
+
+  const [value, onChange] = useState<Value>(new Date());
+
+  function handleDateChange(nextValue: Value) {
+    onChange(nextValue);
+    if (nextValue !== null) {
+      setSelectedEntry({
+        date: nextValue.toLocaleString('en-ET').split(",")[0],
+        content: "",
+        habits: [],
+        mood: "",
+      });
+      setView("edit");
+      // setValue(nextValue);
+    }
+  }
+
+  // return (
+  //   <Calendar
+  //     onChange={onChange}
+  //     value={value}
+  //   />
+  // );
+
   // calendar onchange
   // onChange={}onChange can work to run a function with the date
   // const [value, onChange] = useStateValue (new Date());
@@ -84,12 +115,7 @@ export default function Home() {
           <h1 className={styles.title} onClick={() => setView("entry")}>LifeLog</h1>
           <div className={styles.calendarContainer}>
             <main className={styles.calendarContent}>
-              <Calendar onChange={ () =>
-                null
-              } calendarType="gregory" />
-              {/* onChange={function} will let you take the date and pass it into a function 
-              this will be great but we need a function to either open a date or create it if it doesnt exist
-              i also want to figure out how to make the weekdays be just the first letter SMTWTFS*/}
+              <Calendar onChange={handleDateChange} value={value} calendarType="gregory" />
             </main>
           </div>
           <button className="button" onClick={handleCreateEntry}>Create Entry</button>
