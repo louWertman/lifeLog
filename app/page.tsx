@@ -52,8 +52,6 @@ export default function Home() {
       });
     });
 
-    console.log("HABITS FOR ENTRY: ", habitsForEntry);
-
     let entry = new Entry(
       date,
       mood,

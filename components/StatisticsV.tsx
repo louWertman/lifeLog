@@ -7,21 +7,19 @@ import { Chart } from './graphs/chart';
 import { NegativeChart } from './graphs/Negative';
 import { count, time } from 'console';
 import { ConsistencyChart } from './graphs/Consistency';
+import { ProcStat } from '../app/lib/procStat';
 
 const Statistics: React.FC = () => {
-    const fs = new FileSystem();
+
+    const statProcessor = new ProcStat();
 
 
-    //GUI is for display, but raw data is passed to chart component
-    //habits and moods
     const [allHabitsGUI, setAllHabitsGUI] = useState<string[]>([]);
     const [allMoodsGUI, setAllMoodsGUI] = useState<string[]>([]);
 
     const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
-    const [allHabits, setAllHabits] = useState<string[]>([]);
-    const [allMoods, setAllMoods] = useState<string[]>([]);
 
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [chartData, setChartData] = useState<any>(null);
 
     // date and habits
     const [negativeChartData, setNegativeChartData] = useState<any[]>([]); // Data for the chart
@@ -32,155 +30,41 @@ const Statistics: React.FC = () => {
     const [consistencyChartData, setConsistencyChartData] = useState<any>(null);
     const [consistencyTime, setConsistencyTime] = useState<string | null>(null);
 
-    //Length of Entry to Habit IF I HAVE TIME
-
+    //init UI
     useEffect(() => {
-        const fetchHabits = async () => {
-            let habitsList = await fs.listAllHabits();
-            const habitNames = habitsList.map((habit) => habit.name);
-            setAllHabits(habitNames);
-            setAllHabitsGUI(habitNames);
-
-        };
-        const fetchMoods = async () => {
-            const moodsList: string[] = await fs.listAllMoods();
-            const moodNames = moodsList.map((mood) => mood);
-            console.log("MOODS: ", moodNames);
-            setAllMoods(moodsList);
-            const uniqueMoods = Array.from(new Set(moodNames)); // Deduplicate
-            setAllMoodsGUI(uniqueMoods);
-        };
-
-
-        fetchHabits();
-        fetchMoods();
+        const initUI = async () => {
+            let habits = (await statProcessor.fetchHabits());
+            let moods = (await statProcessor.fetchMoods())[1];
+            setAllHabitsGUI(habits);
+            setAllMoodsGUI(moods);
+        }
+        initUI();
     }, []);
 
     useEffect(() => {
-        const consistencyProc = async () => {
-            let entryLog = await fs.listEntries();
+        const consistencyChartInit = async () => {
             if (!consistencyTime) return;
-            let dateRange = calculateDate(consistencyTime);
-            if (!dateRange) return;
-
-            let data = [];
-
-            for (let entry of entryLog) {
-                for (let date of dateRange){
-                    if(entry.date==date.toLocaleString('en-ET').split(',')[0])
-                    data.push({
-                        date: entry.date,
-                        length: entry.content.length
-                    });
-                }
-            }
+            const data = await statProcessor.consistencyProc(consistencyTime);
             setConsistencyChartData(data);
-        };
-
-        consistencyProc();
+        }
+        consistencyChartInit();
     }, [consistencyTime]);
 
     useEffect(() => {
         const habMoodProc = async () => {
             if (!selectedHabit) return;
-
-            let entryLog = await fs.listEntries()
-            const moodCounts: { [mood: string]: number } = {};
-
-            for (const entry of entryLog) {
-                const habits = entry.habits.map((habit: { name: string }) => habit.name);
-                if (habits.includes(selectedHabit)) {
-                    const mood = entry.mood;
-                    if (!moodCounts[mood]) {
-                        moodCounts[mood] = 0;
-                    }
-                    moodCounts[mood]++;
-                }
-            }
-
-            if (Object.keys(moodCounts).length === 0) {
-                const allMoods = await fs.listAllMoods();
-                allMoods.forEach((mood) => {
-                    if (!moodCounts[mood]) {
-                        moodCounts[mood] = 0;
-                    }
-                });
-            }
-
-            const data = Object.entries(moodCounts).map(([mood, count]) => ({
-                mood,
-                count,
-            }));
-
-            console.log("DATA from STATVIEW: ", data);
-            console.log("STATVIEW: for habit: " + selectedHabit);
-
+            const data = await statProcessor.habitMoodProc(selectedHabit);
             setChartData(data);
-        };
-
+        }
         habMoodProc();
     }, [selectedHabit]);
 
-    const calculateDate = (timeFrame: string) => {
-        let dateRange: Date[] = [];
-        let startDate: Date;
-        let currentDate = new Date();
-
-        switch (timeFrame.toString()) {
-            case "Week":
-                startDate = new Date(currentDate);
-                startDate.setDate(currentDate.getDate() - 7);
-                break;
-            case "Month":
-                startDate = new Date(currentDate);
-                startDate.setDate(currentDate.getDate() - 30);
-                break;
-            case "Year":
-                startDate = new Date(currentDate);
-                startDate.setDate(currentDate.getDate() - 365);
-                break;
-            default:
-                console.error("Invalid time frame selected");
-                return;
-        }
-
-        // Generate the date range from startDate to currentDate
-        for (let d = new Date(startDate); d <= currentDate; d.setDate(d.getDate() + 1)) {
-            dateRange.push(new Date(d));
-        }
-
-        return dateRange;
-    }
 
     useEffect(() => {
         const negativeHabProc = async () => {
             if (!selectedTime) return;
-            const dateRange = calculateDate(selectedTime);
-
-            if (!dateRange) return;
-
-            let entryLog = await fs.listEntries();
-
-            let negativeHabitCounter = 0;
-            let data: any = [];
-
-            for (let date of dateRange) {
-                negativeHabitCounter = 0;
-                for (const entry of entryLog) {
-                    if (new Date(entry.date).toLocaleString('en-ET').split(',')[0] === date.toLocaleString('en-ET').split(',')[0]) {
-                        for (const habit of entry.habits) {
-                            if (habit.positive === false) {
-                                negativeHabitCounter++;
-                            }
-                        }
-                    }
-                    data.push({
-                        date: date.toLocaleString('en-ET').split(',')[0],
-                        count: negativeHabitCounter,
-                    });
-                }
-            };
-            setNegativeChartData(data);
+            const data = await statProcessor.negativeHabitProc(selectedTime);
+            setNegativeChartData(data || []);
         }
         negativeHabProc();
     }, [selectedTime]);
@@ -269,3 +153,4 @@ const Statistics: React.FC = () => {
 };
 
 export default Statistics
+

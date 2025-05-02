@@ -54,8 +54,6 @@ export default function EntryList() {
       });
     });
 
-    console.log("HABITS FOR ENTRY: ", habitsForEntry);
-
     let entry = new Entry(
       date,
       mood,
