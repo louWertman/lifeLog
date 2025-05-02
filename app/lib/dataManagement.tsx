@@ -181,7 +181,10 @@ export class FileSystem {
 
     //normalize capaital first letter of the mood
     private normalizeMoods(str: string) {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+        if (str.length === 0) {
+            return "";
+        }
+        return (str.trim().charAt(0).toUpperCase() + str.slice(1));
     }
 
     //list moods entered in various entries, if not found returns a set of default moods as place holders
@@ -190,7 +193,7 @@ export class FileSystem {
         let entryLog = await this.entryLog;
         for (let i = entryLog.length - 1; i >= 0; i--) {
             if (entryLog[i].getMoods() !== "") {
-                let mood = this.normalizeMoods(entryLog[i].getMoods());
+                let mood = this.normalizeMoods(entryLog[i].mood);
                 moods.push(mood);
             }
         }

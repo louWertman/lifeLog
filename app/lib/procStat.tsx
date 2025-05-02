@@ -32,8 +32,8 @@ export class ProcStat {
 
     public async habitMoodProc(selectedHabit: string) {
         if (!selectedHabit) return;
-        const entryLog = await this.entryLog;
 
+        const entryLog = await this.entryLog;
         const moodCounts: { [mood: string]: number } = {};
 
         for (const entry of entryLog) {
@@ -48,7 +48,7 @@ export class ProcStat {
         }
 
         if (Object.keys(moodCounts).length === 0) {
-            const allMoods = (await this.fetchMoods())[0];
+            const allMoods = (await this.fetchMoods())[1];
             allMoods.forEach((mood) => {
                 if (!moodCounts[mood]) {
                     moodCounts[mood] = 0;
@@ -85,11 +85,11 @@ export class ProcStat {
                         }
                     }
                 }
-                data.push({
-                    date: date.toLocaleString('en-ET').split(',')[0],
-                    count: negativeHabitCounter,
-                });
             }
+            data.push({
+                date: date.toLocaleString('en-ET').split(',')[0],
+                count: negativeHabitCounter,
+            });
         };
         return data;
     }
@@ -102,18 +102,25 @@ export class ProcStat {
 
         let data = [];
 
-        for (let entry of entryLog) {
-            for (let date of daterange) {
-                if (entry.date == date.toLocaleString('en-et').split(',')[0])
-                    data.push({
-                        date: entry.date,
-                        length: entry.content.length
-                    });
+        for (let date of daterange) {
+            let totalLength = 0;
+            let hasEntry = false;
+
+            for (let entry of entryLog) {
+                if (entry.date === date.toLocaleString('en-et').split(',')[0]) {
+                    totalLength += entry.content.length;
+                    hasEntry = true;
+                }
             }
+
+            data.push({
+                date: date.toLocaleString('en-ET').split(',')[0],
+                length: hasEntry ? totalLength : 0, // Add total length if entries exist, otherwise 0
+            });
         }
+
         return data;
     }
-
     private calculateDate(timeFrame: string) {
         let dateRange: Date[] = [];
         let startDate: Date;
