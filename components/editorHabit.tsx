@@ -3,7 +3,7 @@ import { FileSystem } from '../app/lib/dataManagement';
 import { Habit } from '../app/lib/entity';
 
 
-    
+
 
 const EditorHabit: React.FC = () => {
     const [habits, setHabits] = useState<Habit[]>([]);
@@ -67,7 +67,7 @@ const EditorHabit: React.FC = () => {
             Here you can set up the Habits. A default list will always be generated. The attributes of the habits are:
             <br />
             <ul>
-            {/* this could be improved by being a popup or having the headers be hovered for more info */}
+                {/* this could be improved by being a popup or having the headers be hovered for more info */}
                 <li>Habit Name</li>
                 <li>Active: Is this a habit you are engaged in? If not you can keep it for statistics processing, but otherwise you will not see it for entries </li>
                 <li>Positive: Is this a positive habit or one you wish to quit?</li>
@@ -87,45 +87,51 @@ const EditorHabit: React.FC = () => {
                     </thead>
                     <tbody>
 
-                    {habits.map((habit, index) => (
-                        <tr key={index}>
-                            <th>{habit.name}</th>
-                            <th>{habit.active}</th>
-                            <th>{habit.positive}</th>
-                            <th><button className="button" onClick={() => editHabit(habit)}>Edit</button></th>
-                            <th><button className="button" onClick={() => deleteHabit(habit)}>Delete</button></th>
+                        {habits.map((habit, index) => (
+                            <tr key={index}>
+                                <th>{habit.name}</th>
+                                <th>{habit.active}</th>
+                                <th>{habit.positive}</th>
+                                <th><button
+                                    className="habit button"
+                                    onClick={() => editHabit(habit)}>Edit</button></th>
+                                <th><button 
+                                className="habit button"
+                                onClick={() => deleteHabit(habit)}>Delete</button></th>
+                            </tr>
+                        ))}
+                        {/* editor */}
+                        <tr>
+                            <th>
+                                <input
+                                    type="text"
+                                    value={habitName}
+                                    disabled={(selectedHabit !== null)}
+                                    onChange={(e) => setHabitName(e.target.value)}
+                                />
+                            </th>
+                            <th>
+                                <input
+                                    type="checkbox"
+                                    checked={active}
+                                    onChange={(e) => setActive(e.target.checked)}
+                                />
+                            </th>
+                            <th>
+                                <input
+                                    type="checkbox"
+                                    checked={positive}
+                                    onChange={(e) => setPositive(e.target.checked)}
+                                />
+                            </th>
+                            <th>
+                                <button 
+                                className="habit button"
+                                onClick={saveHabit}>
+                                    {selectedHabit ? "Save Changes" : "Add Habit"}
+                                </button>
+                            </th>
                         </tr>
-                    ))}
-                    {/* editor */}
-                    <tr>
-                        <th>
-                            <input
-                                type="text"
-                                value={habitName}
-                                disabled={(selectedHabit !== null)}
-                                onChange={(e) => setHabitName(e.target.value)}
-                                />
-                        </th>
-                        <th>
-                            <input
-                                type="checkbox"
-                                checked={active}
-                                onChange={(e) => setActive(e.target.checked)}
-                                />
-                        </th>
-                        <th>
-                            <input
-                                type="checkbox"
-                                checked={positive}
-                                onChange={(e) => setPositive(e.target.checked)}
-                                />
-                        </th>
-                        <th>
-                            <button className="button" onClick={saveHabit}>
-                                {selectedHabit ? "Save Changes" : "Add Habit"}
-                            </button>
-                        </th>
-                    </tr>
                     </tbody>
                 </table>
                 <br />

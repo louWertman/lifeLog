@@ -26,15 +26,11 @@ export class FileSystem {
         if (currPermissions.publicStorage === 'denied') {
             const requestPermissions = await Filesystem.requestPermissions();
             if (requestPermissions.publicStorage === 'denied') {
-                console.log("DEBUG: Permissions denied");
             } else {
-                console.log("DEBUG: Permissions granted");
             }
         } else {
-            console.log("DEBUG: Permissions already granted");
         }
     }
-
 
     constructor() {
 
@@ -87,15 +83,12 @@ export class FileSystem {
                         this.stringToHabits(habitString),
                         entry.data['ENTRY']
                     );
-                    console.log("DEBUG: New Entry: ", newEntry);
-                    console.log(newEntry);
                     entries.push(newEntry);
                 } else {
-                    console.error("DEBUG: Invalid entry data: ", entry);
+                    console.error("Invalid entry data: ", entry);
                 }
             }
         });
-        console.log("DEBUG: Entry loaded: ", entries);
 
         return entries;
     }
@@ -104,7 +97,6 @@ export class FileSystem {
     //returns a string array with the date of every entry, latest entry first
     public async listEntries() {
         const entryLog = await this.entryLog;
-        console.log("DEBUG: listEntries FSCLASS: ", entryLog);
         return entryLog
             .sort((a, b) => new Date(b.getDateEntry()).getTime() - new Date(a.getDateEntry()).getTime())
             .map((entry) => ({
@@ -126,7 +118,6 @@ export class FileSystem {
     }
 
     public stringToHabits(habitString: string) {
-        console.trace("DEBUG: stringToHabits: " + habitString);
         let habits = Array<Habit>();
         for (let habit of habitString.split(',')) {
             let habitInfo = habit.split(':');
@@ -162,7 +153,7 @@ export class FileSystem {
         return this.generateStockHabits();
     }
 
-    
+
     //lists all habits, including inactive ones and non removal of duplicates
     public async listAllHabits() {
         let habits = Array<Habit>();
@@ -204,7 +195,6 @@ export class FileSystem {
             }
         }
         if (moods.length > 0) {
-            console.log("FS CLASS MOODS RETURNED: ", moods);
             return moods;
         }
         return Promise.resolve(['Happy', 'Sad', 'Excited', 'Calm']);
@@ -233,7 +223,6 @@ export class FileSystem {
         //check if entry already exists if does overwirite it
         for (let i = 0; i < log.length; i++) {
             if (log[i].date === entry.getDateEntry()) {
-                console.log("DEBUG: Entry already exists, overwriting: ", log[i], entry);
                 log[i] = entry;
                 entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
                 //convert back into csv entryString
@@ -248,7 +237,7 @@ export class FileSystem {
                         encoding: Encoding.UTF8,
                     });
                 } catch (readError) {
-                    console.log("DEBUG: Error writing to file: ", readError);
+                    console.error("Error writing to file: ", readError);
                 }
                 return;
             }
@@ -267,156 +256,23 @@ export class FileSystem {
             this.entryLog = this.loadFile();
 
         } catch (writeError) {
-            console.log(writeError);
+            console.error(writeError);
         }
     }
 
-
-    //retrieves the settings from the settings file, if it doesn't exist create it with default settings
-    public async getSettings() {
-        try {
-            const file = await Filesystem.readFile({
-                path: 'settings.json',
-                directory: Directory.Documents,
-                encoding: Encoding.UTF8,
-            });
-            let settings = JSON.parse(file.data as string);
-            console.log("SETTINGS: ", settings)
-            return settings;
-
-        } catch (readError) {
-            let habits = this.generateStockHabits();
-            let defaultSettings = {
-                "entryFile": "ENTRYLOG.csv",
-                "dataBaseKey": "",
-                "theme": "DARK",
-                "habits": this.habitsToString(habits),
-            };
-            await Filesystem.writeFile({
-                path: 'settings.json',
-                directory: Directory.Documents,
-                data: JSON.stringify(defaultSettings, null, 2),
-                encoding: Encoding.UTF8,
-            });
-            console.log("DEBUG: Settings file not found, creating new one with default settings");
-            return defaultSettings;
-        }
-    }
-
-    //update settings file, MINUS HABITS
-    //setting is the setting to update, update is the string update
-    //init currentSettings -> validate setting -> update setting -> write to file
-    public async updateSettings(setting: string, update: string) {
-        let currentConfig = await this.getSettings();
-        //Sanitize input
-        if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
-            if (setting !== "habits") {
-                currentConfig[setting] = update;
-            } else {
-                console.log("Please do not use this for Habits, use habitControl()");
-                return;
-            }
-
-            let newConfig = JSON.stringify(currentConfig, null, 2);
-
-            await Filesystem.writeFile({
-                path: 'settings.json',
-                directory: Directory.Documents,
-                data: newConfig,
-                encoding: Encoding.UTF8,
-            }).catch((error) => {
-                console.error('Error updating settings: ', error);
-            })
-        }
-    }
-
-    //init habit (grab from json settings)
-    //check and update habit
-    //if habit exist update it
-    //if habit does not exist create it
-    //write to system
-    public async habitControl(habitName: string, positive: boolean, active: boolean) {
-        if (habitName === "") {
-            console.log("Habit name cannot be empty");
-            return;
-        }
-        let config = await this.getSettings();
-        let habitList = this.stringToHabits(config.habits);
-
-        let repeat = false;
-        //update existing habit
-        for (let habit of habitList) {
-            if (habit.name === habitName) {
-                habit.active = active;
-                habit.positive = positive;
-                config.habits = this.habitsToString(habitList);
-                console.log("DEBUG: Habit updated: ", habit);
-                repeat = true;
-            }
-        }
-        // new habit
-        if (repeat === false) {
-            let newHabit = new Habit(habitName, positive, active);
-            habitList.push(newHabit);
-        }
-        config.habits = this.habitsToString(habitList);
-
-        //write habit to settings
-        await Filesystem.writeFile({
-            path: 'settings.json',
-            directory: Directory.Documents,
-            data: JSON.stringify(config, null,),
-            encoding: Encoding.UTF8,
-        });
-    }
-
-    //different from deactivating habit
-    //name is name of habit.name
-    //finds habit -> removes from settings -> removes from entry log -> writes entry log
-    public async removehabit(habitName: string) {
-        let currentConfig = await this.getSettings();
-        let habitList = this.stringToHabits(currentConfig.habits);
-        let habExist = false;
-        for (let i = 0; i < habitList.length; i++) {
-            if (habitList[i].name === habitName) {
-                habitList.splice(i, 1);
-                currentConfig.habits = this.habitsToString(habitList);
-
-                //write to settings.json
-                await Filesystem.writeFile({
-                    path: 'settings.json',
-                    directory: Directory.Documents,
-                    data: JSON.stringify(currentConfig, null,),
-                    encoding: Encoding.UTF8,
-                });
-                habExist = true;
-            }
-        }
-
-        if (habExist === false) {
-            console.log("HABIT NOT FOUND");
-            return;
-        }
-
-        //remove from entryLog
-        let entryLog = await this.entryLog;
+    public async deleteEntry(date: string) {
+        const entryLog = await this.entryLog;
         for (let i = 0; i < entryLog.length; i++) {
-            let habits = entryLog[i].getHabits();
-            for (let j = 0; j < habits.length; j++) {
-                if (habits[j].name === habitName) {
-                    let backUp = entryLog[i];
-                    let habitEntry = backUp.getHabits();
-                    habitEntry.splice(j, 1);
-                }
+            if (entryLog[i].getDateEntry() === date) {
+                entryLog.splice(i, 1);
+                break;
             }
         }
-
-        //write entryLog to file
-        let entryString = "";
+        let entryString = "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n";
         for (let i = 0; i < entryLog.length; i++) {
             entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" + entryLog[i].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" + entryLog[i].getTextEntry() + "\n";
         }
-        await Filesystem.appendFile({
+        await Filesystem.writeFile({
             path: await this.filePath,
             directory: Directory.Documents,
             data: entryString,
@@ -424,8 +280,194 @@ export class FileSystem {
         }).catch((error) => {
             console.error('Error updating entry log: ', error);
         });
-
+        this.entryLog = this.loadFile();
     }
+
+    //retrieves the settings from the settings file, if it doesn't exist create it with default settings
+    public async getSettings() {
+
+    if (typeof window === 'undefined') {
+        return {
+            entryFile: 'ENTRYLOG.csv',
+            dataBaseKey: '',
+            theme: 'DARK',
+            habits: this.habitsToString(this.generateStockHabits()),
+        };
+    }
+
+
+    try {
+        const file = await Filesystem.readFile({
+            path: 'settings.json',
+            directory: Directory.Documents,
+            encoding: Encoding.UTF8,
+        });
+        let settings = JSON.parse(file.data as string);
+        return settings;
+
+    } catch (readError) {
+        let habits = this.generateStockHabits();
+        let defaultSettings = {
+            "entryFile": "ENTRYLOG.csv",
+            "dataBaseKey": "",
+            "theme": "DARK",
+            "habits": this.habitsToString(habits),
+        };
+        await Filesystem.writeFile({
+            path: 'settings.json',
+            directory: Directory.Documents,
+            data: JSON.stringify(defaultSettings, null, 2),
+            encoding: Encoding.UTF8,
+        });
+        return defaultSettings;
+    }
+}
+
+    //update settings file, MINUS HABITS
+    //setting is the setting to update, update is the string update
+    //init currentSettings -> validate setting -> update setting -> write to file
+    public async updateSettings(setting: string, update: string) {
+    let currentConfig = await this.getSettings();
+    //Sanitize input
+    if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
+        if (setting !== "habits") {
+            currentConfig[setting] = update;
+        } else {
+            return;
+        }
+
+        let newConfig = JSON.stringify(currentConfig, null, 2);
+
+        await Filesystem.writeFile({
+            path: 'settings.json',
+            directory: Directory.Documents,
+            data: newConfig,
+            encoding: Encoding.UTF8,
+        }).catch((error) => {
+            console.error('Error updating settings: ', error);
+        })
+    }
+}
+
+    //init habit (grab from json settings)
+    //check and update habit
+    //if habit exist update it
+    //if habit does not exist create it
+    //write to system
+    public async habitControl(habitName: string, positive: boolean, active: boolean) {
+    if (habitName === "") {
+        return;
+    }
+    let config = await this.getSettings();
+    let habitList = this.stringToHabits(config.habits);
+
+    let repeat = false;
+    //update existing habit
+    for (let habit of habitList) {
+        if (habit.name === habitName) {
+            habit.active = active;
+            habit.positive = positive;
+            config.habits = this.habitsToString(habitList);
+            repeat = true;
+        }
+        //update entries with updated habit
+        let entryLog = await this.entryLog;
+        for (let i = 0; i < entryLog.length; i++) {
+            let habits = entryLog[i].getHabits();
+            for (let j = 0; j < habits.length; j++) {
+                if (habits[j].name === habitName) {
+                    habits[j].active = active;
+                    habits[j].positive = positive;
+                }
+            }
+            let entryString = "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n";
+            for (let i = 0; i < entryLog.length; i++) {
+                entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" + entryLog[i].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" + entryLog[i].getTextEntry() + "\n";
+            }
+            await Filesystem.writeFile({
+                path: await this.filePath,
+                directory: Directory.Documents,
+                data: entryString,
+                encoding: Encoding.UTF8,
+            }).catch((error) => {   
+                console.error('Error updating entry log: ', error);
+            });
+
+        }
+    }
+    // new habit
+    if (repeat === false) {
+        let newHabit = new Habit(habitName, positive, active);
+        habitList.push(newHabit);
+    }
+    config.habits = this.habitsToString(habitList);
+
+    //write habit to settings
+    await Filesystem.writeFile({
+        path: 'settings.json',
+        directory: Directory.Documents,
+        data: JSON.stringify(config, null,),
+        encoding: Encoding.UTF8,
+    });
+
+
+}
+
+    //different from deactivating habit
+    //name is name of habit.name
+    //finds habit -> removes from settings -> removes from entry log -> writes entry log
+    public async removehabit(habitName: string) {
+    let currentConfig = await this.getSettings();
+    let habitList = this.stringToHabits(currentConfig.habits);
+    let habExist = false;
+    for (let i = 0; i < habitList.length; i++) {
+        if (habitList[i].name === habitName) {
+            habitList.splice(i, 1);
+            currentConfig.habits = this.habitsToString(habitList);
+
+            //write to settings.json
+            await Filesystem.writeFile({
+                path: 'settings.json',
+                directory: Directory.Documents,
+                data: JSON.stringify(currentConfig, null,),
+                encoding: Encoding.UTF8,
+            });
+            habExist = true;
+        }
+    }
+
+    if (habExist === false) {
+        return;
+    }
+
+    //remove from entryLog
+    let entryLog = await this.entryLog;
+    for (let i = 0; i < entryLog.length; i++) {
+        let habits = entryLog[i].getHabits();
+        for (let j = 0; j < habits.length; j++) {
+            if (habits[j].name === habitName) {
+                let backUp = entryLog[i];
+                let habitEntry = backUp.getHabits();
+                habitEntry.splice(j, 1);
+            }
+        }
+    }
+
+    //write entryLog to file
+    let entryString = "";
+    for (let i = 0; i < entryLog.length; i++) {
+        entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" + entryLog[i].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" + entryLog[i].getTextEntry() + "\n";
+    }
+    await Filesystem.appendFile({
+        path: await this.filePath,
+        directory: Directory.Documents,
+        data: entryString,
+        encoding: Encoding.UTF8,
+    }).catch((error) => {
+        console.error('Error updating entry log: ', error);
+    });
+
+}
 }
 
 /*

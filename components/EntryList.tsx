@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
 import { Entry, Habit } from "../app/lib/entity";
+import Export from './Export';
 import "../app/css/entry.module.css";
 
 interface EntryType {
@@ -35,6 +36,11 @@ export default function EntryList() {
     fetchEntries();
   }, []);
 
+  const handleDelete = async (date: string): Promise<void> => {
+    await fileSystem.deleteEntry(date);
+    setEntries((prevEntries) => prevEntries.filter((entry) => entry.date !== date));
+  };
+
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
     let habitList = await fileSystem.listHabits();
@@ -47,8 +53,6 @@ export default function EntryList() {
         }
       });
     });
-
-    console.log("HABITS FOR ENTRY: ", habitsForEntry);
 
     let entry = new Entry(
       date,
@@ -70,6 +74,7 @@ export default function EntryList() {
   return (
     <div className="EntryList">
       <h1>Log</h1>
+      <Export data={entries} />
       <br />
       {entries.map((entry, index) => (
         <div
@@ -83,8 +88,9 @@ export default function EntryList() {
         >
           <br />
           <strong>{entry.date}</strong>: <br />
-          {entry.content}
-          <br />
+          {entry.content.length > 155
+            ? `${entry.content.substring(0, 155)}...`
+            : entry.content}          <br />
           <strong>Habits:</strong> {entry.habits.map((habit: any) => habit.name).join(", ")}
           <br />
           <strong>Mood:</strong> {entry.mood}
@@ -103,8 +109,18 @@ export default function EntryList() {
               />
             </div>
           )}
-
           <br />
+          <br />
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDelete(entry.date);
+            }}
+            className="habit button"
+          >
+            Delete
+          </button>
+
           <br />
         </div>
       ))}

@@ -2,86 +2,78 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
-import { Habit } from '../app/lib/entity';
-import { Chart } from './chart';
+import { Habit, Entry } from '../app/lib/entity';
+import { Chart } from './graphs/chart';
+import { NegativeChart } from './graphs/Negative';
+import { count, time } from 'console';
+import { ConsistencyChart } from './graphs/Consistency';
+import { ProcStat } from '../app/lib/procStat';
 
 const Statistics: React.FC = () => {
-    console.log("STATISTICS")
-    const fs = new FileSystem();
 
-    //GUI is for display, but raw data is passed to chart component
+    const statProcessor = new ProcStat();
+
+
     const [allHabitsGUI, setAllHabitsGUI] = useState<string[]>([]);
     const [allMoodsGUI, setAllMoodsGUI] = useState<string[]>([]);
 
     const [selectedHabit, setSelectedHabit] = useState<string | null>(null);
-    const [allHabits, setAllHabits] = useState<string[]>([]);
-    const [allMoods, setAllMoods] = useState<string[]>([]);
 
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [chartData, setChartData] = useState<any>(null);
 
+    // date and habits
+    const [negativeChartData, setNegativeChartData] = useState<any[]>([]); // Data for the chart
+
+
+    const [selectedTime, setSelectedTime] = useState<string | null>(null); // time frame
+
+    const [consistencyChartData, setConsistencyChartData] = useState<any>(null);
+    const [consistencyTime, setConsistencyTime] = useState<string | null>(null);
+
+    //init UI
     useEffect(() => {
-        const fetchHabits = async () => {
-            let habitsList = await fs.listAllHabits();
-            const habitNames = habitsList.map((habit) => habit.name);
-            setAllHabits(habitNames);
-            setAllHabitsGUI(habitNames);
-
-        };
-        const fetchMoods = async () => {
-            const moodsList: string[] = await fs.listAllMoods();
-            const moodNames = moodsList.map((mood) => mood);
-            console.log("MOODS: ", moodNames);
-            setAllMoods(moodsList);
-            const uniqueMoods = Array.from(new Set(moodNames)); // Deduplicate
-            setAllMoodsGUI(uniqueMoods);
-        };
-
-
-        fetchHabits();
-        fetchMoods();
+        const initUI = async () => {
+            let habits = (await statProcessor.fetchHabits());
+            let moods = (await statProcessor.fetchMoods())[1];
+            setAllHabitsGUI(habits);
+            setAllMoodsGUI(moods);
+        }
+        initUI();
     }, []);
+
     useEffect(() => {
-        const dataProc = async () => {
+        const consistencyChartInit = async () => {
+            if (!consistencyTime) return;
+            const data = await statProcessor.consistencyProc(consistencyTime);
+            setConsistencyChartData(data);
+        }
+        consistencyChartInit();
+    }, [consistencyTime]);
+
+    useEffect(() => {
+        const habMoodProc = async () => {
             if (!selectedHabit) return;
-
-            const entryLog = await fs.entryLog;
-            const moodCounts: { [mood: string]: number } = {};
-
-            for (const entry of entryLog) {
-                const habits = entry.habits.map((habit: { name: string }) => habit.name);
-                if (habits.includes(selectedHabit)) {
-                    const mood = entry.mood;
-                    if (!moodCounts[mood]) {
-                        moodCounts[mood] = 0;
-                    }
-                    moodCounts[mood]++;
-                }
-            }
-
-            if (Object.keys(moodCounts).length === 0) {
-                const allMoods = await fs.listAllMoods();
-                allMoods.forEach((mood) => {
-                    if (!moodCounts[mood]) {
-                        moodCounts[mood] = 0;
-                    }
-                });
-            }
-
-            const data = Object.entries(moodCounts).map(([mood, count]) => ({
-                mood,
-                count,
-            }));
-
-            console.log("DATA from STATVIEW: ", data);
-            console.log("STATVIEW: for habit: " + selectedHabit);
-
+            const data = await statProcessor.habitMoodProc(selectedHabit);
             setChartData(data);
-        };
-        dataProc();
+        }
+        habMoodProc();
     }, [selectedHabit]);
+
+
+    useEffect(() => {
+        const negativeHabProc = async () => {
+            if (!selectedTime) return;
+            const data = await statProcessor.negativeHabitProc(selectedTime);
+            setNegativeChartData(data || []);
+        }
+        negativeHabProc();
+    }, [selectedTime]);
+
     return (
-        <div>
-            <div>
+        <div style={{ padding: '20px' }}>
+            <h1>Statistics</h1>
+            <div className='settings-container'>
+                <h2>Track Habits and Moods</h2>
                 <label htmlFor="habit-select">Select Habit:   </label>
                 <select id="habit-select"
                     className="habit button"
@@ -98,15 +90,67 @@ const Statistics: React.FC = () => {
                         </option>
                     ))}
                 </select>
-            </div>
-            <div>
-                <br/>
                 <Chart
                     data={chartData}
                 />
             </div>
-        </div>
+            <div className="settings-container">
+                <h2>Track Negative Habits</h2>
+                <label htmlFor="habit-select">Select Time Frame:   </label>
+                <select id="time-select"
+                    className="habit button"
+                    onChange={(e) => {
+                        const time = e.target.value;
+                        setSelectedTime(time);
+                    }
+                    }>
+                    <option value="" disabled selected>
+                        -- Select a Time Frame --
+                    </option>
+                    <option value="Week" >
+                        Week
+                    </option>
+                    <option value="Month" >
+                        Month
+                    </option>
+                    <option value="Year" >
+                        Year
+                    </option>
+                </select>
+                <NegativeChart
+                    data={negativeChartData}
+                />
+                <br />
+            </div >
+            <div className="settings-container">
+                <h2>Entry Length Over Time</h2>
+                <select id="time-select"
+                    className="habit button"
+                    onChange={(e) => {
+                        const time = e.target.value;
+                        setConsistencyTime(time);
+                    }
+                    }>
+                    <option value="" disabled selected>
+                        -- Select a Time Frame --
+                    </option>
+                    <option value="Week" >
+                        Week
+                    </option>
+                    <option value="Month" >
+                        Month
+                    </option>
+                    <option value="Year" >
+                        Year
+                    </option>
+                </select>
+                <ConsistencyChart
+                    data={consistencyChartData}
+                />
+            </div>
+        </div >
     );
 };
 
 export default Statistics
+

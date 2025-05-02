@@ -1,8 +1,9 @@
 'use client'
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import EditorHabit from './editorHabit';
+import Export from './Export';
 
 const Settings: React.FC = () => {
 
@@ -18,7 +19,7 @@ const Settings: React.FC = () => {
   };
 
   // Load settings from file system
-  
+
   const saveSettings = async (setting: string, update: string) => {
     const fs = new FileSystem();
     await fs.updateSettings(setting, update);
@@ -62,33 +63,42 @@ const Settings: React.FC = () => {
 
   return (
     <div className="Settings">
-      
+
       {/* basic settings */}
       <h1>Settings</h1>
       <div className="settings-container">
         <h2>Sync Settings</h2>
-
+        <br />
         <label htmlFor="Database key">Database Key: </label>
-        <input type="text"
-        value={settings.dbKey}
-        onChange={(e)=> {
-          //add here a validation check
-          setSettings((prev) => ({ ...prev, dbKey: e.target.value }));
-          saveSettings("dbKey", e.target.value)}}
-        id="db-key" 
-        placeholder="Enter your database key"
+        <input 
+        className="mood-container"
+        type="text"
+          value={settings.dbKey}
+          onChange={(e) => {
+            //add here a validation check
+            setSettings((prev) => ({ ...prev, dbKey: e.target.value }));
+            saveSettings("dbKey", e.target.value)
+          }}
+          id="db-key"
+          placeholder="Enter your database key"
         />
+        <br/>
 
         <br />
-        <button className="button" onClick={() => {genDBKey()}}>Generate Key</button>
+        <button
+          className="habit button"
+          onClick={() => { genDBKey() }}>Generate Key</button>
         <br />
-        </div>
-
-        {/* habit editor */}
-        <div className="settings-container">
-          < EditorHabit />
-        </div>
       </div>
+      {/* habit editor */}
+      <div className="settings-container">
+        < EditorHabit />
+      </div>
+      <div className="settings-container">
+        <h2>About</h2>
+        
+      </div>
+    </div>
   );
 };
 
