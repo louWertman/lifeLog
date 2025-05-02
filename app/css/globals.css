@@ -1,15 +1,16 @@
 /* document.documentElement.setAttribute("data-theme", themeUpdate); // Update the theme attribute */
 :root {
-  --background: #f0edeb;
-  --background-lv2: #d3cdca;
-  --background-lv3: #9c9792;
+  --background: #f8f7f6;
+  --background-lv2: #e6e5e5;
+  --background-lv3: #c7c6c5;
   --foreground: #121314;
   --foreground-lv2: #1a1e22;
   --foreground-lv3: #3c4047;
   --foreground-lv3: #66696b;
-  --accent: #c7721d;
-  --accent-light: #c29161;
+  --accent: #eea358;
+  --accent-light: #ecb379;
   --accent-comp: #62a1e0;
+  --accent-comp-light: #83bcf5;
 }
 
 /* [data-theme="dark"] */
@@ -26,6 +27,7 @@
     --accent: #c4701c;
     --accent-light: #bb7f42;
     --accent-comp: #256eb6;
+    --accent-comp-light: #3d82c7;
   }
 }
 
@@ -177,6 +179,9 @@ a {
   background-color: var(--accent-comp); /* Blue */
   padding: 5px 10px;
 }
+.habit.button:hover {
+  background-color: var(--accent-comp-light); /* Blue */
+}
 
 
 ul {
@@ -239,4 +244,7 @@ ul {
 
 .settings-container button {
   background-color: var(--accent-comp); /* linear-gradient(45deg, #3498db, #2ecc71); */
+}
+.settings-container button:hover {
+  background-color: var(--accent-comp-light); /* linear-gradient(45deg, #3498db, #2ecc71); */
 }
