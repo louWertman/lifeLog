@@ -2,13 +2,11 @@
 
 import React, { useState } from 'react';
 import '../app/css/entry.module.css';
-import {Entry, Habit} from '../app/lib/entity'; // Ensure the file name matches the actual file in your project
-import {FileSystem} from '../app/lib/dataManagement';
-import EditEntry from './EditEntry';
+import EditEntry from "../components/EditEntry";
+
 
 const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
-    const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
     const daysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 
@@ -21,38 +19,11 @@ const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
     };
 
     const handleDateClick = (day: number) => {
-        const selectDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        let stringDate = selectDate.toLocaleString('en-ET').split(",")[0];
-        setSelectedDate(stringDate);
-
+        const selectedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+        let stringDate = selectedDate.toISOString().split("T")[0];
+        onDateClick(selectedDate);
+        
     };
-
-    const handleSave = async (content: string, date: string,
-        habitNames: string[], mood: string): Promise<void> => {
-        let fileSystem = new FileSystem();
-        let habitList = await fileSystem.listHabits();
-        let habitsForEntry: Habit[] = [];
-
-        habitList.forEach(habitInList => {
-            habitNames.forEach(habitName => {
-                if (habitInList.name === habitName) {
-                    habitsForEntry.push(habitInList);
-                }
-            });
-        });
-
-        console.log("HABITS FOR ENTRY: ", habitsForEntry);
-
-        let entry = new Entry(
-            date,
-            mood,
-            habitsForEntry,
-            content
-        );
-
-        await fileSystem.saveEntry(entry);
-    };
-
 
     const renderDaysOfWeek = () => {
         const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -117,7 +88,6 @@ const Calendar = ({ onDateClick }: { onDateClick: (date: Date) => void }) => {
                 <div className="calendar-days-of-week">{renderDaysOfWeek()}</div>
                 <div className="calendar-dates">{renderDays()}</div>
             </div>
-            
         </div>
     );
 };
