@@ -76,7 +76,7 @@ export default function EntryList() {
   return (
     <div className="EntryList">
       <h1>Log</h1>
-      <Export data={entries}/>
+      <Export data={entries} />
       <br />
       {entries.map((entry, index) => (
         <div
@@ -90,8 +90,9 @@ export default function EntryList() {
         >
           <br />
           <strong>{entry.date}</strong>: <br />
-          {entry.content}
-          <br />
+          {entry.content.length > 155
+            ? `${entry.content.substring(0, 155)}...`
+            : entry.content}          <br />
           <strong>Habits:</strong> {entry.habits.map((habit: any) => habit.name).join(", ")}
           <br />
           <strong>Mood:</strong> {entry.mood}
@@ -110,8 +111,8 @@ export default function EntryList() {
               />
             </div>
           )}
-          <br/>
-          <br/>
+          <br />
+          <br />
           <button
             onClick={(e) => {
               e.stopPropagation();
