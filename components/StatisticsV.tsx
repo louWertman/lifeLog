@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
-import { Habit } from '../app/lib/entity';
-import { Chart } from './chart';
-import { NegativeChart } from './Negative';
+import { Habit, Entry } from '../app/lib/entity';
+import { Chart } from './graphs/chart';
+import { NegativeChart } from './graphs/Negative';
 import { count, time } from 'console';
+import { ConsistencyChart } from './graphs/Consistency';
 
 const Statistics: React.FC = () => {
     const fs = new FileSystem();
+
 
     //GUI is for display, but raw data is passed to chart component
     //habits and moods
@@ -23,11 +25,13 @@ const Statistics: React.FC = () => {
 
     // date and habits
     const [negativeChartData, setNegativeChartData] = useState<any[]>([]); // Data for the chart
+
+
     const [selectedTime, setSelectedTime] = useState<string | null>(null); // time frame
 
+    const [consistencyChartData, setConsistencyChartData] = useState<any>(null);
+    const [consistencyTime, setConsistencyTime] = useState<string | null>(null);
 
-    //consistency
-    const [entryLog, setEntryLog] = useState<any[]>([]); // Entry log for the selected date
     //Length of Entry to Habit IF I HAVE TIME
 
     useEffect(() => {
@@ -51,11 +55,36 @@ const Statistics: React.FC = () => {
         fetchHabits();
         fetchMoods();
     }, []);
+
+    useEffect(() => {
+        const consistencyProc = async () => {
+            let entryLog = await fs.listEntries();
+            if (!consistencyTime) return;
+            let dateRange = calculateDate(consistencyTime);
+            if (!dateRange) return;
+
+            let data = [];
+
+            for (let entry of entryLog) {
+                for (let date of dateRange){
+                    if(entry.date==date.toLocaleString('en-ET').split(',')[0])
+                    data.push({
+                        date: entry.date,
+                        length: entry.content.length
+                    });
+                }
+            }
+            setConsistencyChartData(data);
+        };
+
+        consistencyProc();
+    }, [consistencyTime]);
+
     useEffect(() => {
         const habMoodProc = async () => {
-            const entryLog = await fs.entryLog;
             if (!selectedHabit) return;
 
+            let entryLog = await fs.listEntries()
             const moodCounts: { [mood: string]: number } = {};
 
             for (const entry of entryLog) {
@@ -89,46 +118,52 @@ const Statistics: React.FC = () => {
             setChartData(data);
         };
 
-
         habMoodProc();
     }, [selectedHabit]);
+
+    const calculateDate = (timeFrame: string) => {
+        let dateRange: Date[] = [];
+        let startDate: Date;
+        let currentDate = new Date();
+
+        switch (timeFrame.toString()) {
+            case "Week":
+                startDate = new Date(currentDate);
+                startDate.setDate(currentDate.getDate() - 7);
+                break;
+            case "Month":
+                startDate = new Date(currentDate);
+                startDate.setDate(currentDate.getDate() - 30);
+                break;
+            case "Year":
+                startDate = new Date(currentDate);
+                startDate.setDate(currentDate.getDate() - 365);
+                break;
+            default:
+                console.error("Invalid time frame selected");
+                return;
+        }
+
+        // Generate the date range from startDate to currentDate
+        for (let d = new Date(startDate); d <= currentDate; d.setDate(d.getDate() + 1)) {
+            dateRange.push(new Date(d));
+        }
+
+        return dateRange;
+    }
 
     useEffect(() => {
         const negativeHabProc = async () => {
             if (!selectedTime) return;
+            const dateRange = calculateDate(selectedTime);
 
-            let dateRange: Date[] = [];
-            let startDate: Date;
-            let currentDate = new Date();
+            if (!dateRange) return;
 
-
-            const entryLog = await fs.entryLog;
-
-            switch (selectedTime) {
-                case "Week":
-                    startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 7);
-                    break;
-                case "Month":
-                    startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 30);
-                    break;
-                case "Year":
-                    startDate = new Date(currentDate);
-                    startDate.setDate(currentDate.getDate() - 365);
-                    break;
-                default:
-                    console.error("Invalid time frame selected");
-                    return;
-            }
-
-            // Generate the date range from startDate to currentDate
-            for (let d = new Date(startDate); d <= currentDate; d.setDate(d.getDate() + 1)) {
-                dateRange.push(new Date(d));
-            }
+            let entryLog = await fs.listEntries();
 
             let negativeHabitCounter = 0;
             let data: any = [];
+
             for (let date of dateRange) {
                 negativeHabitCounter = 0;
                 for (const entry of entryLog) {
@@ -138,13 +173,12 @@ const Statistics: React.FC = () => {
                                 negativeHabitCounter++;
                             }
                         }
-
                     }
+                    data.push({
+                        date: date.toLocaleString('en-ET').split(',')[0],
+                        count: negativeHabitCounter,
+                    });
                 }
-                data.push({
-                    date: date.toLocaleString('en-ET').split(',')[0],
-                    count: negativeHabitCounter,
-                });
             };
             setNegativeChartData(data);
         }
@@ -178,7 +212,7 @@ const Statistics: React.FC = () => {
             </div>
             <div className="settings-container">
                 <h2>Track Negative Habits</h2>
-                <label htmlFor="habit-select">Select TimeFrame:   </label>
+                <label htmlFor="habit-select">Select Time Frame:   </label>
                 <select id="time-select"
                     className="habit button"
                     onChange={(e) => {
@@ -204,6 +238,32 @@ const Statistics: React.FC = () => {
                 />
                 <br />
             </div >
+            <div className="settings-container">
+                <h2>Entry Length Over Time</h2>
+                <select id="time-select"
+                    className="habit button"
+                    onChange={(e) => {
+                        const time = e.target.value;
+                        setConsistencyTime(time);
+                    }
+                    }>
+                    <option value="" disabled selected>
+                        -- Select a Time Frame --
+                    </option>
+                    <option value="Week" >
+                        Week
+                    </option>
+                    <option value="Month" >
+                        Month
+                    </option>
+                    <option value="Year" >
+                        Year
+                    </option>
+                </select>
+                <ConsistencyChart
+                    data={consistencyChartData}
+                />
+            </div>
         </div >
     );
 };

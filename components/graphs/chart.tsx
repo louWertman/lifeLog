@@ -1,6 +1,6 @@
 import React, { useEffect, useState, PureComponent, useMemo } from 'react';
-import { FileSystem } from '../app/lib/dataManagement';
-import { Habit, Entry } from '../app/lib/entity';
+import { FileSystem } from '../../app/lib/dataManagement';
+import { Habit, Entry } from '../../app/lib/entity';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface chartProps {
