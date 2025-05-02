@@ -3,7 +3,8 @@ For Consistency Graph
 */
 
 import React, { useEffect, useState } from "react";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import Export from '../Export';
 
 
 interface consistencyChartProps {
@@ -28,14 +29,17 @@ export const ConsistencyChart: React.FC<consistencyChartProps> = ({ data }) => {
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false}/>
+                    <XAxis dataKey="date" tick={false} />
                     <YAxis />
-                    <Tooltip 
+                    <Tooltip
                         contentStyle={{ backgroundColor: "#24292f", color: "white", border: "none" }}
                     />
-                    <Line type="monotone" dataKey="length" stroke="#8884d8" name="Charecter Count" strokeWidth={3}/>
+                    <Line type="monotone" dataKey="length" stroke="#8884d8" name="Charecter Count" strokeWidth={3} />
                 </LineChart>
             </ResponsiveContainer>
+            <Export
+                data={data}
+            />
         </div>
     );
 };

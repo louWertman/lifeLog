@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
 import { Entry, Habit } from "../app/lib/entity";
+import Export from './Export';
 import "../app/css/entry.module.css";
 
 interface EntryType {
@@ -75,6 +76,7 @@ export default function EntryList() {
   return (
     <div className="EntryList">
       <h1>Log</h1>
+      <Export data={entries}/>
       <br />
       {entries.map((entry, index) => (
         <div

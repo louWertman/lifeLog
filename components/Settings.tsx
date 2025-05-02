@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import EditorHabit from './editorHabit';
+import Export from './Export';
 
 const Settings: React.FC = () => {
 
@@ -92,6 +93,10 @@ const Settings: React.FC = () => {
       {/* habit editor */}
       <div className="settings-container">
         < EditorHabit />
+      </div>
+      <div className="settings-container">
+        <h2>About</h2>
+        
       </div>
     </div>
   );

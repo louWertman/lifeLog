@@ -4,6 +4,7 @@ For tracking the negatuve habits over time
 
 import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import Export from '../Export';
 
 
 interface negativeChartProps {
@@ -36,6 +37,9 @@ export const NegativeChart: React.FC<negativeChartProps> = ({ data }) => {
                     <Line type="monotone" dataKey="count" stroke="#8884d8" name="Negative Habits" strokeWidth={3}/>
                 </LineChart>
             </ResponsiveContainer>
+            <Export
+                data={data}
+            />
         </div>
     );
 };
