@@ -23,20 +23,22 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
   date = currentDate;
 
-  
-  
+
+
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
   const [entryMood, setEntryMood] = useState(mood);
   const [lastSaved, setLastSaved] = useState<string>('');
   const [entryHabits, setEntryHabits] = useState<string[]>([]);
+
+
   
   const handleSave = () => {
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
   };
-  
-  
+
+
   //if entry exist for the date it loads into the GUI
   useEffect(() => {
     setEntryDate(date);
@@ -62,7 +64,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     );
     let savedTime = new Date().toLocaleString('en-ET').split('.')[0]
     setLastSaved(savedTime);
-  },[entryContent, entryHabits, entryMood]);
+  }, [entryContent, entryHabits, entryMood]);
 
   return (
 
@@ -70,7 +72,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
       <div className="entry-container">
         <h1>Edit Entry for {entryDate}</h1>
-        <div style={{ display: 'flex', gap: '20px' }}>
+        <div className="flex-row" style={{ display: 'flex', gap: '20px' }}>
 
           <div style={{ flex: '3' }}>
             <label htmlFor="body">Body Entry:</label>
@@ -81,8 +83,8 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
               className="entry-body"
             />
           </div>
-
-          <div style={{ flex: '1' }}>
+          <div className="flex-column"
+          style={{ flex: '1' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <label htmlFor="habits">Habits:</label>
               <Habits
@@ -104,12 +106,12 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
               />
             </div>
           </div>
-        </div>
-        <div className='lastSaved'>
-          <p>Last Saved: {lastSaved}</p>
-        </div>
+      </div>
+      <div className='lastSaved'>
+        <p>Last Saved: {lastSaved}</p>
       </div>
     </div>
+    </div >
   );
 };
 

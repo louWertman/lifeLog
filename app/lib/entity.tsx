@@ -43,6 +43,8 @@ export class Entry {
     private noDelim(text: string) {
         if (text.includes("@~~@DELIM@~~@")) {
             document.write("ERROR: Use of Delimeter in Text Feild")
+            document.write("ERROR: Use of Delimeter in Text Feild")
+            document.write("ERROR: Use of Delimeter in Text Feild")
             return false;
         }
         else {
@@ -76,7 +78,7 @@ export class Habit {
             this.positive = positive;
             this.active = active;
         }
-        else{
+        else {
             document.write("Error: use of DELIM")
         }
     }
@@ -114,6 +116,7 @@ export class Habit {
 
     private noDelim(text: string) {
         if (text.includes(",") || text.includes("@~~@DELIM@~~@") || text.includes(":")) {
+            document.write("ERROR: Use of Delimeter in Text Feild")
             document.write("ERROR: Use of Delimeter in Text Feild")
             return false;
         }

@@ -26,15 +26,11 @@ export class FileSystem {
         if (currPermissions.publicStorage === 'denied') {
             const requestPermissions = await Filesystem.requestPermissions();
             if (requestPermissions.publicStorage === 'denied') {
-                console.log("DEBUG: Permissions denied");
             } else {
-                console.log("DEBUG: Permissions granted");
             }
         } else {
-            console.log("DEBUG: Permissions already granted");
         }
     }
-
 
     constructor() {
 
@@ -87,15 +83,12 @@ export class FileSystem {
                         this.stringToHabits(habitString),
                         entry.data['ENTRY']
                     );
-                    console.log("DEBUG: New Entry: ", newEntry);
-                    console.log(newEntry);
                     entries.push(newEntry);
                 } else {
-                    console.error("DEBUG: Invalid entry data: ", entry);
+                    console.error("Invalid entry data: ", entry);
                 }
             }
         });
-        console.log("DEBUG: Entry loaded: ", entries);
 
         return entries;
     }
@@ -104,7 +97,6 @@ export class FileSystem {
     //returns a string array with the date of every entry, latest entry first
     public async listEntries() {
         const entryLog = await this.entryLog;
-        console.log("DEBUG: listEntries FSCLASS: ", entryLog);
         return entryLog
             .sort((a, b) => new Date(b.getDateEntry()).getTime() - new Date(a.getDateEntry()).getTime())
             .map((entry) => ({
@@ -126,7 +118,6 @@ export class FileSystem {
     }
 
     public stringToHabits(habitString: string) {
-        console.trace("DEBUG: stringToHabits: " + habitString);
         let habits = Array<Habit>();
         for (let habit of habitString.split(',')) {
             let habitInfo = habit.split(':');
@@ -204,7 +195,6 @@ export class FileSystem {
             }
         }
         if (moods.length > 0) {
-            console.log("FS CLASS MOODS RETURNED: ", moods);
             return moods;
         }
         return Promise.resolve(['Happy', 'Sad', 'Excited', 'Calm']);
@@ -233,7 +223,6 @@ export class FileSystem {
         //check if entry already exists if does overwirite it
         for (let i = 0; i < log.length; i++) {
             if (log[i].date === entry.getDateEntry()) {
-                console.log("DEBUG: Entry already exists, overwriting: ", log[i], entry);
                 log[i] = entry;
                 entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
                 //convert back into csv entryString
@@ -248,7 +237,7 @@ export class FileSystem {
                         encoding: Encoding.UTF8,
                     });
                 } catch (readError) {
-                    console.log("DEBUG: Error writing to file: ", readError);
+                    console.error("Error writing to file: ", readError);
                 }
                 return;
             }
@@ -267,7 +256,7 @@ export class FileSystem {
             this.entryLog = this.loadFile();
 
         } catch (writeError) {
-            console.log(writeError);
+            console.error(writeError);
         }
     }
 
@@ -298,7 +287,6 @@ export class FileSystem {
     public async getSettings() {
 
     if (typeof window === 'undefined') {
-        console.warn("Filesystem API is not available on the server.");
         return {
             entryFile: 'ENTRYLOG.csv',
             dataBaseKey: '',
@@ -315,7 +303,6 @@ export class FileSystem {
             encoding: Encoding.UTF8,
         });
         let settings = JSON.parse(file.data as string);
-        console.log("SETTINGS: ", settings)
         return settings;
 
     } catch (readError) {
@@ -332,7 +319,6 @@ export class FileSystem {
             data: JSON.stringify(defaultSettings, null, 2),
             encoding: Encoding.UTF8,
         });
-        console.log("DEBUG: Settings file not found, creating new one with default settings");
         return defaultSettings;
     }
 }
@@ -347,7 +333,6 @@ export class FileSystem {
         if (setting !== "habits") {
             currentConfig[setting] = update;
         } else {
-            console.log("Please do not use this for Habits, use habitControl()");
             return;
         }
 
@@ -371,7 +356,6 @@ export class FileSystem {
     //write to system
     public async habitControl(habitName: string, positive: boolean, active: boolean) {
     if (habitName === "") {
-        console.log("Habit name cannot be empty");
         return;
     }
     let config = await this.getSettings();
@@ -384,7 +368,6 @@ export class FileSystem {
             habit.active = active;
             habit.positive = positive;
             config.habits = this.habitsToString(habitList);
-            console.log("DEBUG: Habit updated: ", habit);
             repeat = true;
         }
         //update entries with updated habit
@@ -454,7 +437,6 @@ export class FileSystem {
     }
 
     if (habExist === false) {
-        console.log("HABIT NOT FOUND");
         return;
     }
 
