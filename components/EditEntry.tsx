@@ -32,10 +32,11 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [entryHabits, setEntryHabits] = useState<string[]>([]);
 
 
-  
   const handleSave = () => {
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
+        const savedTime = new Date().toLocaleString('en-ET').split('.')[0];
+    setLastSaved(savedTime);
   };
 
 
@@ -60,9 +61,9 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
   useEffect(() => {
     const autoSave = setTimeout(() => { handleSave(); },
-      1000
+      2000
     );
-    let savedTime = new Date().toLocaleString('en-ET').split('.')[0]
+    let savedTime = new Date().toLocaleString('en-ET').split('.')[0];
     setLastSaved(savedTime);
   }, [entryContent, entryHabits, entryMood]);
 
@@ -84,7 +85,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
             />
           </div>
           <div className="flex-column"
-          style={{ flex: '1' }}>
+            style={{ flex: '1' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <label htmlFor="habits">Habits:</label>
               <Habits
@@ -106,11 +107,11 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
               />
             </div>
           </div>
+        </div>
+        <div className='lastSaved'>
+          <p>Last Saved: {lastSaved}</p>
+        </div>
       </div>
-      <div className='lastSaved'>
-        <p>Last Saved: {lastSaved}</p>
-      </div>
-    </div>
     </div >
   );
 };
