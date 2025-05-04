@@ -30,12 +30,14 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [entryMood, setEntryMood] = useState(mood);
   const [lastSaved, setLastSaved] = useState<string>('');
   const [entryHabits, setEntryHabits] = useState<string[]>([]);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+
 
 
   const handleSave = () => {
     setEntryDate(currentDate)
     onSave(entryContent, entryDate, entryHabits, entryMood);
-        const savedTime = new Date().toLocaleString('en-ET').split('.')[0];
+    const savedTime = new Date().toLocaleString('en-ET').split('.')[0];
     setLastSaved(savedTime);
   };
 
@@ -59,14 +61,24 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     }
   }, [date]);
 
-  useEffect(() => {
-    const autoSave = setTimeout(() => { handleSave(); },
-      2000
-    );
-    let savedTime = new Date().toLocaleString('en-ET').split('.')[0];
-    setLastSaved(savedTime);
-  }, [entryContent, entryHabits, entryMood]);
 
+  //Debounce
+  useEffect(() => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      handleSave(); 
+    }, 1500); 
+
+    setTypingTimeout(timeout);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [entryContent, entryHabits, entryMood]); 
+  
   return (
 
     <div>
@@ -75,7 +87,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
         <h1>Edit Entry for {entryDate}</h1>
         <div className="flex-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
 
-          <div style={{ flex: '3' , minWidth: '300px' }}>
+          <div style={{ flex: '3', minWidth: '300px' }}>
             <label htmlFor="body">Body Entry:</label>
             <textarea
               value={entryContent}
@@ -85,7 +97,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
             />
           </div>
           <div className="flex-column"
-          style={{ flex: '1', minWidth: '300px' }}>
+            style={{ flex: '1', minWidth: '300px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <label htmlFor="habits">Habits:</label>
               <Habits
