@@ -71,7 +71,7 @@ export class FileSystem {
             skipEmptyLines: true,
             header: true,
             error: (error: any) => {
-                console.error('Parse Error: ', error);
+                //console.error('Parse Error: ', error);
             },
             step: (entry: any) => {
                 if (entry && entry.data) {
@@ -85,7 +85,7 @@ export class FileSystem {
                     );
                     entries.push(newEntry);
                 } else {
-                    console.error("Invalid entry data: ", entry);
+                    //console.error("Invalid entry data: ", entry);
                 }
             }
         });
@@ -220,6 +220,7 @@ export class FileSystem {
     public async saveEntry(entry: Entry) {
         //load file
         const log = await this.entryLog;
+        const config = await this.getSettings();
         await new Promise(resolve => setTimeout(resolve, 0));
 
         let entryString = "";
@@ -239,10 +240,37 @@ export class FileSystem {
                         data: entryString,
                         encoding: Encoding.UTF8,
                     });
+                    if (config.sync === "1" && config.dbKey) {
+                        try {
+                            console.log("Sending entry:", {
+                                date: entry.getDateEntry(),
+                                mood: entry.getMoods(),
+                                content: entry.getTextEntry(),
+                                habits: this.habitsToString(entry.getHabits()),
+                                token: config.dbKey
+                              });
+                          await fetch('/api/entries/insert', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              date: entry.getDateEntry(),
+                              mood: entry.getMoods(),
+                              content: entry.getTextEntry(),
+                              habits: this.habitsToString(entry.getHabits()),
+                              token: config.dbKey
+                            })
+                          });
+                            console.log("DEBUG: Entry synced to DB.");
+                        } catch (err) {
+                            console.error("ERROR: Failed to sync entry to backend", err);
+                        }
+                    }
                 } catch (readError) {
-                    console.error("Error writing to file: ", readError);
+                    //console.error("Error writing to file: ", readError);
                 }
+                
                 return;
+                
             }
         }
         //otherwise append file
@@ -259,7 +287,7 @@ export class FileSystem {
             this.entryLog = this.loadFile();
 
         } catch (writeError) {
-            console.error(writeError);
+            //console.error(writeError);
         }
     }
 
@@ -281,7 +309,7 @@ export class FileSystem {
             data: entryString,
             encoding: Encoding.UTF8,
         }).catch((error) => {
-            console.error('Error updating entry log: ', error);
+            //console.error('Error updating entry log: ', error);
         });
         this.entryLog = this.loadFile();
     }
@@ -292,7 +320,7 @@ export class FileSystem {
     if (typeof window === 'undefined') {
         return {
             entryFile: 'ENTRYLOG.csv',
-            dataBaseKey: '',
+            dbKey: '',
             theme: 'DARK',
             habits: this.habitsToString(this.generateStockHabits()),
         };
@@ -312,7 +340,8 @@ export class FileSystem {
         let habits = this.generateStockHabits();
         let defaultSettings = {
             "entryFile": "ENTRYLOG.csv",
-            "dataBaseKey": "",
+            "dBKey": "",
+            "sync": 0,
             "theme": "DARK",
             "habits": this.habitsToString(habits),
         };
@@ -332,7 +361,7 @@ export class FileSystem {
     public async updateSettings(setting: string, update: string) {
     let currentConfig = await this.getSettings();
     //Sanitize input
-    if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
+    if (setting !== "habits" && !["entryFile", "dBKey", "theme"].includes(setting)) {
         if (setting !== "habits") {
             currentConfig[setting] = update;
         } else {
@@ -347,7 +376,7 @@ export class FileSystem {
             data: newConfig,
             encoding: Encoding.UTF8,
         }).catch((error) => {
-            console.error('Error updating settings: ', error);
+            //console.error('Error updating settings: ', error);
         })
     }
 }
@@ -393,7 +422,7 @@ export class FileSystem {
                 data: entryString,
                 encoding: Encoding.UTF8,
             }).catch((error) => {   
-                console.error('Error updating entry log: ', error);
+                //console.error('Error updating entry log: ', error);
             });
 
         }
@@ -412,6 +441,23 @@ export class FileSystem {
         data: JSON.stringify(config, null,),
         encoding: Encoding.UTF8,
     });
+    if (config.sync === "1" && config.dbKey) {
+        try {
+            await fetch('/api/habits/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    habitName,
+                    positive,
+                    active,
+                    token: config.dbKey
+                }),
+            });
+            console.log("DEBUG: Habit synced to DB.");
+        } catch (err) {
+            console.error("ERROR syncing habit:", err);
+        }
+    }
 
 
 }
@@ -435,6 +481,18 @@ export class FileSystem {
                 data: JSON.stringify(currentConfig, null,),
                 encoding: Encoding.UTF8,
             });
+            if (currentConfig.sync === "1" && currentConfig.dbKey) {
+                try {
+                    await fetch('/api/habits/delete', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ habitName, token: currentConfig.dbKey }),
+                    });
+                    console.log("DEBUG: Habit deleted from DB.");
+                } catch (err) {
+                    console.error("ERROR deleting from DB:", err);
+                }
+            }
             habExist = true;
         }
     }
@@ -467,7 +525,7 @@ export class FileSystem {
         data: entryString,
         encoding: Encoding.UTF8,
     }).catch((error) => {
-        console.error('Error updating entry log: ', error);
+        //console.error('Error updating entry log: ', error);
     });
 
 }
