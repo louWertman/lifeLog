@@ -72,9 +72,9 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
       <div className="entry-container">
         <h1>Edit Entry for {entryDate}</h1>
-        <div className="flex-row" style={{ display: 'flex', gap: '20px' }}>
+        <div className="flex-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
 
-          <div style={{ flex: '3' }}>
+          <div style={{ flex: '3' , minWidth: '300px' }}>
             <label htmlFor="body">Body Entry:</label>
             <textarea
               value={entryContent}
@@ -84,7 +84,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
             />
           </div>
           <div className="flex-column"
-          style={{ flex: '1' }}>
+          style={{ flex: '1', minWidth: '300px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <label htmlFor="habits">Habits:</label>
               <Habits

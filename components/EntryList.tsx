@@ -73,7 +73,7 @@ export default function EntryList() {
 
   return (
     <div className="EntryList">
-      <h1>Log</h1>
+      {/* <h1>Log</h1> */}
       <Export data={entries} />
       <br />
       {entries.map((entry, index) => (

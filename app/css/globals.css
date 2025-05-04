@@ -11,6 +11,7 @@
   --accent-light: #ecb379;
   --accent-comp: #62a1e0;
   --accent-comp-light: #83bcf5;
+  --accent-alt: #b0dba7;
 }
 
 /* [data-theme="dark"] */
@@ -28,6 +29,7 @@
     --accent-light: #bb7f42;
     --accent-comp: #256eb6;
     --accent-comp-light: #3d82c7;
+    --accent-alt: #4b7c40;
   }
 }
 
@@ -265,4 +267,8 @@ ul {
 }
 .settings-container button:hover {
   background-color: var(--accent-comp-light); /* linear-gradient(45deg, #3498db, #2ecc71); */
+}
+
+.export button {
+  float:right;
 }

@@ -38,11 +38,11 @@ const Export: React.FC <exportProps> = ({ data }) => {
 
 
     return (
-        <div>
+        <div className="export">
             <button
                 className="habit button"
                 style={{
-                    backgroundColor: '#6ba25e',
+                    backgroundColor: 'var(--accent-alt)',
                 }}
                 onClick={exportData}
             >
