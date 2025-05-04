@@ -27,7 +27,7 @@ const Settings: React.FC = () => {
 
 
   /******add logic for generating a key*********/
-  const genDBKey = () => {
+  const genDBKey = async () => {
     //add logic here
     const now = new Date();
 
@@ -40,9 +40,21 @@ const Settings: React.FC = () => {
 
     const newKey = `${datePart}-${timePart}-${randomPart}`;
 
-    setSettings((prev) => ({ ...prev, dbKey: newKey }));
+    setSettings((prev) => ({ ...prev, dbKey: newKey, sync: 1 }));
     saveSettings("dbKey", newKey);
+    saveSettings("sync", "1");
     window.alert(`Key generated: ${newKey}`); //try to print out key 
+    try {
+      await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: newKey }),
+      });
+      console.log("Signup POST sent for new dbKey.");
+    } catch (err) {
+      console.error("Failed to send signup POST:", err);
+    }
+  
     //window.alert("Key generated");
   }
 
