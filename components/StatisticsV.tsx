@@ -8,6 +8,7 @@ import { NegativeChart } from './graphs/Negative';
 import { count, time } from 'console';
 import { ConsistencyChart } from './graphs/Consistency';
 import { ProcStat } from '../app/lib/procStat';
+import { PositiveChart } from './graphs/Positive';
 
 const Statistics: React.FC = () => {
 
@@ -23,9 +24,12 @@ const Statistics: React.FC = () => {
 
     // date and habits
     const [negativeChartData, setNegativeChartData] = useState<any[]>([]); // Data for the chart
-
-
     const [selectedTime, setSelectedTime] = useState<string | null>(null); // time frame
+
+    const [positiveChartData, setPositiveChartData] = useState<any[]>([]);
+    const [positiveTime, setPositiveTime] = useState<string | null>(null);
+
+
 
     const [consistencyChartData, setConsistencyChartData] = useState<any>(null);
     const [consistencyTime, setConsistencyTime] = useState<string | null>(null);
@@ -68,6 +72,15 @@ const Statistics: React.FC = () => {
         }
         negativeHabProc();
     }, [selectedTime]);
+
+    useEffect(() => {
+        const positiveHabProc= async () => {
+            if (!positiveTime) return;
+            const data = await statProcessor.positiveHabitProc(positiveTime);
+            setPositiveChartData(data || []);
+        }
+        positiveHabProc();
+    }, [positiveTime]);
 
     return (
         <div style={{ padding: '20px' }}>
@@ -119,6 +132,34 @@ const Statistics: React.FC = () => {
                 </select>
                 <NegativeChart
                     data={negativeChartData}
+                />
+                <br />
+            </div >
+            <div className="settings-container">
+                <h2>Track Postive Habits</h2>
+                <label htmlFor="habit-select">Select Time Frame:   </label>
+                <select id="time-select"
+                    className="habit button"
+                    onChange={(e) => {
+                        const time = e.target.value;
+                        setPositiveTime(time);
+                    }
+                    }>
+                    <option value="" disabled selected>
+                        -- Select a Time Frame --
+                    </option>
+                    <option value="Week" >
+                        Week
+                    </option>
+                    <option value="Month" >
+                        Month
+                    </option>
+                    <option value="Year" >
+                        Year
+                    </option>
+                </select>
+                <PositiveChart
+                    data={positiveChartData}
                 />
                 <br />
             </div >
