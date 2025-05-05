@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, memo} from "react";
 import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
 import { Entry, Habit } from "../app/lib/entity";
@@ -14,7 +14,7 @@ interface EntryType {
   mood: string;
 }
 
-export default function EntryList() {
+const  EntryList: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [entries, setEntries] = useState<EntryType[]>([]);
 
@@ -130,3 +130,5 @@ export default function EntryList() {
     </div>
   );
 }
+
+export default memo(EntryList);
