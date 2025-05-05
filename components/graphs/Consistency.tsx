@@ -21,7 +21,7 @@ export const ConsistencyChart: React.FC<consistencyChartProps> = ({ data }) => {
     }, [data]);
 
     if (!data || data.length === 0) {
-        return <div>Make sure you have negative habits - or perhaps you haven't engaged with them in a while. In the latter keep doing what you are doing!</div>;
+        return <div>Mmm.. seems like there are no entries to analyze at the moment</div>;
     }
 
     return (

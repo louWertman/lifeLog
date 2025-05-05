@@ -18,7 +18,7 @@ export const Chart: React.FC<chartProps> = ({ data }) => {
 
 
     if (!data || data.length === 0) {
-        return <div>Select a Habit!</div>;
+        return <div>Make sure you have habits and have engaged with them!</div>;
     }
 
     return (

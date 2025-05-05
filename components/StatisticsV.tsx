@@ -74,7 +74,7 @@ const Statistics: React.FC = () => {
     }, [selectedTime]);
 
     useEffect(() => {
-        const positiveHabProc= async () => {
+        const positiveHabProc = async () => {
             if (!positiveTime) return;
             const data = await statProcessor.positiveHabitProc(positiveTime);
             setPositiveChartData(data || []);
@@ -87,7 +87,6 @@ const Statistics: React.FC = () => {
             <h1>Statistics</h1>
             <div className='settings-container'>
                 <h2>Track Habits and Moods</h2>
-                <label htmlFor="habit-select">Select Habit:   </label>
                 <select id="habit-select"
                     className="habit button"
                     onChange={(e) => {
@@ -103,13 +102,14 @@ const Statistics: React.FC = () => {
                         </option>
                     ))}
                 </select>
-                <Chart
-                    data={chartData}
-                />
+                {chartData && chartData.length > 0 &&
+                    <Chart
+                        data={chartData}
+                    />
+                }
             </div>
             <div className="settings-container">
                 <h2>Track Negative Habits</h2>
-                <label htmlFor="habit-select">Select Time Frame:   </label>
                 <select id="time-select"
                     className="habit button"
                     onChange={(e) => {
@@ -130,14 +130,15 @@ const Statistics: React.FC = () => {
                         Year
                     </option>
                 </select>
-                <NegativeChart
-                    data={negativeChartData}
-                />
+                {negativeChartData && negativeChartData.length > 0 &&
+                    <NegativeChart
+                        data={negativeChartData}
+                    />
+                }
                 <br />
             </div >
             <div className="settings-container">
                 <h2>Track Postive Habits</h2>
-                <label htmlFor="habit-select">Select Time Frame:   </label>
                 <select id="time-select"
                     className="habit button"
                     onChange={(e) => {
@@ -158,9 +159,11 @@ const Statistics: React.FC = () => {
                         Year
                     </option>
                 </select>
-                <PositiveChart
-                    data={positiveChartData}
-                />
+                {positiveChartData && positiveChartData.length > 0 &&
+                    <PositiveChart
+                        data={positiveChartData}
+                    />
+                }
                 <br />
             </div >
             <div className="settings-container">
@@ -185,9 +188,11 @@ const Statistics: React.FC = () => {
                         Year
                     </option>
                 </select>
+                {consistencyChartData && consistencyChartData.length > 0 &&
                 <ConsistencyChart
                     data={consistencyChartData}
                 />
+                }
             </div>
         </div >
     );

@@ -21,7 +21,7 @@ export const PositiveChart: React.FC<positiveChartProps> = ({ data }) => {
     }, [data]);
 
     if (!data || data.length === 0) {
-        return <div>Make sure you have some positive habits, or trying to enageg in them</div>;
+        return <div>Make sure you have some positive habits, or try to engage with them more</div>;
     }
 
     return (
