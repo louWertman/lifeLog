@@ -225,7 +225,7 @@ export class FileSystem {
         let entryString = "";
         //check if entry already exists if does overwirite it
         for (let i = 0; i < log.length; i++) {
-            if (log[i].getDateEntry() === entry.getDateEntry()) {
+            if (log[i].date === entry.date) {
                 log[i] = entry;
                 entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
                 //convert back into csv entryString

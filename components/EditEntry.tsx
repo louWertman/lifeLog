@@ -35,8 +35,8 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
 
   const handleSave = () => {
+    setEntryDate(date)
     let sanEntryContent = entryContent.replace(/\n/g, '\\n');
-    setEntryDate(currentDate)
     onSave(sanEntryContent, entryDate, entryHabits, entryMood);
     const savedTime = new Date().toLocaleString('en-ET').split('.')[0];
     setLastSaved(savedTime);

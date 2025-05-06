@@ -43,6 +43,7 @@ const  EntryList: React.FC = () => {
 
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
+    
     let habitList = await fileSystem.listHabits();
     let habitsForEntry: Habit[] = [];
 
