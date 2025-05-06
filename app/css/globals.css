@@ -83,25 +83,36 @@ a {
 }
 
 .scrollable-menu {
-  max-height: 150px; /* Set the maximum height of the menu */
-  overflow-y: auto; /* Enable vertical scrolling */
-  border: 1px solid var(--foreground); /* Add a border around the menu */
-  padding: 10px; /* Add padding inside the menu */
-  background-color: var(--background-lv3); /* Set the background color */
-  border-radius: 5px; /* Add rounded corners */
-  position: absolute; /* Position the dropdown */
-  z-index: 1000; /* Ensure it appears above other elements */
-  box-shadow: -1px 4px 6px rgba(0, 0, 0, 0.719); /* Add a shadow for depth */
+  max-height: 150px;
+  /* Set the maximum height of the menu */
+  overflow-y: auto;
+  /* Enable vertical scrolling */
+  border: 1px solid var(--foreground);
+  /* Add a border around the menu */
+  padding: 10px;
+  /* Add padding inside the menu */
+  background-color: var(--background-lv3);
+  /* Set the background color */
+  border-radius: 5px;
+  /* Add rounded corners */
+  position: absolute;
+  /* Position the dropdown */
+  z-index: 1000;
+  /* Ensure it appears above other elements */
+  box-shadow: -1px 4px 6px rgba(0, 0, 0, 0.719);
+  /* Add a shadow for depth */
 }
 
 .habit-item {
   display: flex;
   align-items: center;
-  margin-bottom: 5px; /* Add spacing between items */
+  margin-bottom: 5px;
+  /* Add spacing between items */
 }
 
 .habit-item input {
-  margin-right: 10px; /* Add spacing between the checkbox and the label */
+  margin-right: 10px;
+  /* Add spacing between the checkbox and the label */
 }
 
 
@@ -138,7 +149,8 @@ a {
   background-color: var(--background-lv2);
   /* border-radius: 8px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 24px; /* Add rounded corners to the container */
+  border-radius: 24px;
+  /* Add rounded corners to the container */
 }
 
 .entry-container h1 {
@@ -168,23 +180,27 @@ a {
 /* Updated button styles to make them round with a gradient */
 .button {
   padding: 10px 20px;
-  background-color: var(--accent); 
+  background-color: var(--accent);
   /* linear-gradient(45deg, #3498db, #2ecc71); */
   color: var(--foreground);
   border: none;
-  border-radius: 50px; /* Make buttons round */
+  border-radius: 50px;
+  /* Make buttons round */
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.2s ease, transform 0.1s ease; /* Explicitly specify properties */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  /* Explicitly specify properties */
 }
 
 .button:hover {
-  background-color: var(--accent-light); /* Lighten on hover */
+  background-color: var(--accent-light);
+  /* Lighten on hover */
   /*linear-gradient(90deg, #3498db, #2ecc71); /* Darken on hover */
 }
 
 .button:active {
-  transform: translateY(2px); /* Depress on click */
+  transform: translateY(2px);
+  /* Depress on click */
 }
 
 .entry-container label {
@@ -196,11 +212,14 @@ a {
 }
 
 .habit.button {
-  background-color: var(--accent-comp); /* Blue */
+  background-color: var(--accent-comp);
+  /* Blue */
   padding: 5px 10px;
 }
+
 .habit.button:hover {
-  background-color: var(--accent-comp-light); /* Blue */
+  background-color: var(--accent-comp-light);
+  /* Blue */
 }
 
 
@@ -215,21 +234,47 @@ ul {
 
 /* Habit Editor Styles */
 
+.habit-editor {
+  max-width: 100%;
+  width: 90%;
+  box-sizing: border-box;
+}
+
+.habit-editor table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+.habit-editor th,
+.habit-editor td {
+  text-align: left;
+  /* Align text to the left */
+  padding: 8px;
+  /* Add padding for better spacing */
+  word-wrap: break-word;
+  /* Allow text to wrap */
+}
+
 .habit-editor input[type="checkbox"] {
-  appearance: none; /* Remove default checkbox styling */
+  appearance: none;
+  /* Remove default checkbox styling */
   width: 20px;
   height: 20px;
   background-color: var(--foreground-lv3);
   /* border: 2px solid var(--foreground-lv2); */
-  border-radius: 50%; /* Make it circular */
+  border-radius: 50%;
+  /* Make it circular */
   cursor: pointer;
   display: inline-block;
   position: relative;
 }
 
 .habit-editor input[type="checkbox"]:checked {
-  background-color: var(--accent-comp); /* Change background when checked */
-  border-color: var(--accent); /* Change border color when checked */
+  background-color: var(--accent-comp);
+  /* Change background when checked */
+  border-color: var(--accent);
+  /* Change border color when checked */
 }
 
 .habit-editor input[type="checkbox"]:checked::after {
@@ -240,16 +285,19 @@ ul {
   width: 10px;
   height: 10px;
   background-color: var(--foreground);
-  border-radius: 50%; /* Inner circle for checked state */
+  border-radius: 50%;
+  /* Inner circle for checked state */
   transform: translate(-50%, -50%);
 }
+
 .habit-editor table {
   /* width: 100%; */
   border-collapse: collapse;
   text-align: center;
 }
+
 .habit-editor th {
-  padding:10px;
+  padding: 10px;
 }
 
 .settings-container input[type="text"] {
@@ -263,12 +311,15 @@ ul {
 }
 
 .settings-container button {
-  background-color: var(--accent-comp); /* linear-gradient(45deg, #3498db, #2ecc71); */
+  background-color: var(--accent-comp);
+  /* linear-gradient(45deg, #3498db, #2ecc71); */
 }
+
 .settings-container button:hover {
-  background-color: var(--accent-comp-light); /* linear-gradient(45deg, #3498db, #2ecc71); */
+  background-color: var(--accent-comp-light);
+  /* linear-gradient(45deg, #3498db, #2ecc71); */
 }
 
 .export button {
-  float:right;
+  float: right;
 }
