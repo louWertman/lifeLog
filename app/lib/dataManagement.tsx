@@ -42,6 +42,7 @@ export class FileSystem {
 
     //load and parse a file for the entryLog object
     public async loadFile() {
+        await new Promise(resolve => setTimeout(resolve, 0));
         //if the file exists create it
         try {
             await Filesystem.readFile({
@@ -96,6 +97,7 @@ export class FileSystem {
 
     //returns a string array with the date of every entry, latest entry first
     public async listEntries() {
+        await new Promise(resolve => setTimeout(resolve, 0));
         const entryLog = await this.entryLog;
         return entryLog
             .sort((a, b) => new Date(b.getDateEntry()).getTime() - new Date(a.getDateEntry()).getTime())
@@ -108,6 +110,7 @@ export class FileSystem {
     }
     //finds an entry with a date, returns an Entry object
     public async fetchEntry(date: string) {
+        await new Promise(resolve => setTimeout(resolve, 0));
         const entryLog = await this.entryLog;
         for (let i = entryLog.length - 1; i >= 0; i--) {
             if (entryLog[i].getDateEntry() === date) {
@@ -219,8 +222,8 @@ export class FileSystem {
     // init file -> check if file exist -> read file -> parse file -> check if entry exist -> update entry or create new one
     public async saveEntry(entry: Entry) {
         //load file
-        const log = await this.entryLog;
         await new Promise(resolve => setTimeout(resolve, 0));
+        const log = await this.entryLog;
 
         let entryString = "";
         //check if entry already exists if does overwirite it
@@ -264,6 +267,7 @@ export class FileSystem {
     }
 
     public async deleteEntry(date: string) {
+        await new Promise(resolve => setTimeout(resolve, 0));
         const entryLog = await this.entryLog;
         for (let i = 0; i < entryLog.length; i++) {
             if (entryLog[i].getDateEntry() === date) {
@@ -321,6 +325,7 @@ export class FileSystem {
     //setting is the setting to update, update is the string update
     //init currentSettings -> validate setting -> update setting -> write to file
     public async updateSettings(setting: string, update: string) {
+
     let currentConfig = await this.getSettings();
     //Sanitize input
     if (setting !== "habits" && !["entryFile", "dataBaseKey", "theme"].includes(setting)) {
@@ -436,6 +441,7 @@ export class FileSystem {
     }
 
     //remove from entryLog
+    await new Promise(resolve => setTimeout(resolve, 0));
     let entryLog = await this.entryLog;
     for (let i = 0; i < entryLog.length; i++) {
         let habits = entryLog[i].getHabits();
@@ -449,11 +455,11 @@ export class FileSystem {
     }
 
     //write entryLog to file
-    let entryString = "";
+    let entryString = "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n";
     for (let i = 0; i < entryLog.length; i++) {
         entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" + entryLog[i].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" + entryLog[i].getTextEntry() + "\n";
     }
-    await Filesystem.appendFile({
+    await Filesystem.writeFile({
         path: await this.filePath,
         directory: Directory.Documents,
         data: entryString,
