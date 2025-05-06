@@ -234,17 +234,6 @@ ul {
 
 /* Habit Editor Styles */
 
-.habit-editor {
-  max-width: 100%;
-  width: 90%;
-  box-sizing: border-box;
-}
-
-.habit-editor table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
 
 .habit-editor th,
 .habit-editor td {

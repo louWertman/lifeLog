@@ -82,8 +82,6 @@ const EditorHabit: React.FC = () => {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Active?</th>
-                            <th>Positive?</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,8 +89,6 @@ const EditorHabit: React.FC = () => {
                         {habits.map((habit, index) => (
                             <tr key={index}>
                                 <th>{habit.name}</th>
-                                <th>{habit.active}</th>
-                                <th>{habit.positive}</th>
                                 <th><button
                                     className="habit button"
                                     onClick={() => editHabit(habit)}>Edit</button></th>
@@ -101,7 +97,17 @@ const EditorHabit: React.FC = () => {
                                 onClick={() => deleteHabit(habit)}>Delete</button></th>
                             </tr>
                         ))}
+                    </tbody>
                         {/* editor */}
+                        
+                        <thead>
+                            <tr>
+                                <th>Habit Name</th>
+                                <th>Active</th>
+                                <th>Positive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <tr>
                             <th>
                                 <input
