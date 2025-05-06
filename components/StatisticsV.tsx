@@ -10,6 +10,14 @@ import { ConsistencyChart } from './graphs/Consistency';
 import { ProcStat } from '../app/lib/procStat';
 import { PositiveChart } from './graphs/Positive';
 
+
+/*
+    Statistics Component
+    Serves to display the statistics of the user
+    based on what they select
+    It uses the ProcStat class to process the data    
+*/
+
 const Statistics: React.FC = () => {
 
     const statProcessor = new ProcStat();
@@ -34,7 +42,7 @@ const Statistics: React.FC = () => {
     const [consistencyChartData, setConsistencyChartData] = useState<any>(null);
     const [consistencyTime, setConsistencyTime] = useState<string | null>(null);
 
-    //init UI
+    //init UI data (habits and moods) to display
     useEffect(() => {
         const initUI = async () => {
             let habits = (await statProcessor.fetchHabits());
@@ -45,6 +53,7 @@ const Statistics: React.FC = () => {
         initUI();
     }, []);
 
+    //process entry length over time
     useEffect(() => {
         const consistencyChartInit = async () => {
             if (!consistencyTime) return;
@@ -54,6 +63,7 @@ const Statistics: React.FC = () => {
         consistencyChartInit();
     }, [consistencyTime]);
 
+    // Process mood and habit correlation
     useEffect(() => {
         const habMoodProc = async () => {
             if (!selectedHabit) return;
@@ -63,7 +73,7 @@ const Statistics: React.FC = () => {
         habMoodProc();
     }, [selectedHabit]);
 
-
+    // Process negative habit data over time
     useEffect(() => {
         const negativeHabProc = async () => {
             if (!selectedTime) return;
@@ -73,6 +83,7 @@ const Statistics: React.FC = () => {
         negativeHabProc();
     }, [selectedTime]);
 
+    // Process positve habit data over time
     useEffect(() => {
         const positiveHabProc = async () => {
             if (!positiveTime) return;

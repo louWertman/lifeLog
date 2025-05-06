@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 
+/*
+    Will export any data passed as a json file
+*/
+
 
 interface exportProps {
     data: any[];

@@ -1,5 +1,9 @@
 'use client';
 
+/*
+  Displays list of entries and allows you to edit them if you click on them, allows deletion and exporting
+*/
+
 import React, { useEffect, useState, memo} from "react";
 import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
@@ -18,6 +22,8 @@ const  EntryList: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [entries, setEntries] = useState<EntryType[]>([]);
 
+
+  // Fetch entries from the FileSystem class when the component mounts
   const fileSystem = new FileSystem();
   useEffect(() => {
     setSelectedEntry(null);

@@ -1,5 +1,9 @@
 'use client'
 
+/*
+  Habit select drop down menu
+*/
+
 import React, { useEffect, useState, useRef } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import { Habit } from '../app/lib/entity';

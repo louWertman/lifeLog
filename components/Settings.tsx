@@ -1,5 +1,9 @@
 'use client'
 
+/*
+  For managing settings, handles the database, links to habitsm and displays an about blurb
+*/
+
 import React, { useEffect, useState } from 'react';
 import { FileSystem } from '../app/lib/dataManagement';
 import EditorHabit from './editorHabit';
@@ -18,8 +22,7 @@ const Settings: React.FC = () => {
     return true;
   };
 
-  // Load settings from file system
-
+  // Updates the settings file 
   const saveSettings = async (setting: string, update: string) => {
     const fs = new FileSystem();
     await fs.updateSettings(setting, update);
@@ -46,6 +49,7 @@ const Settings: React.FC = () => {
     //window.alert("Key generated");
   }
 
+  //fetch settings from file system
   useEffect(() => {
     const fs = new FileSystem();
     const fetchSettings = async () => {

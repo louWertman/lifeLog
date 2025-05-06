@@ -4,6 +4,8 @@ This is a journaling application built for speed and simplicity. We built the ap
 
 We built this tool around simplicity and control over your data. Many journaling applications on the market are overly complex OR missing key features such as syncing. Additionally we are privacy focused and believe your data is yours, particularly if it contains sensitive information. All information on the database is encrypted and stored locally. You can also sync your data to a remote database using the key above. That choice is up to you. No statistics processing takes place on our servers, all processing is client side.
 
+> Refer to __DOCUMENTATION/ for documentation related needs
+
 *Disclaimer: We are not licensed professionals, we believe this tool can provide insight but this is not a replacement for professional help.*
 
 # LifeLog Development Set Up
@@ -35,3 +37,4 @@ pnpm build # creates a static page in the .export folder for deployment
 ```
 
 Check the Deployment Document for Deployment Instructions for different Targets.
+

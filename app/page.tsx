@@ -12,7 +12,9 @@ import { Entry, Habit } from "../app/lib/entity";
 import { FileSystem } from "../app/lib/dataManagement";
 import { useState, useEffect, useRef } from "react";
 
-
+/*
+  Handles switching the view and gives a template for all the pages
+*/
 
 type ValuePiece = Date | null;
 
@@ -80,6 +82,7 @@ export default function Home() {
 
   const [value, onChange] = useState<Value>(new Date());
 
+  //prop drill logic from calendar module
   function handleDateChange(nextValue: Value) {
     onChange(nextValue);
     if (nextValue !== null) {

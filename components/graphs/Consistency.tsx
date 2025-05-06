@@ -1,5 +1,5 @@
 /*
-For Consistency Graph
+For Consistency/length of time Graph
 */
 
 import React, { useEffect, useState } from "react";

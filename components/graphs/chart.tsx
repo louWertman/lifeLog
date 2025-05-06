@@ -4,6 +4,10 @@ import { Habit, Entry } from '../../app/lib/entity';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Export from '../Export';
 
+/*
+    For tracking mood and habit correlation
+*/
+
 interface chartProps {
     data: any[];
 }

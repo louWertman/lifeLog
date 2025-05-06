@@ -3,7 +3,10 @@ import { FileSystem } from '../app/lib/dataManagement';
 import { Habit } from '../app/lib/entity';
 
 
-
+/*
+    Edit Habit Compoenent
+    Serves to create, edit, and delete habits
+*/
 
 const EditorHabit: React.FC = () => {
     const [habits, setHabits] = useState<Habit[]>([]);
@@ -14,6 +17,7 @@ const EditorHabit: React.FC = () => {
 
     const fs = new FileSystem();
 
+    //fetch habits
     useEffect(() => {
         const fetchHabits = async () => {
             const habitList = await fs.listAllHabits();
@@ -53,6 +57,7 @@ const EditorHabit: React.FC = () => {
         return habit;
     };
 
+    // Reset the form for making and editing habits
     const RESET = () => {
         setHabitName("");
         setActive(true);

@@ -2,6 +2,11 @@
 File for processing statistics
 */
 
+/**********************************************
+ * VISIT LIB_MOD.MD for relavant documentation*
+ **********************************************/
+
+
 import { FileSystem } from './dataManagement';
 import { Entry, Habit } from './entity';
 

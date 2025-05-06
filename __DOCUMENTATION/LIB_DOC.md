@@ -1,5 +1,5 @@
-# Documentation
-Documentation and usage guide for the entry and dataManagement classes/files.
+# App/Lib/ Documentation
+Documentation and usage guide for the entry, ProcStat, and dataManagement classes/files.
     - dataManagement.ts: Functions related to syncing to the local file or the database and any entry retrieval functions
     - entity.ts - contains habit and entry objects
 
@@ -165,4 +165,54 @@ update_setting("config.json", "theme", "dark");
 #### Save Settings
 ```typescript
 save_settings("config.json", settings);
+```
+
+### PocStat and Statistical Processing
+Initialize
+
+```tsx
+const processor = new ProcStat();
+```
+#### FetchHabits
+Prepares and sanitizes data for showing and processing
+```tsx
+const habits = await procStat.fetchHabits();
+```
+
+#### moodData
+Fetches mood data and returns a tuple, [moodnames, uniqueMoods]. Moodnames is for processing and uniqueMoods is for display
+
+```tsx
+const moods = await procStat.fetchMoods();
+```
+
+### habit Mood Connections
+Used for processing connections between moods and habits
+
+```tsx
+const moods = await procStat.habitMoodProc(habit.name);
+```
+
+### Positive Habits Over Time
+Process occurence of positive habits over a week, month, and year
+Accepted Inputs: 'Week', 'Month', 'Year'
+
+```tsx
+const moods = await procStat.positiveHabitProc('Month');
+```
+
+### Negative Habits Over Time
+Process occurence of negative habits over a week, month, and year
+Accepted Inputs: 'Week', 'Month', 'Year'
+
+```tsx
+const moods = await procStat.negativeHabitProc('Week');
+```
+
+### Entry Length Over Time
+Process how long entries are over a specified period of time
+Accepted Inputs: 'Week', 'Month', 'Year'
+
+```tsx
+const moods = await procStat.consistencyProc('Year');
 ```

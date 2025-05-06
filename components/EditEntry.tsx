@@ -1,5 +1,9 @@
 'use client';
 
+/*
+Edit Entry compoenent
+*/
+
 import React, { useEffect, useState } from 'react';
 import { Habit } from '../app/lib/entity';
 import '../app/css/entry.module.css';
@@ -33,7 +37,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
 
-
+//Santize the entry content and saves
   const handleSave = () => {
     setEntryDate(date)
     let sanEntryContent = entryContent.replace(/\n/g, '\\n');
@@ -63,7 +67,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   }, [date]);
 
 
-  //Debounce
+  //Debounce save so as to not spam Database
   useEffect(() => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
