@@ -35,8 +35,9 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
 
 
   const handleSave = () => {
+    let sanEntryContent = entryContent.replace(/\n/g, '\\n');
     setEntryDate(currentDate)
-    onSave(entryContent, entryDate, entryHabits, entryMood);
+    onSave(sanEntryContent, entryDate, entryHabits, entryMood);
     const savedTime = new Date().toLocaleString('en-ET').split('.')[0];
     setLastSaved(savedTime);
   };
@@ -50,8 +51,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
       let fs = new FileSystem();
       const entryFetch = await fs.fetchEntry(date);
       if (entryFetch) {
-        setEntryDate(entryFetch.date);
-        setEntryContent(entryFetch.textEntry);
+        setEntryContent(entryFetch.textEntry.replace(/\\n/g, '\n'));
         setEntryMood(entryFetch.mood);
         setEntryHabits(entryFetch.habits.map((habit: Habit) => habit.name));
       }

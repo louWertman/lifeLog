@@ -25,7 +25,7 @@ const  EntryList: React.FC = () => {
       const entriesList = await fileSystem.listEntries();
       const formattedEntries = entriesList.map((entry: any) => ({
         date: entry.date || "",
-        content: entry.content || "",
+        content: entry.content.replace(/\\n/g, '\n') || "",
         habits: (fileSystem.habitsToString(entry.habits)).split(':')[0] ? entry.habits : [],
         mood: entry.mood || "",
       }));
@@ -66,7 +66,7 @@ const  EntryList: React.FC = () => {
     //reupdate entryList
     setEntries((prevEntries) =>
       prevEntries.map((e) =>
-        e.date === date ? { ...e, content, habits: habitsForEntry, mood } : e
+        e.date === date ? { ...e, content: content.replace(/\\n/g, '\n'), habits: habitsForEntry, mood } : e
       )
     );
   };
