@@ -225,7 +225,7 @@ export class FileSystem {
         let entryString = "";
         //check if entry already exists if does overwirite it
         for (let i = 0; i < log.length; i++) {
-            if (log[i].date === entry.getDateEntry()) {
+            if (log[i].getDateEntry() === entry.getDateEntry()) {
                 log[i] = entry;
                 entryString += "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY";
                 //convert back into csv entryString
@@ -289,16 +289,6 @@ export class FileSystem {
     //retrieves the settings from the settings file, if it doesn't exist create it with default settings
     public async getSettings() {
 
-    if (typeof window === 'undefined') {
-        return {
-            entryFile: 'ENTRYLOG.csv',
-            dataBaseKey: '',
-            theme: 'DARK',
-            habits: this.habitsToString(this.generateStockHabits()),
-        };
-    }
-
-
     try {
         const file = await Filesystem.readFile({
             path: 'settings.json',
@@ -326,6 +316,7 @@ export class FileSystem {
     }
 }
 
+
     //update settings file, MINUS HABITS
     //setting is the setting to update, update is the string update
     //init currentSettings -> validate setting -> update setting -> write to file
@@ -351,6 +342,7 @@ export class FileSystem {
         })
     }
 }
+
 
     //init habit (grab from json settings)
     //check and update habit

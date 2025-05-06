@@ -50,6 +50,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
       let fs = new FileSystem();
       const entryFetch = await fs.fetchEntry(date);
       if (entryFetch) {
+        setEntryDate(entryFetch.date);
         setEntryContent(entryFetch.textEntry);
         setEntryMood(entryFetch.mood);
         setEntryHabits(entryFetch.habits.map((habit: Habit) => habit.name));
