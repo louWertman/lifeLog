@@ -6,7 +6,6 @@ import '../app/css/entry.module.css';
 import Habits from '../components/habits';
 import { FileSystem } from '../app/lib/dataManagement';
 
-
 interface EditEntryProps {
   date: string;
   content: string;
@@ -15,15 +14,9 @@ interface EditEntryProps {
   onSave: (content: string, date: string, habits: string[], mood: string) => void;
 }
 
-
 const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSave }) => {
-
-  // incase of calendar edit, otherwise date is current date
   let currentDate = date ?? new Date().toLocaleString('en-ET').split(',')[0];
-
   date = currentDate;
-
-
 
   const [entryContent, setEntryContent] = useState(content);
   const [entryDate, setEntryDate] = useState(date);
@@ -42,13 +35,11 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     setLastSaved(savedTime);
   };
 
-
-  //if entry exist for the date it loads into the GUI
   useEffect(() => {
     setEntryDate(date);
     setEntryHabits([]);
     const getEntry = async () => {
-      let fs = new FileSystem();
+      const fs = new FileSystem();
       const entryFetch = await fs.fetchEntry(date);
       if (entryFetch) {
         setEntryContent(entryFetch.textEntry.replace(/\\n/g, '\n'));
@@ -62,8 +53,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
     }
   }, [date]);
 
-
-  //Debounce
+  // Debounce save logic
   useEffect(() => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
@@ -81,9 +71,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
   }, [entryContent, entryHabits, entryMood]); 
   
   return (
-
     <div>
-
       <div className="entry-container">
         <h1>Edit Entry for {entryDate}</h1>
         <div className="flex-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
@@ -114,9 +102,7 @@ const EditEntry: React.FC<EditEntryProps> = ({ mood, habits, content, date, onSa
                 id="mood"
                 required
                 value={entryMood}
-                onChange={
-                  (e) => setEntryMood(e.target.value)
-                }
+                onChange={(e) => setEntryMood(e.target.value)}
               />
             </div>
           </div>

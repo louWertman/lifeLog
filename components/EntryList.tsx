@@ -5,20 +5,20 @@ import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
 import { Entry, Habit } from "../app/lib/entity";
 import Export from './Export';
-import "../app/css/entry.module.css";
+import '../app/css/entry.module.css';
 
 interface EntryType {
   date: string;
   content: string;
-  habits: { name: string; positive: boolean; active: boolean }[]; // Updated type
+  habits: { name: string; positive: boolean; active: boolean }[];
   mood: string;
 }
 
 const  EntryList: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [entries, setEntries] = useState<EntryType[]>([]);
-
   const fileSystem = new FileSystem();
+
   useEffect(() => {
     setSelectedEntry(null);
     const fetchEntries = async () => {
@@ -48,20 +48,12 @@ const  EntryList: React.FC = () => {
     let habitsForEntry: Habit[] = [];
 
     habitList.forEach(habitInList => {
-      habitNames.forEach(habitName => {
-        if (habitInList.name === habitName) {
-          habitsForEntry.push(habitInList);
-        }
-      });
+      if (habitNames.includes(habitInList.name)) {
+        habitsForEntry.push(habitInList);
+      }
     });
 
-    let entry = new Entry(
-      date,
-      mood,
-      habitsForEntry,
-      content
-    );
-
+    const entry = new Entry(date, mood, habitsForEntry, content);
     await fileSystem.saveEntry(entry);
 
     //reupdate entryList
@@ -81,9 +73,7 @@ const  EntryList: React.FC = () => {
         <div
           key={index}
           onClick={() =>
-            setSelectedEntry((prevEntry) =>
-              prevEntry?.date === entry.date ? null : entry
-            )
+            setSelectedEntry(prev => (prev?.date === entry.date ? null : entry))
           }
           className="settings-container"
         >
@@ -91,29 +81,27 @@ const  EntryList: React.FC = () => {
           <strong>{entry.date}</strong>: <br />
           {entry.content.length > 155
             ? `${entry.content.substring(0, 155)}...`
-            : entry.content}          <br />
-          <strong>Habits:</strong> {entry.habits.map((habit: any) => habit.name).join(", ")}
+            : entry.content}
+          <br />
+          <strong>Habits:</strong> {entry.habits.map(h => h.name).join(', ')}
           <br />
           <strong>Mood:</strong> {entry.mood}
 
           {selectedEntry && selectedEntry.date === entry.date && (
-            <div onClick={(e) => e.stopPropagation()}
-            >
+            <div onClick={e => e.stopPropagation()}>
               <EditEntry
                 date={selectedEntry.date}
                 content=""
                 habits={[]}
                 mood=""
-                onSave={(content, date, habits, mood) =>
-                  handleSave(content, date, habits, mood)
-                }
+                onSave={handleSave}
               />
             </div>
           )}
           <br />
           <br />
           <button
-            onClick={(e) => {
+            onClick={e => {
               e.stopPropagation();
               handleDelete(entry.date);
             }}
@@ -121,13 +109,11 @@ const  EntryList: React.FC = () => {
           >
             Delete
           </button>
-
           <br />
         </div>
       ))}
       <br />
       <br />
-
     </div>
   );
 }

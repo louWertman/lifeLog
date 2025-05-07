@@ -225,7 +225,6 @@ export class FileSystem {
         const log = await this.entryLog;
         const config = await this.getSettings();
         await new Promise(resolve => setTimeout(resolve, 0));
-        const log = await this.entryLog;
 
         let entryString = "";
         //check if entry already exists if does overwirite it
@@ -244,7 +243,7 @@ export class FileSystem {
                         data: entryString,
                         encoding: Encoding.UTF8,
                     });
-                    if (config.sync === "1" && config.dbKey) {
+                    if (config.sync === "1"){ //&& config.dbKey) {
                         try {
                             console.log("Sending entry:", {
                                 date: entry.getDateEntry(),
@@ -298,27 +297,55 @@ export class FileSystem {
     public async deleteEntry(date: string) {
         await new Promise(resolve => setTimeout(resolve, 0));
         const entryLog = await this.entryLog;
+        const config = await this.getSettings();
+    
+        // Remove from local entryLog array
         for (let i = 0; i < entryLog.length; i++) {
             if (entryLog[i].getDateEntry() === date) {
                 entryLog.splice(i, 1);
                 break;
             }
         }
+    
+        // Rewrite CSV with updated log
         let entryString = "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n";
         for (let i = 0; i < entryLog.length; i++) {
-            entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" + entryLog[i].getMoods() + "@~~@DELIM@~~@" + this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" + entryLog[i].getTextEntry() + "\n";
+            entryString += entryLog[i].getDateEntry() + "@~~@DELIM@~~@" +
+                entryLog[i].getMoods() + "@~~@DELIM@~~@" +
+                this.habitsToString(entryLog[i].getHabits()) + "@~~@DELIM@~~@" +
+                entryLog[i].getTextEntry() + "\n";
         }
+    
         await Filesystem.writeFile({
             path: await this.filePath,
             directory: Directory.Documents,
             data: entryString,
             encoding: Encoding.UTF8,
         }).catch((error) => {
-            //console.error('Error updating entry log: ', error);
+            // console.error('Error updating entry log: ', error);
         });
+    
+        // Reload entryLog
         this.entryLog = this.loadFile();
+    
+        // 🔁 Sync with database
+        if (config.sync === "1" && config.dbKey) {
+            try {
+                await fetch('/api/entries/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: date,
+                        token: config.dbKey
+                    }),
+                });
+                console.log(`Entry on ${date} deleted from DB.`);
+            } catch (err) {
+                console.error(`Failed to delete DB entry on ${date}:`, err);
+            }
+        }
     }
-
+    
     //retrieves the settings from the settings file, if it doesn't exist create it with default settings
     public async getSettings() {
 
@@ -345,7 +372,7 @@ export class FileSystem {
         let habits = this.generateStockHabits();
         let defaultSettings = {
             "entryFile": "ENTRYLOG.csv",
-            "dBKey": "",
+            "dbKey": "",
             "sync": 0,
             "theme": "DARK",
             "habits": this.habitsToString(habits),
@@ -365,28 +392,25 @@ export class FileSystem {
     //setting is the setting to update, update is the string update
     //init currentSettings -> validate setting -> update setting -> write to file
     public async updateSettings(setting: string, update: string) {
-
-    let currentConfig = await this.getSettings();
-    //Sanitize input
-    if (setting !== "habits" && !["entryFile", "dBKey", "theme"].includes(setting)) {
-        if (setting !== "habits") {
-            currentConfig[setting] = update;
-        } else {
-            return;
-        }
-
-        let newConfig = JSON.stringify(currentConfig, null, 2);
-
-        await Filesystem.writeFile({
+        // block updating 'habits' directly
+        if (setting === "habits") return;
+      
+        let currentConfig = await this.getSettings();
+        currentConfig[setting] = update;
+      
+        const newConfig = JSON.stringify(currentConfig, null, 2);
+      
+        try {
+          await Filesystem.writeFile({
             path: 'settings.json',
             directory: Directory.Documents,
             data: newConfig,
             encoding: Encoding.UTF8,
-        }).catch((error) => {
-            //console.error('Error updating settings: ', error);
-        })
+          });
+        } catch (error) {
+          console.error('Error updating settings:', error);
+        }
     }
-}
 
 
     //init habit (grab from json settings)
@@ -537,6 +561,70 @@ export class FileSystem {
         //console.error('Error updating entry log: ', error);
     });
 
+}
+/**
+ * Author: Dyllan Burgos  
+ * Professor: Charlie Shim  
+ * Function: syncAllPastHabitsToDB  
+ * Purpose: Syncs all locally stored habits from settings.json to the remote database
+ *          using the /api/habits/update POST endpoint.
+ *
+ * returns Nothing. Errors are logged to console if syncing fails.
+ */
+public async syncAllPastHabitsToDB() {
+    const config = await this.getSettings();
+    if (config.sync !== "1" || !config.dbKey) return;
+
+    const allHabits = await this.listAllHabits();
+    for (const habit of allHabits) {
+        try {
+            await fetch('/api/habits/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    habitName: habit.name,
+                    active: habit.active,
+                    positive: habit.positive,
+                    token: config.dbKey
+                })
+            });
+        } catch (err) {
+            console.error(`Failed to sync habit '${habit.name}'`, err);
+        }
+    }
+}
+
+/**
+ * Author: Dyllan Burgos  
+ * Professor: Charlie Shim  
+ * Function: syncAllEntriesToDB  
+ * Purpose: Syncs all locally stored journal entries to the remote database
+ *          using the /api/entries/insert POST endpoint.
+ *
+ * returns  Nothing. Errors are logged to console if syncing fails.
+ */
+public async syncAllEntriesToDB() {
+    const config = await this.getSettings();
+    if (config.sync !== "1" || !config.dbKey) return;
+
+    const entries = await this.entryLog;
+    for (const entry of entries) {
+        try {
+            await fetch('/api/entries/insert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: entry.getDateEntry(),
+                    mood: entry.getMoods(),
+                    content: entry.getTextEntry(),
+                    habits: this.habitsToString(entry.getHabits()),
+                    token: config.dbKey
+                })
+            });
+        } catch (err) {
+            console.error(`Failed to sync entry for date '${entry.getDateEntry()}'`, err);
+        }
+    }
 }
 }
 

@@ -28,35 +28,44 @@ const Settings: React.FC = () => {
 
   /******add logic for generating a key*********/
   const genDBKey = async () => {
-    //add logic here
+    const fs = new FileSystem();
     const now = new Date();
-
     const pad = (n: number) => n.toString().padStart(2, '0');
-
     const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
     const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-
-    const randomPart = Math.random().toString(36).substring(2, 8); // extra uniqueness
-
+    const randomPart = Math.random().toString(36).substring(2, 8);
     const newKey = `${datePart}-${timePart}-${randomPart}`;
-
-    setSettings((prev) => ({ ...prev, dbKey: newKey, sync: 1 }));
-    saveSettings("dbKey", newKey);
-    saveSettings("sync", "1");
-    window.alert(`Key generated: ${newKey}`); //try to print out key 
+  
     try {
-      await fetch('/api/signup', {
+      // 🔥 Actually send it to the backend
+      const res = await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: newKey }),
       });
-      console.log("Signup POST sent for new dbKey.");
-    } catch (err) {
-      console.error("Failed to send signup POST:", err);
-    }
   
-    //window.alert("Key generated");
-  }
+      const data = await res.json();
+  
+      if (data.success && data.token) {
+        console.log("Got token from backend:", data.token);
+  
+        setSettings((prev) => ({ ...prev, dbKey: data.token, sync: 1 }));
+        await saveSettings("dbKey", data.token);
+        await saveSettings("sync", "1");
+        window.alert(`Token generated & synced: ${data.token}`);
+        await fs.syncAllPastHabitsToDB();
+        await fs.syncAllEntriesToDB();
+      } else {
+        console.error("Signup failed or token missing:", data);
+        window.alert("Signup failed. Check console.");
+      }
+  
+    } catch (err) {
+      console.error(" Signup fetch failed:", err);
+      window.alert("Signup fetch failed.");
+    }
+  };
+  
 
   useEffect(() => {
     const fs = new FileSystem();
