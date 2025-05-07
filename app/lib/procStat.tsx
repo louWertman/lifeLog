@@ -64,6 +64,36 @@ export class ProcStat {
         return data;
     }
 
+    public async positiveHabitProc(selectedTime: string) {
+        const entryLog = await this.entryLog;
+        if (!selectedTime) return;
+        const dateRange = this.calculateDate(selectedTime);
+
+        if (!dateRange) return;
+
+
+        let negativeHabitCounter = 0;
+        let data: any = [];
+
+        for (let date of dateRange) {
+            negativeHabitCounter = 0;
+            for (const entry of entryLog) {
+                if (new Date(entry.date).toLocaleString('en-ET').split(',')[0] === date.toLocaleString('en-ET').split(',')[0]) {
+                    for (const habit of entry.habits) {
+                        if (habit.positive === true) {
+                            negativeHabitCounter++;
+                        }
+                    }
+                }
+            }
+            data.push({
+                date: date.toLocaleString('en-ET').split(',')[0],
+                count: negativeHabitCounter,
+            });
+        };
+        return data;
+    }
+
     public async negativeHabitProc(selectedTime: string) {
         const entryLog = await this.entryLog;
         if (!selectedTime) return;

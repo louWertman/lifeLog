@@ -72,7 +72,8 @@ const EditorHabit: React.FC = () => {
                 <li>Active: Is this a habit you are engaged in? If not you can keep it for statistics processing, but otherwise you will not see it for entries </li>
                 <li>Positive: Is this a positive habit or one you wish to quit?</li>
             </ul>
-            NOTE: Deleting a habit will remove from your entries, do not do unless you are certain.
+            <br/>
+            <i>Note: Deleting a habit will remove from your entries, do not do unless you are certain.</i>
             <br />
             <br />
             <div>
@@ -81,8 +82,6 @@ const EditorHabit: React.FC = () => {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Active?</th>
-                            <th>Positive?</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,8 +89,6 @@ const EditorHabit: React.FC = () => {
                         {habits.map((habit, index) => (
                             <tr key={index}>
                                 <th>{habit.name}</th>
-                                <th>{habit.active}</th>
-                                <th>{habit.positive}</th>
                                 <th><button
                                     className="habit button"
                                     onClick={() => editHabit(habit)}>Edit</button></th>
@@ -100,7 +97,17 @@ const EditorHabit: React.FC = () => {
                                 onClick={() => deleteHabit(habit)}>Delete</button></th>
                             </tr>
                         ))}
+                    </tbody>
                         {/* editor */}
+                        
+                        <thead>
+                            <tr>
+                                <th>Habit Name</th>
+                                <th>Active</th>
+                                <th>Positive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <tr>
                             <th>
                                 <input

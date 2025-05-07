@@ -88,3 +88,16 @@
   display: block;
   margin-bottom: 5px;
 }
+
+.flex-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .flex-column {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+}

@@ -108,7 +108,11 @@ const Settings: React.FC = () => {
       </div>
       <div className="settings-container">
         <h2>About</h2>
-        
+          This is a journaling application built for speed and simplicity. We built the application around CBT (Cognitive Behavioral Therapy) principles, or the idea that your thoughts, feelings, and behaviors are connected and influence each other. We are DDLL (Dyllan, David, Lou, Luis), a team that built this application for our Capstone project (CPSC354 FALL2024, CPSC355 SPRING2025) for Kutztown University of Pennsylvania. 
+          <br /> <br />
+          We built this tool around simplicity and control over your data. Many journaling applications on the market are overly complex OR missing key features such as syncing. Additionally we are privacy focused and believe your data is yours, particularly if it contains sensitive information. All information on the database is encrypted and stored locally. You can also sync your data to a remote database using the key above. That choice is up to you. No statistics processing takes place on our servers, all processing is client side.
+          <br /> <br />
+          <i>Disclaimer: We are not licensed professionals, we believe this tool can provide insight but this is not a replacement for professional help.</i>
       </div>
     </div>
   );

@@ -19,7 +19,7 @@ const Habits: React.FC<HabitsProps> = ({ selectedHabits, setSelectedHabits }) =>
   useEffect(() => {
     const fetchHabits = async () => {
         let habitsList = await fileSystem.listHabits(); 
-        const habitNames = habitsList.map((habit) => habit.name);
+        const habitNames = habitsList.filter((habit) => habit.active).map((habit) => habit.name);
         setHabitOptions(habitNames); 
     };
 

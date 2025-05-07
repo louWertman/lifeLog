@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, memo} from "react";
 import { FileSystem } from "../app/lib/dataManagement";
 import EditEntry from "./EditEntry";
 import { Entry, Habit } from "../app/lib/entity";
@@ -14,7 +14,7 @@ interface EntryType {
   mood: string;
 }
 
-export default function EntryList() {
+const  EntryList: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<EntryType | null>(null);
   const [entries, setEntries] = useState<EntryType[]>([]);
 
@@ -25,7 +25,7 @@ export default function EntryList() {
       const entriesList = await fileSystem.listEntries();
       const formattedEntries = entriesList.map((entry: any) => ({
         date: entry.date || "",
-        content: entry.content || "",
+        content: entry.content.replace(/\\n/g, '\n') || "",
         habits: (fileSystem.habitsToString(entry.habits)).split(':')[0] ? entry.habits : [],
         mood: entry.mood || "",
       }));
@@ -43,6 +43,7 @@ export default function EntryList() {
 
   const handleSave = async (content: string, date: string,
     habitNames: string[], mood: string): Promise<void> => {
+    
     let habitList = await fileSystem.listHabits();
     let habitsForEntry: Habit[] = [];
 
@@ -66,14 +67,14 @@ export default function EntryList() {
     //reupdate entryList
     setEntries((prevEntries) =>
       prevEntries.map((e) =>
-        e.date === date ? { ...e, content, habits: habitsForEntry, mood } : e
+        e.date === date ? { ...e, content: content.replace(/\\n/g, '\n'), habits: habitsForEntry, mood } : e
       )
     );
   };
 
   return (
     <div className="EntryList">
-      <h1>Log</h1>
+      {/* <h1>Log</h1> */}
       <Export data={entries} />
       <br />
       {entries.map((entry, index) => (
@@ -130,3 +131,5 @@ export default function EntryList() {
     </div>
   );
 }
+
+export default memo(EntryList);

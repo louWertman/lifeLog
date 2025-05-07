@@ -188,7 +188,7 @@ a.secondary {
   gap: 16px;
   width: 200px;
   /* Set a fixed width for the sidebar */
-  background-color: #24292f;
+  background-color: var(--background);
   transition: transform 0.3s ease-in-out;
 
 }
@@ -226,7 +226,7 @@ a.secondary {
     padding-top: 3em;
     height: 100%;
     width: 300px;
-    background-color: #1d2025;
+    background-color: var(--background-lv2);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 999;
   }

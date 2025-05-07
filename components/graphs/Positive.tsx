@@ -1,17 +1,17 @@
 /*
-For Consistency Graph
+For tracking the Positive habits over time
 */
 
 import React, { useEffect, useState } from "react";
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import Export from '../Export';
 
 
-interface consistencyChartProps {
+interface positiveChartProps {
     data: any[];
 }
 
-export const ConsistencyChart: React.FC<consistencyChartProps> = ({ data }) => {
+export const PositiveChart: React.FC<positiveChartProps> = ({ data }) => {
     const [chartData, setChartData] = useState<any[]>([]);
 
     useEffect(() => {
@@ -21,7 +21,7 @@ export const ConsistencyChart: React.FC<consistencyChartProps> = ({ data }) => {
     }, [data]);
 
     if (!data || data.length === 0) {
-        return <div>Mmm.. seems like there are no entries to analyze at the moment</div>;
+        return <div>Make sure you have some positive habits, or try to engage with them more</div>;
     }
 
     return (
@@ -29,12 +29,12 @@ export const ConsistencyChart: React.FC<consistencyChartProps> = ({ data }) => {
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="date" tick={false} />
+                    <XAxis dataKey="date" tick={false}/>
                     <YAxis />
-                    <Tooltip
+                    <Tooltip 
                         contentStyle={{ backgroundColor: "#24292f", color: "white", border: "none" }}
                     />
-                    <Line type="monotone" dataKey="length" stroke="#8884d8" name="Charecter Count" strokeWidth={3} />
+                    <Line type="monotone" dataKey="count" stroke="#8884d8" name="Positive Habits" strokeWidth={3}/>
                 </LineChart>
             </ResponsiveContainer>
             <Export
