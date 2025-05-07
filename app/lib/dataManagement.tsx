@@ -1,5 +1,5 @@
 /*
-Authors: Lou Wertman,
+Authors: Lou Wertman,Dyllan Burgos
 Purpose: Functions related to syncing to the local file or the database and any entry retrieval functions
 */
 
@@ -626,6 +626,57 @@ public async syncAllEntriesToDB() {
         }
     }
 }
+    /**
+     * Fetches all entries, habits, and moods from the database using the sync token.
+     * Synchronizes the local CSV with the fetched data.
+     */
+public async fetchAndSyncFromDB(token: string) {
+    try {
+        const response = await fetch('/api/entries/fetch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token })
+        });
+
+        if (!response.ok) {
+            console.error("Failed to fetch entries from DB");
+            return;
+        }
+
+        const data = await response.json();
+        if (!data.success) {
+            console.error("Failed to fetch: ", data.error);
+            return;
+        }
+
+        console.log("Fetched Entries from DB:", data.entries);
+
+        // Clear the current local CSV and re-populate
+        let entryString = "DATE@~~@DELIM@~~@MOOD@~~@DELIM@~~@HABITS@~~@DELIM@~~@ENTRY\n";
+        
+        for (const entry of data.entries) {
+            const habitString = entry.habits.map((habit: any) =>
+                `${habit.name}:${habit.positive}:${habit.active}`
+            ).join(",");
+
+            entryString += `${entry.date}@~~@DELIM@~~@${entry.mood}@~~@DELIM@~~@${habitString}@~~@DELIM@~~@${entry.content}\n`;
+        }
+
+        await Filesystem.writeFile({
+            path: await this.filePath,
+            directory: Directory.Documents,
+            data: entryString,
+            encoding: Encoding.UTF8,
+        });
+
+        console.log("Local CSV updated successfully.");
+        this.entryLog = this.loadFile();
+
+    } catch (err) {
+        console.error("Error syncing from DB:", err);
+    }
+}
+
 }
 
 /*
