@@ -20,6 +20,7 @@
     "@capacitor/core": "^7.2.0",
     "@capacitor/electron": "^2.5.0",
     "@capacitor/filesystem": "^7.0.1",
+    "@capacitor/ios": "^7.2.0",
     "@tailwindcss/postcss": "^4.1.4",
     "bcryptjs": "^3.0.2",
     "crypto": "^1.0.1",
